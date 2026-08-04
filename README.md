@@ -9,9 +9,11 @@ GoHighLevel embeds (form + calendar), which load at runtime.
 | File                          | Live URL                        | Purpose                                   |
 |-------------------------------|---------------------------------|-------------------------------------------|
 | `partners/rivenway.html`      | `/partners/rivenway`            | Referral landing for RivenWay             |
-| `partners/ace-tools.html`     | `/partners/ace-tools`           | Referral landing for ACE Tools            |
+| `partners/integ-funding.html` | `/partners/integ-funding`       | Referral landing for Integ Funding        |
 | `partners/_template.html`     | (template — do not link)        | Copy this to add a new referral partner   |
 | `advisors/michael-sylkatis.html` | `/advisors/michael-sylkatis`  | Booking page for Michael Sylkatis         |
+| `advisors/barbara-sylkatis.html` | `/advisors/barbara-sylkatis`  | Booking page for Barbara Sylkatis         |
+| `advisors/ariel-austria.html`    | `/advisors/ariel-austria`     | Booking page for Ariel Austria            |
 | `advisors/_template.html`     | (template — do not link)        | Copy this to add a new advisor booking page |
 | `thank-you.html`              | `/thank-you`                    | Shared confirmation page + booking calendar |
 | `vercel.json`                 | —                               | Clean URLs + root redirect config         |

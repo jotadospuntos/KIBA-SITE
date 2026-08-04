@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/", "destination": "https://kibadvisors.com", "permanent": false }
+    { "source": "/", "destination": "https://kibadvisors.com", "permanent": false },
+    { "source": "/partners/ace-tools", "destination": "/partners/integ-funding", "permanent": true }
   ]
 }

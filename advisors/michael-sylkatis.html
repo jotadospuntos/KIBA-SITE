@@ -115,7 +115,17 @@
     padding:16px 32px;
     max-width:1180px; margin:0 auto;
   }
-  .logo-mark{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .logo-name{
+    font-family:'Instrument Sans', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    color:#fff;
+    letter-spacing:0.01em;
+    line-height:1.15;
+    white-space:nowrap;
+  }
+  @media (max-width:600px){ .logo-name{ display:none; } }
   .logo-mark svg{ height:40px; width:auto; }
   .nav-right{ display:flex; align-items:center; gap:24px; }
   .nav-phone{
@@ -446,9 +456,17 @@
   .advisor-meta .advisor-title{
     font-family:'Instrument Sans', sans-serif;
     font-size:13.5px;
+    font-weight:600;
     color:var(--blue-soft);
     margin-top:3px;
     letter-spacing:0.02em;
+  }
+  .advisor-meta .advisor-tagline{
+    font-family:'Instrument Sans', sans-serif;
+    font-size:12.5px;
+    color:rgba(255,255,255,0.62);
+    margin-top:6px;
+    line-height:1.4;
   }
 
   /* Scheduling card (mirrors the referral form card) */
@@ -548,11 +566,14 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
     // Advisor's name (shown in the hero profile card)
     name: "Michael Sylkatis",
 
-    // Advisor's title / role
-    title: "Senior Advisor",
+    // Advisor's title / role (shown in the profile card)
+    title: "Founder & Principal Advisor",
+
+    // Optional one-line description under the title (leave "" to hide)
+    tagline: "Guides business owners through big-picture decisions, capital strategy, and long-term alignment.",
 
     // Short bio — a sentence or two (shown under the hero headline)
-    bio: "Michael is a Senior Advisor at KIBA, helping business owners navigate financing with clarity and confidence. He works closely with each client from the first conversation through closing to secure the right funding for their goals.",
+    bio: "Michael Sylkatis is the Founder and Principal Advisor of Kingdom Impact Business Advisors and works directly with business owners as a trusted guide through important financial and growth decisions. Clients work with Michael to gain clarity around their options and confidence in the path forward—not to be sold a loan.",
 
     // Advisor photo. Paste a hosted image URL or a base64 data URI.
     // Leave "" to show a placeholder avatar.
@@ -560,13 +581,13 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
 
     // Scheduling embed URL — paste your GoHighLevel calendar embed URL
     // OR your Calendly link. Leave "" to show a placeholder box.
-    schedulerUrl: "https://api.leadconnectorhq.com/widget/booking/qW1qoVt7AzggAsq61CrM"
+    schedulerUrl: "https://api.leadconnectorhq.com/widget/booking/hNVlyN1rtNcxpWkSshP8"
   };
 </script>
 
 <nav>
   <div class="nav-inner">
-    <div class="logo-mark">
+    <a class="logo-mark" href="https://kibadvisors.com" aria-label="Kingdom Impact Business Advisors home">
       <svg viewBox="0 0 1500 736.33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <g fill="#ffffff">
           <polygon points="515.23 206.04 439.07 206.04 327.41 356.49 327.41 206.04 262.93 206.04 262.93 535.9 270.41 535.9 370.86 400.41 456.36 531.23 533.92 531.23 410.57 346.68 515.23 206.04"/>
@@ -576,7 +597,8 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
         </g>
         <path fill="#2563eb" d="M1088.49,200.43h-7.01l-148.58,330.79h304.16l-148.58-330.79ZM1083.36,470.03l-73.36,47.66,75.22-171,75.24,171-73.82-47.66h-3.27Z"/>
       </svg>
-    </div>
+      <span class="logo-name">Kingdom Impact Business Advisors</span>
+    </a>
     <div class="nav-right">
       <a class="nav-phone" href="tel:2512108445">251-210-8445</a>
       <a class="btn btn-primary" href="#book" style="padding:11px 22px; font-size:14.5px;">Book a Call</a>
@@ -597,6 +619,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
         <div class="advisor-meta">
           <div class="advisor-name" id="advisorName"></div>
           <div class="advisor-title" id="advisorTitle"></div>
+          <div class="advisor-tagline" id="advisorTagline"></div>
         </div>
       </div>
       <div class="stat-row">
@@ -737,7 +760,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
 
 <footer>
   <div class="wrap footer-inner">
-    <div class="logo-mark">
+    <a class="logo-mark" href="https://kibadvisors.com" aria-label="Kingdom Impact Business Advisors home">
       <svg viewBox="0 0 1500 736.33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <g fill="#ffffff">
           <polygon points="515.23 206.04 439.07 206.04 327.41 356.49 327.41 206.04 262.93 206.04 262.93 535.9 270.41 535.9 370.86 400.41 456.36 531.23 533.92 531.23 410.57 346.68 515.23 206.04"/>
@@ -747,7 +770,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
         </g>
         <path fill="#2563eb" d="M1088.49,200.43h-7.01l-148.58,330.79h304.16l-148.58-330.79ZM1083.36,470.03l-73.36,47.66,75.22-171,75.24,171-73.82-47.66h-3.27Z"/>
       </svg>
-    </div>
+    </a>
     <div class="footer-links">
       <a href="#">Privacy Policy</a>
       <a href="#">Terms &amp; Conditions</a>
@@ -777,6 +800,12 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
 
     var title = document.getElementById('advisorTitle');
     if (title) { title.textContent = ADVISOR.title; }
+
+    var tagline = document.getElementById('advisorTagline');
+    if (tagline) {
+      if (ADVISOR.tagline) { tagline.textContent = ADVISOR.tagline; }
+      else { tagline.style.display = 'none'; }
+    }
 
     if (ADVISOR.photo) {
       var av = document.getElementById('advisorAvatar');
