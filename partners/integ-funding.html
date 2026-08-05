@@ -153,15 +153,16 @@
     opacity:0.08;
     pointer-events:none;
   }
+  .hero .wrap{ max-width:1440px; }
   .hero-inner{
     position:relative;
     z-index:1;
     display:grid;
-    grid-template-columns:1.1fr 0.9fr;
+    grid-template-columns:0.85fr 1.15fr;
     gap:56px;
     align-items:center;
   }
-  @media (max-width:920px){
+  @media (max-width:1100px){
     .hero-inner{ grid-template-columns:1fr; }
   }
   .hero-eyebrow{ color:var(--blue-soft); margin-bottom:18px; }
