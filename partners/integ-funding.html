@@ -529,7 +529,26 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <div class="eyebrow form-card-eyebrow">Get Started</div>
       <h3>Tell us about your business</h3>
       <p>Share a few details and a member of our team will reach out within 24&ndash;72 hours to talk through your options.</p>
-      <div class="form-embed" id="partnerForm"></div>
+      <div class="form-embed" id="partnerForm">
+<iframe
+    src="https://api.leadconnectorhq.com/widget/form/EJA87fmVbtdjEgbsZnPt"
+    style="width:100%;height:100%;border:none;border-radius:8px"
+    id="inline-EJA87fmVbtdjEgbsZnPt"
+    data-layout="{'id':'INLINE'}"
+    data-trigger-type="alwaysShow"
+    data-trigger-value=""
+    data-activation-type="alwaysActivated"
+    data-activation-value=""
+    data-deactivation-type="neverDeactivate"
+    data-deactivation-value=""
+    data-form-name="REFERRAL PARTNER TEMPLATE FORM"
+    data-height="621"
+    data-layout-iframe-id="inline-EJA87fmVbtdjEgbsZnPt"
+    data-form-id="EJA87fmVbtdjEgbsZnPt"
+    title="REFERRAL PARTNER TEMPLATE FORM"
+        >
+</iframe>
+      </div>
       <div class="form-footnote">Your information is kept private and secure.</div>
     </div>
     </div>
@@ -691,21 +710,9 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
         '&mdash; no pressure, no obligation.';
     }
 
-    var host = document.getElementById('partnerForm');
-    if (host) {
-      var id = PARTNER.ghlFormId;
-      host.innerHTML =
-        '<iframe src="https://api.leadconnectorhq.com/widget/form/' + id + '" ' +
-        'style="width:100%;height:100%;border:none;border-radius:8px" ' +
-        'id="inline-' + id + '" ' +
-        "data-layout=\"{'id':'INLINE'}\" " +
-        'data-trigger-type="alwaysShow" data-trigger-value="" ' +
-        'data-activation-type="alwaysActivated" data-activation-value="" ' +
-        'data-deactivation-type="neverDeactivate" data-deactivation-value="" ' +
-        'data-form-name="' + PARTNER.ghlFormName + '" data-height="621" ' +
-        'data-layout-iframe-id="inline-' + id + '" data-form-id="' + id + '" ' +
-        'title="' + PARTNER.ghlFormName + '"></iframe>';
-    }
+    // NOTE: the form-embed iframe below is now static markup in the HTML
+    // (pasted directly from GHL) instead of being built here, so a
+    // straight copy/paste from GHL is always exactly what renders.
 
     document.body.classList.add('partner-ready');
   })();
