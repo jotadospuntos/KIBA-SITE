@@ -291,17 +291,33 @@
     border:1px solid var(--line);
     border-radius:16px;
     padding:28px 24px;
+    transition:transform .18s ease, box-shadow .18s ease;
   }
+  .benefit-card:hover{ transform:translateY(-3px); box-shadow:0 20px 44px -24px rgba(2,0,98,0.4); }
   .benefit-icon{
-    width:42px; height:42px;
-    border-radius:11px;
-    background:#eef1ff;
+    width:48px; height:48px;
+    border-radius:13px;
+    background:linear-gradient(145deg,var(--blue),var(--blue-soft));
     display:flex; align-items:center; justify-content:center;
     margin-bottom:18px;
+    box-shadow:0 10px 20px -8px rgba(37,99,235,0.6);
   }
-  .benefit-icon svg{ width:20px; height:20px; }
+  .benefit-icon svg{ width:23px; height:23px; }
   .benefit-card h3{ font-size:17px; color:var(--ink); margin-bottom:8px; font-weight:600; }
   .benefit-card p{ font-size:14px; color:var(--slate); margin:0; }
+
+  /* check lists */
+  .klist{ list-style:none; margin:0; padding:0; }
+  .klist li{ position:relative; padding:0 0 14px 34px; font-family:'Instrument Sans',sans-serif; font-size:15.5px; line-height:1.55; color:var(--ink); }
+  .klist li:last-child{ padding-bottom:0; }
+  .klist li svg{ position:absolute; left:0; top:1px; width:20px; height:20px; }
+  .klist.on-dark li{ color:rgba(255,255,255,0.92); }
+
+  /* callout */
+  .callout{ text-align:center; margin:30px auto 0; max-width:620px; }
+  .callout div{ font-family:'Instrument Serif',serif; font-size:clamp(20px,2.6vw,26px); line-height:1.35; color:var(--ink); }
+  .callout div + div{ margin-top:6px; }
+  .callout .accent{ color:var(--blue); }
 
   /* ---------- TESTIMONIALS ---------- */
   .testimonial-section{
@@ -604,6 +620,10 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <div class="eyebrow hero-eyebrow">Meet With Our Team</div>
       <h1>Book a call with a KIBA advisor.</h1>
       <p class="hero-sub">Pick a time that works for you and you&rsquo;ll be matched with one of our advisors &mdash; no pressure, no obligation, just clear guidance on your next step.</p>
+      <ul class="klist on-dark" style="max-width:470px;margin:0 0 30px;">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>No pressure, no obligation on any option we present.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Straightforward answers so you can move forward with confidence.</li>
+      </ul>
       <div class="team-strip">
         <div class="team-avatars">
           <img class="team-avatar" src="https://assets.cdn.filesafe.space/SmdgjvInJlHiM1usPQXA/media/6a73810af19f31e09e7d58b8.png" alt="Michael Sylkatis">
@@ -656,46 +676,50 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
     <div class="benefits-grid">
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-4 3-8 8-8s8 4 8 8-3 8-8 8"/><path d="M4 12h6M4 12l3-3M4 12l3 3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-4 3-8 8-8s8 4 8 8-3 8-8 8"/><path d="M4 12h6M4 12l3-3M4 12l3 3"/></svg>
         </div>
         <h3>Flexible Solutions</h3>
         <p>Financing options structured around your actual cash flow and long-term goals.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
         </div>
         <h3>Dedicated Support</h3>
         <p>You work directly with an advisor who stays involved from first call to close.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
         </div>
         <h3>Transparent Process</h3>
         <p>Straightforward communication and clear expectations — no hidden fees, no surprises.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v6l4 2"/><circle cx="12" cy="12" r="8.5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v6l4 2"/><circle cx="12" cy="12" r="8.5"/></svg>
         </div>
         <h3>Quick Guidance</h3>
         <p>Expert insight and loan recommendations delivered in 24–72 hours, not weeks.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
         </div>
         <h3>Tailored Strategy</h3>
         <p>Every situation is reviewed individually, with guidance matched to the right next step.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/></svg>
         </div>
         <h3>Clear, Honest Guidance</h3>
         <p>We assess whether capital makes sense first — before ever discussing a specific path.</p>
       </div>
+    </div>
+    <div class="callout">
+      <div>No hidden fees.</div>
+      <div class="accent">No surprises &mdash; just clear, honest guidance.</div>
     </div>
   </div>
 </section>
