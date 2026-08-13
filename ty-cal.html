@@ -291,15 +291,18 @@
     border:1px solid var(--line);
     border-radius:16px;
     padding:28px 24px;
+    transition:transform .18s ease, box-shadow .18s ease;
   }
+  .benefit-card:hover{ transform:translateY(-3px); box-shadow:0 20px 44px -24px rgba(2,0,98,0.4); }
   .benefit-icon{
-    width:42px; height:42px;
-    border-radius:11px;
-    background:#eef1ff;
+    width:48px; height:48px;
+    border-radius:13px;
+    background:linear-gradient(145deg,var(--blue),var(--blue-soft));
     display:flex; align-items:center; justify-content:center;
     margin-bottom:18px;
+    box-shadow:0 10px 20px -8px rgba(37,99,235,0.6);
   }
-  .benefit-icon svg{ width:20px; height:20px; }
+  .benefit-icon svg{ width:23px; height:23px; }
   .benefit-card h3{ font-size:17px; color:var(--ink); margin-bottom:8px; font-weight:600; }
   .benefit-card p{ font-size:14px; color:var(--slate); margin:0; }
 
@@ -504,21 +507,21 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
     <div class="benefits-grid">
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
         </div>
         <h3>Check your inbox</h3>
         <p>Look for a confirmation email with the call details and a calendar invite you can add with one click.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v4h4M9 13h6M9 16h6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v4h4M9 13h6M9 16h6"/></svg>
         </div>
         <h3>Have your documents handy</h3>
         <p>Recent financials, funding needs, or business details help us tailor the conversation and move faster.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v6l4 2"/><circle cx="12" cy="12" r="8.5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v6l4 2"/><circle cx="12" cy="12" r="8.5"/></svg>
         </div>
         <h3>Join a few minutes early</h3>
         <p>Click the link in your invite a couple minutes ahead of time so we can start right on schedule.</p>
