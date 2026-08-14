@@ -116,8 +116,9 @@
     line-height:1.15;
     white-space:nowrap;
   }
-  @media (max-width:600px){ .logo-name{ display:none; } }
   .logo-mark svg{ height:40px; width:auto; }
+  /* On this page, mobile nav shows the business name instead of the logo mark */
+  @media (max-width:600px){ .nav-inner .logo-mark svg{ display:none; } .nav-inner .logo-name{ display:inline; } }
   .nav-right{ display:flex; align-items:center; gap:24px; }
   .nav-phone{
     font-family:'Instrument Sans', sans-serif;
