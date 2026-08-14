@@ -507,8 +507,8 @@
   .mini-avatar{ width:96px; height:96px; border-radius:50%; object-fit:cover; margin:0 auto 18px; box-shadow:0 14px 30px -14px rgba(2,0,98,0.45); border:3px solid var(--white); outline:1px solid var(--line); }
 
   /* two-up testimonial grid */
-  .testimonial-grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:900px; margin:0 auto; }
-  @media (max-width:700px){ .testimonial-grid-2{ grid-template-columns:1fr; max-width:560px; } }
+  .testimonial-grid-3{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; max-width:1100px; margin:0 auto; }
+  @media (max-width:860px){ .testimonial-grid-3{ grid-template-columns:1fr; max-width:560px; } }
 </style><!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -604,7 +604,12 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
 </section><section class="testimonial-section">
   <div class="wrap">
     <div class="section-head"><div class="eyebrow">What Our Clients Say</div></div>
-    <div class="testimonial-grid-2">
+    <div class="testimonial-grid-3">
+      <div class="testimonial-card">
+        <div class="quote-mark">&ldquo;</div>
+        <p class="quote">Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout the process. He made an otherwise stressful process easy and successful! Highly recommend his services!</p>
+        <div class="testimonial-attrib"><strong>Nick R.</strong></div>
+      </div>
       <div class="testimonial-card">
         <div class="quote-mark">&ldquo;</div>
         <p class="quote">Michael was excellent in trying to find every possible solution for my funding needs. He stayed connected to the deal at all times to make sure we got to the closing table.</p>
