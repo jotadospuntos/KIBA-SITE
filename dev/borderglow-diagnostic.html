@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>BorderGlow diagnostic (v3)</title><style>
+ body{margin:0;background:#f7f7fb;font-family:system-ui,sans-serif;padding:34px;color:#0d0b2e;}
+ h1{font-size:19px;margin:0 0 4px} .sub{color:#5b5f7a;font-size:13.5px;margin:0 0 22px}
+ #diag{background:#0d0b2e;color:#e8ecff;font:13.5px/1.85 monospace;padding:16px 18px;
+       border-radius:10px;max-width:760px;margin:0 0 26px;white-space:pre-wrap;}
+ .ok{color:#7ef2a8;font-weight:700} .bad{color:#ff8f8f;font-weight:700}
+ .row{display:flex;gap:40px;flex-wrap:wrap}
+ .lbl{font:600 12px monospace;color:#333;margin:0 0 9px}
+ .benefit-card{background:#fff;border:1px solid #e3e3ee;border-radius:12px;padding:26px;width:270px;}
+ h3{font-size:16px;margin:0 0 6px} p.t{font-size:13px;color:#5b5f7a;margin:0}
+ /* FORCED card: bypasses JS + hover + transition entirely */
+ .forced{transition:none !important}
+ .forced::before,.forced::after,.forced > .edge-light{transition:none !important}
+/* ---------- BORDER GLOW (React Bits, vanilla JS/CSS port) ---------- */
+  .border-glow-card{
+    --edge-proximity:0;
+    --cursor-angle:45deg;
+    --edge-sensitivity:14;
+    --color-sensitivity:calc(var(--edge-sensitivity) + 20);
+    --glow-padding:24px;
+    --cone-spread:25;
+    --fill-opacity:0.55;
+    --card-bg:#ffffff;
+
+    --gradient-one: radial-gradient(at 80% 55%, #2563eb 0px, transparent 50%);
+    --gradient-two: radial-gradient(at 69% 34%, #6d94f5 0px, transparent 50%);
+    --gradient-three: radial-gradient(at 8% 6%, #0025ae 0px, transparent 50%);
+    --gradient-four: radial-gradient(at 41% 38%, #2563eb 0px, transparent 50%);
+    --gradient-five: radial-gradient(at 86% 85%, #6d94f5 0px, transparent 50%);
+    --gradient-six: radial-gradient(at 82% 18%, #0025ae 0px, transparent 50%);
+    --gradient-seven: radial-gradient(at 51% 4%, #6d94f5 0px, transparent 50%);
+    --gradient-base: linear-gradient(#2563eb 0 100%);
+
+    --glow-color: hsl(221deg 83% 55% / 100%);
+    --glow-color-60: hsl(221deg 83% 55% / 60%);
+    --glow-color-50: hsl(221deg 83% 55% / 50%);
+    --glow-color-40: hsl(221deg 83% 55% / 40%);
+    --glow-color-30: hsl(221deg 83% 55% / 30%);
+    --glow-color-20: hsl(221deg 83% 55% / 20%);
+    --glow-color-10: hsl(221deg 83% 55% / 10%);
+
+    position:relative;
+    isolation:isolate;
+    transform:translate3d(0,0,0.01px);
+    overflow:visible;
+  }
+  .border-glow-card.is-cream{ --card-bg:#f8f4ee; }
+  /* solution-card keeps overflow:hidden (clips the bottom mockup graphic to its
+     rounded corners), so its glow stays inside the card rather than bleeding out */
+  .solution-card.border-glow-card{ --glow-padding:0px; }
+
+  .border-glow-card::before,
+  .border-glow-card::after,
+  .border-glow-card > .edge-light{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    transition:opacity 0.25s ease-out;
+    z-index:-1;
+  }
+  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::before,
+  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::after,
+  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on) > .edge-light{
+    opacity:0;
+    transition:opacity 0.75s ease-in-out;
+  }
+  .border-glow-card::before{
+    border:1px solid transparent;
+    background:
+      linear-gradient(var(--card-bg) 0 100%) padding-box,
+      linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+      var(--gradient-one) border-box,
+      var(--gradient-two) border-box,
+      var(--gradient-three) border-box,
+      var(--gradient-four) border-box,
+      var(--gradient-five) border-box,
+      var(--gradient-six) border-box,
+      var(--gradient-seven) border-box,
+      var(--gradient-base) border-box;
+    opacity:calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+    mask-image:
+      conic-gradient(
+        from var(--cursor-angle) at center,
+        black calc(var(--cone-spread) * 1%),
+        transparent calc((var(--cone-spread) + 15) * 1%),
+        transparent calc((100 - var(--cone-spread) - 15) * 1%),
+        black calc((100 - var(--cone-spread)) * 1%)
+      );
+  }
+  .border-glow-card::after{
+    border:1px solid transparent;
+    background:
+      var(--gradient-one) padding-box,
+      var(--gradient-two) padding-box,
+      var(--gradient-three) padding-box,
+      var(--gradient-four) padding-box,
+      var(--gradient-five) padding-box,
+      var(--gradient-six) padding-box,
+      var(--gradient-seven) padding-box,
+      var(--gradient-base) padding-box;
+    mask-image:
+      linear-gradient(to bottom, black, black),
+      radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+      radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+      conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+    mask-composite: subtract, add, add, add, add, add;
+    opacity:calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+    mix-blend-mode:multiply;
+  }
+  .border-glow-card > .edge-light{
+    inset:calc(var(--glow-padding) * -1);
+    pointer-events:none;
+    z-index:-1;
+    mask-image:
+      conic-gradient(from var(--cursor-angle) at center, black 15%, transparent 34%, transparent 66%, black 85%);
+    opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+    mix-blend-mode:normal;
+  }
+  .border-glow-card > .edge-light::before{
+    content:"";
+    position:absolute;
+    inset:var(--glow-padding);
+    border-radius:inherit;
+    box-shadow:
+      inset 0 0 0 1px var(--glow-color),
+      inset 0 0 1px 0 var(--glow-color-60),
+      inset 0 0 3px 0 var(--glow-color-50),
+      inset 0 0 6px 0 var(--glow-color-40),
+      inset 0 0 15px 0 var(--glow-color-30),
+      inset 0 0 25px 2px var(--glow-color-20),
+      inset 0 0 50px 2px var(--glow-color-10),
+      0 0 1px 0 var(--glow-color-60),
+      0 0 3px 0 var(--glow-color-50),
+      0 0 6px 0 var(--glow-color-40),
+      0 0 15px 0 var(--glow-color-30),
+      0 0 25px 2px var(--glow-color-20),
+      0 0 50px 2px var(--glow-color-10);
+  }
+</style></head><body>
+<h1>BorderGlow diagnostic &mdash; v3</h1>
+<p class="sub">Move your cursor over the RIGHT card. The black box updates live.</p>
+<div id="diag">initialising&hellip;</div>
+<div class="row">
+  <div><p class="lbl">CARD 1 &mdash; FORCED ON (no JS, no hover, no transition)</p>
+    <div class="benefit-card border-glow-card sweep-active forced"
+         style="--edge-proximity:95;--cursor-angle:135deg">
+      <span class="edge-light"></span><h3>Should ALWAYS glow</h3>
+      <p class="t">Glow toward bottom-right. If this is blank, rendering is the problem.</p></div></div>
+  <div><p class="lbl">CARD 2 &mdash; NORMAL (exactly like production)</p>
+    <div class="benefit-card border-glow-card" id="live">
+      <span class="edge-light"></span><h3>Hover my edges</h3>
+      <p class="t">Should glow toward whichever edge your cursor nears.</p></div></div>
+</div>
+<script>
+/* BorderGlow hover effect — vanilla port of the React Bits BorderGlow component */
+(function(){
+  function center(el){ var r = el.getBoundingClientRect(); return [r.width/2, r.height/2]; }
+  function edgeProximity(el, x, y){
+    var c = center(el), dx = x - c[0], dy = y - c[1];
+    var kx = Infinity, ky = Infinity;
+    if(dx !== 0) kx = c[0] / Math.abs(dx);
+    if(dy !== 0) ky = c[1] / Math.abs(dy);
+    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+  }
+  function cursorAngle(el, x, y){
+    var c = center(el), dx = x - c[0], dy = y - c[1];
+    if(dx === 0 && dy === 0) return 0;
+    var deg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+    if(deg < 0) deg += 360;
+    return deg;
+  }
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion) return;
+  document.querySelectorAll('.border-glow-card').forEach(function(card){
+    card.addEventListener('pointermove', function(e){
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left, y = e.clientY - rect.top;
+      card.style.setProperty('--edge-proximity', (edgeProximity(card, x, y) * 100).toFixed(3));
+      card.style.setProperty('--cursor-angle', cursorAngle(card, x, y).toFixed(3) + 'deg');
+    });
+    card.addEventListener('pointerenter', function(){ card.classList.add('glow-on'); });
+    card.addEventListener('pointerleave', function(){
+      card.classList.remove('glow-on');
+      card.style.setProperty('--edge-proximity', '0');
+    });
+  });
+})();
+</script>
+<script>
+var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var live = document.getElementById('live');
+var el = live.querySelector('.edge-light');
+var moves = 0;
+live.addEventListener('pointermove', function(){ moves++; });
+function paint(){
+  var cs = getComputedStyle(el);
+  var yes = '<span class="ok">YES</span>', no = '<span class="bad">NO</span>';
+  document.getElementById('diag').innerHTML =
+    'prefers-reduced-motion: reduce   = ' + (rm
+        ? '<span class="bad">TRUE  <-- THIS DISABLES THE WHOLE EFFECT</span>'
+        : '<span class="ok">false</span>') + '\n' +
+    'BorderGlow listeners attached    = ' + (rm ? no + '  (script exited early)' : yes) + '\n' +
+    'pointermove events seen          = ' + moves + '\n' +
+    'card has .glow-on class          = ' + (live.classList.contains('glow-on') ? yes : no) + '\n' +
+    '--edge-proximity                 = ' + (live.style.getPropertyValue('--edge-proximity') || '<span class="bad">(never set)</span>') + '\n' +
+    '--cursor-angle                   = ' + (live.style.getPropertyValue('--cursor-angle')   || '<span class="bad">(never set)</span>') + '\n' +
+    'computed glow opacity            = ' + cs.opacity + '\n' +
+    'blend mode / z-index             = ' + cs.mixBlendMode + '  /  ' + cs.zIndex + '\n' +
+    'mask-image supported             = ' + (CSS.supports('mask-image','conic-gradient(black,white)') ? yes : no) + '\n' +
+    'mix-blend-mode supported         = ' + (CSS.supports('mix-blend-mode','multiply') ? yes : no);
+}
+paint(); setInterval(paint, 120);
+</script></body></html>
