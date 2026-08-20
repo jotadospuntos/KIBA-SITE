@@ -6,6 +6,42 @@ Deployed on **Vercel** (auto-deploys on every push to `main`) at **https://go.ki
 
 ---
 
+## ⚠️ Mid-migration: this repo is now a Next.js app (Phase 1)
+
+The site is being migrated from plain static HTML to Next.js, **incrementally, one page at a
+time**, so production never breaks mid-migration. Read this before touching routing or adding
+pages.
+
+- **There is now a real build step.** `package.json` + `next.config.js` + the `app/` directory
+  make this a Next.js (App Router) project. `npm install && npm run build` before pushing.
+- **Every page below is still the original static HTML file, unmigrated.** They now live under
+  `public/legacy/...` and are served at their *original* clean URLs via `rewrites()` in
+  `next.config.js` — the browser URL never changes, only where the file physically lives.
+  Everything below "Repo structure" and "The config-driven template pattern" still applies
+  **verbatim** to any page under `public/legacy/` — edit the config block, don't hand-edit the
+  wired-up markup, keep it a self-contained file, etc.
+- **Images/favicons did NOT move.** `img/`, `partners/img/`, `advisors/img/`, and the root
+  favicons stay at their exact original public paths (`public/img/...`,
+  `public/partners/img/...`, `public/advisors/img/...`) — no rewrite needed, since several pages
+  reference these via absolute `https://go.kibadvisors.com/...` URLs in `og:image` tags.
+- **`vercel.json` is gone.** Its `redirects` were ported 1:1 into `next.config.js`
+  `redirects()`. Add new redirects there, not in a `vercel.json`.
+- **To migrate a page for real:** build it as `app/<route>/page.tsx`, verify it on a Vercel
+  preview deploy, then delete that page's `rewrites()` entry and its file under
+  `public/legacy/`. No rush — an unmigrated page under the rewrite bridge is never broken or
+  blocking anything else.
+- **Root `/`** still redirects (via `next.config.js`, ported from the old `vercel.json`) to
+  `https://kibadvisors.com`, so `app/page.tsx` is currently just a placeholder — the real
+  homepage (see `index.html` at the repo root for the current Fundwell-inspired design draft:
+  hero, solutions bento grid, WebGL gradient CTA) still needs to be ported in as the first real
+  route and that redirect revisited.
+- **Styling for new `app/` pages:** Tailwind is configured (`tailwind.config.ts`) with KIBA's
+  design tokens ported from the legacy CSS custom properties (navy/blue palette, radii,
+  fonts) — use Tailwind classes in new React components rather than hand-rolled CSS, to stay
+  consistent with the eventual shadcn/React Bits Pro setup.
+
+---
+
 ## Golden rules (read first)
 
 - **Filename = URL.** `partners/rivenway.html` serves at `/partners/rivenway`. Clean URLs are
