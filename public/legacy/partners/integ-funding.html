@@ -241,14 +241,6 @@
     padding:36px 32px;
     position:relative;
   }
-  .form-card::before{
-    content:"";
-    position:absolute;
-    top:-1px; left:32px; right:32px;
-    height:4px;
-    background:linear-gradient(90deg, var(--blue), var(--blue-soft));
-    border-radius:0 0 6px 6px;
-  }
   .form-card-eyebrow{ color:var(--blue); margin-bottom:10px; }
   .form-card h3{ font-size:23px; color:var(--ink); margin-bottom:8px; }
   .form-card p{ color:var(--slate); font-size:14.5px; margin:0 0 22px; }
@@ -436,6 +428,136 @@
   .footer-social a:hover{ background:var(--blue); }
   .footer-social svg{ width:17px; height:17px; fill:rgba(255,255,255,0.82); transition:fill 0.18s ease; }
   .footer-social a:hover svg{ fill:#fff; }
+
+  /* ---------- BORDER GLOW (React Bits, vanilla JS/CSS port) ---------- */
+  .border-glow-card{
+    --edge-proximity:0;
+    --cursor-angle:45deg;
+    --edge-sensitivity:30;
+    --color-sensitivity:calc(var(--edge-sensitivity) + 20);
+    --glow-padding:24px;
+    --cone-spread:25;
+    --fill-opacity:0.35;
+    --card-bg:#ffffff;
+
+    --gradient-one: radial-gradient(at 80% 55%, #2563eb 0px, transparent 50%);
+    --gradient-two: radial-gradient(at 69% 34%, #6d94f5 0px, transparent 50%);
+    --gradient-three: radial-gradient(at 8% 6%, #0025ae 0px, transparent 50%);
+    --gradient-four: radial-gradient(at 41% 38%, #2563eb 0px, transparent 50%);
+    --gradient-five: radial-gradient(at 86% 85%, #6d94f5 0px, transparent 50%);
+    --gradient-six: radial-gradient(at 82% 18%, #0025ae 0px, transparent 50%);
+    --gradient-seven: radial-gradient(at 51% 4%, #6d94f5 0px, transparent 50%);
+    --gradient-base: linear-gradient(#2563eb 0 100%);
+
+    --glow-color: hsl(221deg 83% 65% / 100%);
+    --glow-color-60: hsl(221deg 83% 65% / 60%);
+    --glow-color-50: hsl(221deg 83% 65% / 50%);
+    --glow-color-40: hsl(221deg 83% 65% / 40%);
+    --glow-color-30: hsl(221deg 83% 65% / 30%);
+    --glow-color-20: hsl(221deg 83% 65% / 20%);
+    --glow-color-10: hsl(221deg 83% 65% / 10%);
+
+    position:relative;
+    isolation:isolate;
+    transform:translate3d(0,0,0.01px);
+    overflow:visible;
+  }
+  .border-glow-card.is-cream{ --card-bg:#f8f4ee; }
+  /* solution-card keeps overflow:hidden (clips the bottom mockup graphic to its
+     rounded corners), so its glow stays inside the card rather than bleeding out */
+  .solution-card.border-glow-card{ --glow-padding:0px; }
+
+  .border-glow-card::before,
+  .border-glow-card::after,
+  .border-glow-card > .edge-light{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    transition:opacity 0.25s ease-out;
+    z-index:-1;
+  }
+  .border-glow-card:not(:hover):not(.sweep-active)::before,
+  .border-glow-card:not(:hover):not(.sweep-active)::after,
+  .border-glow-card:not(:hover):not(.sweep-active) > .edge-light{
+    opacity:0;
+    transition:opacity 0.75s ease-in-out;
+  }
+  .border-glow-card::before{
+    border:1px solid transparent;
+    background:
+      linear-gradient(var(--card-bg) 0 100%) padding-box,
+      linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+      var(--gradient-one) border-box,
+      var(--gradient-two) border-box,
+      var(--gradient-three) border-box,
+      var(--gradient-four) border-box,
+      var(--gradient-five) border-box,
+      var(--gradient-six) border-box,
+      var(--gradient-seven) border-box,
+      var(--gradient-base) border-box;
+    opacity:calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+    mask-image:
+      conic-gradient(
+        from var(--cursor-angle) at center,
+        black calc(var(--cone-spread) * 1%),
+        transparent calc((var(--cone-spread) + 15) * 1%),
+        transparent calc((100 - var(--cone-spread) - 15) * 1%),
+        black calc((100 - var(--cone-spread)) * 1%)
+      );
+  }
+  .border-glow-card::after{
+    border:1px solid transparent;
+    background:
+      var(--gradient-one) padding-box,
+      var(--gradient-two) padding-box,
+      var(--gradient-three) padding-box,
+      var(--gradient-four) padding-box,
+      var(--gradient-five) padding-box,
+      var(--gradient-six) padding-box,
+      var(--gradient-seven) padding-box,
+      var(--gradient-base) padding-box;
+    mask-image:
+      linear-gradient(to bottom, black, black),
+      radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+      radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+      conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+    mask-composite: subtract, add, add, add, add, add;
+    opacity:calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+    mix-blend-mode:soft-light;
+  }
+  .border-glow-card > .edge-light{
+    inset:calc(var(--glow-padding) * -1);
+    pointer-events:none;
+    z-index:1;
+    mask-image:
+      conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
+    opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+    mix-blend-mode:plus-lighter;
+  }
+  .border-glow-card > .edge-light::before{
+    content:"";
+    position:absolute;
+    inset:var(--glow-padding);
+    border-radius:inherit;
+    box-shadow:
+      inset 0 0 0 1px var(--glow-color),
+      inset 0 0 1px 0 var(--glow-color-60),
+      inset 0 0 3px 0 var(--glow-color-50),
+      inset 0 0 6px 0 var(--glow-color-40),
+      inset 0 0 15px 0 var(--glow-color-30),
+      inset 0 0 25px 2px var(--glow-color-20),
+      inset 0 0 50px 2px var(--glow-color-10),
+      0 0 1px 0 var(--glow-color-60),
+      0 0 3px 0 var(--glow-color-50),
+      0 0 6px 0 var(--glow-color-40),
+      0 0 15px 0 var(--glow-color-30),
+      0 0 25px 2px var(--glow-color-20),
+      0 0 50px 2px var(--glow-color-10);
+  }
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -542,7 +664,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       </div>
     </div>
 
-    <div class="form-card" id="refer">
+    <div class="form-card border-glow-card" id="refer"><span class="edge-light"></span>
       <div class="eyebrow form-card-eyebrow">Get Started</div>
       <h3>Tell us about your business</h3>
       <p>Share a few details and a member of our team will reach out within 24&ndash;72 hours to talk through your options.</p>
@@ -580,42 +702,42 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <p>Every business we work with gets the same disciplined, transparent process &mdash; so you can move forward with confidence.</p>
     </div>
     <div class="benefits-grid">
-      <div class="benefit-card">
+      <div class="benefit-card border-glow-card"><span class="edge-light"></span>
         <div class="benefit-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-4 3-8 8-8s8 4 8 8-3 8-8 8"/><path d="M4 12h6M4 12l3-3M4 12l3 3"/></svg>
         </div>
         <h3>Flexible Solutions</h3>
         <p>Financing options structured around your actual cash flow and long-term goals.</p>
       </div>
-      <div class="benefit-card">
+      <div class="benefit-card border-glow-card"><span class="edge-light"></span>
         <div class="benefit-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
         </div>
         <h3>Dedicated Support</h3>
         <p>You work directly with an advisor who stays involved from first call to close.</p>
       </div>
-      <div class="benefit-card">
+      <div class="benefit-card border-glow-card"><span class="edge-light"></span>
         <div class="benefit-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
         </div>
         <h3>Transparent Process</h3>
         <p>Straightforward communication and clear expectations &mdash; no hidden fees, no surprises.</p>
       </div>
-      <div class="benefit-card">
+      <div class="benefit-card border-glow-card"><span class="edge-light"></span>
         <div class="benefit-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v6l4 2"/><circle cx="12" cy="12" r="8.5"/></svg>
         </div>
         <h3>Quick Guidance</h3>
         <p>Expert insight and loan recommendations delivered in 24&ndash;72 hours, not weeks.</p>
       </div>
-      <div class="benefit-card">
+      <div class="benefit-card border-glow-card"><span class="edge-light"></span>
         <div class="benefit-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
         </div>
         <h3>Tailored Strategy</h3>
         <p>Every file is reviewed individually, with guidance matched to the right next step.</p>
       </div>
-      <div class="benefit-card">
+      <div class="benefit-card border-glow-card"><span class="edge-light"></span>
         <div class="benefit-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/></svg>
         </div>
@@ -637,17 +759,17 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <h2>Trusted through every step</h2>
     </div>
     <div class="testimonial-grid">
-      <div class="testimonial-card">
+      <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
         <div class="quote-mark">&ldquo;</div>
         <p class="quote">Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout the process. He made an otherwise stressful process easy and successful! Highly recommend his services!</p>
         <div class="testimonial-attrib"><strong>Nick R.</strong></div>
       </div>
-      <div class="testimonial-card">
+      <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
         <div class="quote-mark">&ldquo;</div>
         <p class="quote">Michael was excellent in trying to find every possible solution for my funding needs. He stayed connected to the deal at all times to make sure we got to the closing table.</p>
         <div class="testimonial-attrib"><strong>Richard R.</strong></div>
       </div>
-      <div class="testimonial-card">
+      <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
         <div class="quote-mark">&ldquo;</div>
         <p class="quote">Michael &amp; Barbara helped us navigate the complexities of an SBA loan. They were patient and proficient with their work, and made the process extremely easy. I would work with them again.</p>
         <div class="testimonial-attrib"><strong>Raul G.</strong></div>
@@ -739,5 +861,35 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
   })();
 </script>
 <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+<script>
+/* BorderGlow hover effect — vanilla port of the React Bits BorderGlow component */
+(function(){
+  function center(el){ var r = el.getBoundingClientRect(); return [r.width/2, r.height/2]; }
+  function edgeProximity(el, x, y){
+    var c = center(el), dx = x - c[0], dy = y - c[1];
+    var kx = Infinity, ky = Infinity;
+    if(dx !== 0) kx = c[0] / Math.abs(dx);
+    if(dy !== 0) ky = c[1] / Math.abs(dy);
+    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+  }
+  function cursorAngle(el, x, y){
+    var c = center(el), dx = x - c[0], dy = y - c[1];
+    if(dx === 0 && dy === 0) return 0;
+    var deg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+    if(deg < 0) deg += 360;
+    return deg;
+  }
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion) return;
+  document.querySelectorAll('.border-glow-card').forEach(function(card){
+    card.addEventListener('pointermove', function(e){
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left, y = e.clientY - rect.top;
+      card.style.setProperty('--edge-proximity', (edgeProximity(card, x, y) * 100).toFixed(3));
+      card.style.setProperty('--cursor-angle', cursorAngle(card, x, y).toFixed(3) + 'deg');
+    });
+  });
+})();
+</script>
 </body>
 </html>
