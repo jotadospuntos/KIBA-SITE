@@ -1,10 +1,16 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><title>Kingdom Impact Business Advisors &mdash; Funding &amp; Growth Capital</title><meta name="description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><link rel="canonical" href="https://go.kibadvisors.com/"><meta property="og:type" content="website"><meta property="og:url" content="https://go.kibadvisors.com/"><meta property="og:title" content="Kingdom Impact Business Advisors — Funding & Growth Capital"><meta property="og:description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><meta property="og:image" content="https://go.kibadvisors.com/img/home.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Kingdom Impact Business Advisors — Funding & Growth Capital"><meta name="twitter:description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><meta name="twitter:image" content="https://go.kibadvisors.com/img/home.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap"><script>
-/* Preview escape hatch: ?motion=1 forces animations on even when the OS reports
-   prefers-reduced-motion: reduce. Runs before first paint so the CSS override applies. */
+/* DESIGN DRAFT ONLY - motion defaults ON.
+   This file is a non-deployed reference artifact whose whole purpose is previewing
+   the design, so it animates even on a machine that reports prefers-reduced-motion
+   (e.g. KDE "Instant" animation speed), which would otherwise suppress everything.
+   Load with ?motion=0 to preview the reduced-motion behavior instead.
+
+   IMPORTANT: when this page is ported to app/page.tsx for production, drop this
+   override - real visitors' prefers-reduced-motion MUST be respected. */
 (function(){try{
-  window.__forceMotion = new URLSearchParams(window.location.search).get('motion') === '1';
+  window.__forceMotion = new URLSearchParams(window.location.search).get('motion') !== '0';
   if(window.__forceMotion){ document.documentElement.classList.add('force-motion'); }
-}catch(e){ window.__forceMotion = false; }})();
+}catch(e){ window.__forceMotion = true; document.documentElement.classList.add('force-motion'); }})();
 </script><style>
   :root{
     --navy-deep:#020062;
@@ -290,6 +296,10 @@
     color:#fff;
     line-height:1.08;
     max-width:560px;
+  }
+  .hero h1 .split-word{
+    display:inline-block;
+    white-space:nowrap;
   }
   .hero h1 .split-char{
     display:inline-block;
@@ -1243,10 +1253,13 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
     gsap.registerPlugin(SplitText);
 
     function runSplit(){
+      /* Split words as well as chars: each char becomes an inline-block, so without
+         a word wrapper the browser is free to line-break between any two letters
+         (which split "business's" across two lines). Wrapping words keeps them intact. */
       var split = new SplitText(heading, {
-        type: 'chars',
-        charsClass: 'split-char',
-        reduceWhiteSpace: false
+        type: 'words, chars',
+        wordsClass: 'split-word',
+        charsClass: 'split-char'
       });
       gsap.fromTo(split.chars,
         { opacity: 0, y: 40 },
