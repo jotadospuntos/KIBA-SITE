@@ -432,11 +432,11 @@
   .border-glow-card{
     --edge-proximity:0;
     --cursor-angle:45deg;
-    --edge-sensitivity:30;
+    --edge-sensitivity:24;
     --color-sensitivity:calc(var(--edge-sensitivity) + 20);
-    --glow-padding:24px;
+    --glow-padding:12px;
     --cone-spread:25;
-    --fill-opacity:0.35;
+    --fill-opacity:0.30;
     --card-bg:#ffffff;
 
     --gradient-one: radial-gradient(at 80% 55%, #2563eb 0px, transparent 50%);
@@ -448,13 +448,13 @@
     --gradient-seven: radial-gradient(at 51% 4%, #6d94f5 0px, transparent 50%);
     --gradient-base: linear-gradient(#2563eb 0 100%);
 
-    --glow-color: hsl(221deg 83% 65% / 100%);
-    --glow-color-60: hsl(221deg 83% 65% / 60%);
-    --glow-color-50: hsl(221deg 83% 65% / 50%);
-    --glow-color-40: hsl(221deg 83% 65% / 40%);
-    --glow-color-30: hsl(221deg 83% 65% / 30%);
-    --glow-color-20: hsl(221deg 83% 65% / 20%);
-    --glow-color-10: hsl(221deg 83% 65% / 10%);
+    --glow-color: hsl(221deg 83% 55% / 100%);
+    --glow-color-60: hsl(221deg 83% 55% / 60%);
+    --glow-color-50: hsl(221deg 83% 55% / 50%);
+    --glow-color-40: hsl(221deg 83% 55% / 40%);
+    --glow-color-30: hsl(221deg 83% 55% / 30%);
+    --glow-color-20: hsl(221deg 83% 55% / 20%);
+    --glow-color-10: hsl(221deg 83% 55% / 10%);
 
     position:relative;
     isolation:isolate;
@@ -476,9 +476,9 @@
     transition:opacity 0.25s ease-out;
     z-index:-1;
   }
-  .border-glow-card:not(:hover):not(.sweep-active)::before,
-  .border-glow-card:not(:hover):not(.sweep-active)::after,
-  .border-glow-card:not(:hover):not(.sweep-active) > .edge-light{
+  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::before,
+  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::after,
+  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on) > .edge-light{
     opacity:0;
     transition:opacity 0.75s ease-in-out;
   }
@@ -526,16 +526,16 @@
       conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
     mask-composite: subtract, add, add, add, add, add;
     opacity:calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
-    mix-blend-mode:soft-light;
+    mix-blend-mode:multiply;
   }
   .border-glow-card > .edge-light{
     inset:calc(var(--glow-padding) * -1);
     pointer-events:none;
-    z-index:1;
+    z-index:-1;
     mask-image:
-      conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
+      conic-gradient(from var(--cursor-angle) at center, black 15%, transparent 34%, transparent 66%, black 85%);
     opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
-    mix-blend-mode:plus-lighter;
+    mix-blend-mode:normal;
   }
   .border-glow-card > .edge-light::before{
     content:"";
@@ -545,17 +545,22 @@
     box-shadow:
       inset 0 0 0 1px var(--glow-color),
       inset 0 0 1px 0 var(--glow-color-60),
-      inset 0 0 3px 0 var(--glow-color-50),
-      inset 0 0 6px 0 var(--glow-color-40),
-      inset 0 0 15px 0 var(--glow-color-30),
-      inset 0 0 25px 2px var(--glow-color-20),
-      inset 0 0 50px 2px var(--glow-color-10),
+      inset 0 0 2px 0 var(--glow-color-50),
+      inset 0 0 4px 0 var(--glow-color-40),
+      inset 0 0 8px 0 var(--glow-color-30),
+      inset 0 0 14px 1px var(--glow-color-20),
+      inset 0 0 26px 1px var(--glow-color-10),
       0 0 1px 0 var(--glow-color-60),
-      0 0 3px 0 var(--glow-color-50),
-      0 0 6px 0 var(--glow-color-40),
-      0 0 15px 0 var(--glow-color-30),
-      0 0 25px 2px var(--glow-color-20),
-      0 0 50px 2px var(--glow-color-10);
+      0 0 2px 0 var(--glow-color-50),
+      0 0 4px 0 var(--glow-color-40),
+      0 0 8px 0 var(--glow-color-30),
+      0 0 14px 1px var(--glow-color-20),
+      0 0 26px 1px var(--glow-color-10);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .border-glow-card::before,
+    .border-glow-card::after,
+    .border-glow-card > .edge-light{ transition:none !important; }
   }
 </style>
 <!-- Meta Pixel Code -->
@@ -878,14 +883,21 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
     if(deg < 0) deg += 360;
     return deg;
   }
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMotion) return;
+  /* The glow is driven purely by pointer position, so it is hover feedback,
+     not autonomous animation. It therefore stays enabled under
+     prefers-reduced-motion; the eased transition is dropped in CSS instead,
+     so the glow appears instantly with no animation. */
   document.querySelectorAll('.border-glow-card').forEach(function(card){
     card.addEventListener('pointermove', function(e){
       var rect = card.getBoundingClientRect();
       var x = e.clientX - rect.left, y = e.clientY - rect.top;
       card.style.setProperty('--edge-proximity', (edgeProximity(card, x, y) * 100).toFixed(3));
       card.style.setProperty('--cursor-angle', cursorAngle(card, x, y).toFixed(3) + 'deg');
+    });
+    card.addEventListener('pointerenter', function(){ card.classList.add('glow-on'); });
+    card.addEventListener('pointerleave', function(){
+      card.classList.remove('glow-on');
+      card.style.setProperty('--edge-proximity', '0');
     });
   });
 })();
