@@ -10,6 +10,10 @@ const nextConfig = {
   // entry here and its file under public/legacy/.
   async rewrites() {
     return [
+      // Homepage redesign preview. noindex'd; not linked from anywhere. Once it's
+      // approved this becomes the real app/page.tsx and the root redirect below
+      // gets revisited.
+      { source: '/v2', destination: '/legacy/v2.html' },
       { source: '/referral-partners', destination: '/legacy/referral-partners.html' },
       { source: '/business-acquisitions', destination: '/legacy/business-acquisitions.html' },
       { source: '/book-rr', destination: '/legacy/book-rr.html' },

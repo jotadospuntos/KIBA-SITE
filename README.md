@@ -17,8 +17,9 @@ breaks mid-migration:
 - `public/legacy/partners/_template.html` and `public/legacy/advisors/_template.html` are the
   templates to copy when adding a new partner/advisor page — see `CLAUDE.md` for the full
   add-a-page steps.
-- `design-drafts/homepage.html` is the Fundwell-inspired homepage design draft, not yet ported
-  into `app/page.tsx` — reference only, not deployed.
+- `public/legacy/v2.html` is the Fundwell-inspired homepage redesign, served at **`/v2`** as a
+  `noindex` preview. Not yet ported into `app/page.tsx`, and not linked from anywhere — once
+  it's approved it becomes the real homepage and the root redirect gets revisited.
 - `dev/` holds one-off dev/diagnostic HTML files (e.g. component previews) — not deployed,
   kept out of `public/` on purpose so they aren't publicly reachable.
 
