@@ -1,4 +1,11 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><title>Kingdom Impact Business Advisors &mdash; Funding &amp; Growth Capital</title><meta name="description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><link rel="canonical" href="https://go.kibadvisors.com/"><meta property="og:type" content="website"><meta property="og:url" content="https://go.kibadvisors.com/"><meta property="og:title" content="Kingdom Impact Business Advisors — Funding & Growth Capital"><meta property="og:description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><meta property="og:image" content="https://go.kibadvisors.com/img/home.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Kingdom Impact Business Advisors — Funding & Growth Capital"><meta name="twitter:description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><meta name="twitter:image" content="https://go.kibadvisors.com/img/home.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap"><style>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><title>Kingdom Impact Business Advisors &mdash; Funding &amp; Growth Capital</title><meta name="description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><link rel="canonical" href="https://go.kibadvisors.com/"><meta property="og:type" content="website"><meta property="og:url" content="https://go.kibadvisors.com/"><meta property="og:title" content="Kingdom Impact Business Advisors — Funding & Growth Capital"><meta property="og:description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><meta property="og:image" content="https://go.kibadvisors.com/img/home.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Kingdom Impact Business Advisors — Funding & Growth Capital"><meta name="twitter:description" content="Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience."><meta name="twitter:image" content="https://go.kibadvisors.com/img/home.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap"><script>
+/* Preview escape hatch: ?motion=1 forces animations on even when the OS reports
+   prefers-reduced-motion: reduce. Runs before first paint so the CSS override applies. */
+(function(){try{
+  window.__forceMotion = new URLSearchParams(window.location.search).get('motion') === '1';
+  if(window.__forceMotion){ document.documentElement.classList.add('force-motion'); }
+}catch(e){ window.__forceMotion = false; }})();
+</script><style>
   :root{
     --navy-deep:#020062;
     --navy-soft:#0025ae;
@@ -23,9 +30,12 @@
   .partner-dynamic{ opacity:0; transition:opacity 0.25s ease; }
   .partner-ready .partner-dynamic{ opacity:1; }
   html{scroll-behavior:smooth;}
+  /* Honors the visitor's reduce-motion preference. The .force-motion escape hatch
+     (set by ?motion=1) is for previewing animations on a machine that has
+     reduce-motion enabled system-wide - it is never set for normal visitors. */
   @media (prefers-reduced-motion: reduce){
-    html{scroll-behavior:auto;}
-    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+    html:not(.force-motion){scroll-behavior:auto;}
+    html:not(.force-motion) *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
   }
 
   body{
@@ -890,9 +900,9 @@
       0 0 26px 1px var(--glow-color-10);
   }
   @media (prefers-reduced-motion: reduce){
-    .border-glow-card::before,
-    .border-glow-card::after,
-    .border-glow-card > .edge-light{ transition:none !important; }
+    html:not(.force-motion) .border-glow-card::before,
+    html:not(.force-motion) .border-glow-card::after,
+    html:not(.force-motion) .border-glow-card > .edge-light{ transition:none !important; }
   }
 </style><!-- Meta Pixel Code -->
 <script>
@@ -1223,7 +1233,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script>
 (function(){
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduceMotion = !window.__forceMotion && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Hero headline char-by-char reveal (React Bits SplitText, ported to vanilla GSAP) */
   (function initHeroSplit(){
