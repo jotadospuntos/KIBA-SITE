@@ -14,24 +14,26 @@ import { initLegacyBehaviors, initBorderGlow } from './legacy-behaviors';
 import DriftWall from '@/components/DriftWall/DriftWall';
 
 /* Hero tiles. Root-relative hrefs so DriftWall navigates in place rather than
-   opening a new tab. Reusing each page's existing 1200x630 share image. */
+   opening a new tab (see the target handling in components/DriftWall).
+   `title` becomes the tile's alt text, so it describes the photo rather than
+   the destination. Files live in public/img/hero/ - see the README there. */
 const HERO_TILES = [
-  {
-    image: '/img/business-acquisitions.png',
-    title: 'Business acquisition financing',
-    href: '/business-acquisitions'
-  },
-  {
-    image: '/img/referral-partners.png',
-    title: 'Referral partner program',
-    href: '/referral-partners'
-  },
-  {
-    image: '/img/book-rr.png',
-    title: 'Book a consultation',
-    href: '/book-rr'
-  }
+  { image: '/img/hero/advisor-consultation.webp', title: 'An advisor talking through financing options', href: '/book-rr' },
+  { image: '/img/hero/couple-consultation.webp', title: 'Business owners reviewing terms with an advisor', href: '/book-rr' },
+  { image: '/img/hero/owner-reviewing.webp', title: 'A business owner weighing funding options', href: '/business-acquisitions' },
+  { image: '/img/hero/advisor-on-call.webp', title: 'An advisor on a call with a client', href: '/book-rr' },
+  { image: '/img/hero/storefront-owner.webp', title: 'The owner of a neighborhood shop', href: '/business-acquisitions' },
+  { image: '/img/hero/boutique-owner.webp', title: 'A boutique owner taking stock', href: '/business-acquisitions' },
+  { image: '/img/hero/workshop-owner.webp', title: 'A workshop owner at his bench', href: '/business-acquisitions' },
+  { image: '/img/hero/deal-handshake.webp', title: 'A funding agreement being closed', href: '/referral-partners' },
+  { image: '/img/hero/partner-handshake.webp', title: 'A referral partner introduction', href: '/referral-partners' }
 ];
+
+/* 3 columns x 3 items each. Deliberately not 9 columns: `columns` only sets how
+   many vertical strips the items are dealt into, and 9 strips would not fit the
+   hero's ~477px-wide box. Must stay <= HERO_TILES.length either way, or leftover
+   columns repeat items[0]. */
+const HERO_COLUMNS = 3;
 
 declare global {
   interface Window {
@@ -181,11 +183,7 @@ export default function V3Page() {
             <div className="hero-driftwall">
               <DriftWall
                 items={HERO_TILES}
-                /* columns must stay <= HERO_TILES.length: the component
-                   round-robins items into columns and any leftover column falls
-                   back to repeating items[0], so columns=5 with 3 items would
-                   show the first tile three times. */
-                columns={HERO_TILES.length}
+                columns={HERO_COLUMNS}
                 tileWidth={200}
                 tileHeight={132}
                 gap={18}

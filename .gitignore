@@ -28,3 +28,8 @@ next-env.d.ts
 # local-only visual scratch preview (never deploy)
 /public/borderglow-preview.html
 /public/borderglow-diagnostic.html
+
+# Full-size source images (originals for public/img/hero/*.webp). Kept locally so
+# the optimized versions can be regenerated, but not committed - the 9 Pexels
+# originals are ~24MB and would live in git history forever.
+/assets-src/
