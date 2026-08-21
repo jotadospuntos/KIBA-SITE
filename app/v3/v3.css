@@ -576,18 +576,58 @@
      polygon edge. The diagonal edge is the shape treatment instead. */
   .hero-reveal{
     position:relative; z-index:1;
-    aspect-ratio:4/5;
     background-color:var(--navy-soft);
     background-size:cover;
     background-position:center;
     will-change:clip-path;
+
+    /* Full-bleed to the right viewport edge. The panel is a grid item inside
+       .wrap (max-width:1180px, padding:0 32px), so it has to escape both the
+       wrap's right padding and half of the leftover gutter when the viewport is
+       wider than the wrap. max() keeps it at just the 32px padding below 1180px,
+       where there is no gutter to clear.
+       .hero has overflow:hidden, so the 100vw-vs-scrollbar discrepancy gets
+       clipped instead of producing a horizontal scrollbar. */
+    margin-right: calc(-1 * max(32px, (100vw - 1180px) / 2 + 32px));
+
+    /* Height comes from .hero-visual stretching (see below) - this just fills it. */
+    flex: 1 1 auto;
+    min-height: 520px;
+  }
+
+  /* .hero-visual is the actual grid item; .hero-reveal is nested inside it
+     alongside the decorative blobs, so the stretch has to happen here.
+     align-self overrides .hero-inner's align-items:center, and the negative
+     margins cancel .hero's 76px/96px vertical padding so the panel sits flush
+     against the hero's top and bottom edges. */
+  .hero-inner > .hero-visual{
+    align-self: stretch;
+    display: flex;
+    margin-top: -76px;
+    margin-bottom: -96px;
+  }
+  @media (max-width:920px){
+    .hero-inner > .hero-visual{
+      align-self:auto;
+      display:block;
+      margin-top:0;
+      margin-bottom:0;
+    }
   }
   /* Unlike the 3D tile wall this replaced, this is one background image and a
-     single clip-path transition - cheap enough to keep on phones. Shorter
-     aspect ratio though, so it doesn't push the hero CTAs off-screen once
-     .hero-inner collapses to a single column. */
+     single clip-path transition - cheap enough to keep on phones. Below 920px
+     .hero-inner collapses to one column, so the panel goes edge-to-edge on both
+     sides at a shorter aspect ratio rather than full-height, to avoid pushing
+     the hero CTAs off-screen. */
   @media (max-width:920px){
-    .hero-reveal{ aspect-ratio:16/10; }
+    .hero-reveal{
+      aspect-ratio:16/10;
+      align-self:auto;
+      min-height:0;
+      margin-top:0;
+      margin-bottom:0;
+      margin-left: calc(-1 * max(32px, (100vw - 1180px) / 2 + 32px));
+    }
   }
   .photo-frame .photo-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   .photo-frame .ph{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:rgba(255,255,255,0.85); text-align:center; padding:24px; }
