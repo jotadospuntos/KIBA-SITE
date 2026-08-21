@@ -39,10 +39,14 @@ import { useMotionPreference } from '@/lib/useMotionPreference';
    client-only. */
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
-/* Hero image for the clip-path reveal panel. Any of the 9 photos in
-   public/img/hero/ will work - swapping this one line changes it. */
-const HERO_IMAGE = '/img/hero/couple-consultation.webp';
-const HERO_IMAGE_ALT = 'Business owners reviewing financing terms with a KIBA advisor';
+/* Hero image for the clip-path reveal panel.
+   Sized deliberately: unlike the other photos in public/img/hero/ (which were
+   cut for 200x132 tiles at 800px wide), this one is cropped to the panel's own
+   0.726 aspect at 1163x1602. The panel is 639x880 CSS and full-bleed, so an
+   800px-wide file was being upscaled 1.65x by background-size:cover and looked
+   soft. Swapping to another photo here means re-cutting it at this size. */
+const HERO_IMAGE = '/img/hero/owner-cafe-laptop.webp';
+const HERO_IMAGE_ALT = 'A small business owner working on a laptop at her counter';
 
 declare global {
   interface Window {

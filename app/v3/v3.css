@@ -635,6 +635,10 @@
       margin-top:0;
       margin-bottom:0;
       margin-left: calc(-1 * max(32px, (100vw - 1180px) / 2 + 32px));
+      /* Anchor to the top. The image is cropped portrait for the tall desktop
+         panel, so centering it in this short 16/10 box cropped the subject's
+         head off and left a photo of her shirt. */
+      background-position:center top;
     }
   }
   .photo-frame .photo-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
