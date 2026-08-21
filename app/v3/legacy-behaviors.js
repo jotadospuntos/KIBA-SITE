@@ -29,48 +29,130 @@ export function initLegacyBehaviors() {
   document.addEventListener('scroll', onScrollNav, { passive:true });
   onScrollNav();
 
-  /* Desktop "Solutions" dropdown */
+  /* ---------- Nav: desktop "Solutions" dropdown ----------
+     Keyboard support beyond a plain click toggle: ArrowDown/ArrowUp open the
+     panel and move through the links, Escape closes and puts focus back on the
+     trigger, and tabbing out closes it. Without the focus restore, closing with
+     Escape dropped focus to the top of the document. */
   var solutionsItem = document.getElementById('solutionsItem');
   var solutionsTrigger = document.getElementById('solutionsTrigger');
-  function closeSolutions(){
-    if(!solutionsItem) return;
-    solutionsItem.classList.remove('is-open');
-    solutionsTrigger.setAttribute('aria-expanded', 'false');
+  var solutionsPanel = document.getElementById('solutionsPanel');
+
+  function solutionsLinks(){
+    if(!solutionsPanel) return [];
+    return Array.prototype.slice.call(solutionsPanel.querySelectorAll('a[href]'));
   }
-  if(solutionsTrigger){
+  function solutionsIsOpen(){
+    return !!solutionsItem && solutionsItem.classList.contains('is-open');
+  }
+  function setSolutionsOpen(open, restoreFocus){
+    if(!solutionsItem) return;
+    solutionsItem.classList.toggle('is-open', open);
+    solutionsTrigger.setAttribute('aria-expanded', String(open));
+    if(!open && restoreFocus) solutionsTrigger.focus();
+  }
+  function focusSolutionsLink(index){
+    var links = solutionsLinks();
+    if(!links.length) return;
+    links[(index + links.length) % links.length].focus();
+  }
+
+  if(solutionsTrigger && solutionsItem){
     solutionsTrigger.addEventListener('click', function(e){
       e.stopPropagation();
-      var isOpen = solutionsItem.classList.toggle('is-open');
-      solutionsTrigger.setAttribute('aria-expanded', String(isOpen));
+      setSolutionsOpen(!solutionsIsOpen(), false);
+    });
+
+    solutionsTrigger.addEventListener('keydown', function(e){
+      if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+        e.preventDefault();
+        setSolutionsOpen(true, false);
+        focusSolutionsLink(e.key === 'ArrowDown' ? 0 : -1);
+      }
+    });
+
+    solutionsPanel.addEventListener('keydown', function(e){
+      var links = solutionsLinks();
+      var i = links.indexOf(document.activeElement);
+      if(e.key === 'ArrowDown'){ e.preventDefault(); focusSolutionsLink(i + 1); }
+      else if(e.key === 'ArrowUp'){ e.preventDefault(); focusSolutionsLink(i - 1); }
+      else if(e.key === 'Home'){ e.preventDefault(); focusSolutionsLink(0); }
+      else if(e.key === 'End'){ e.preventDefault(); focusSolutionsLink(-1); }
+    });
+
+    /* Tabbing (or clicking) out of the dropdown closes it. No focus restore
+       here - focus has already moved somewhere deliberate. */
+    solutionsItem.addEventListener('focusout', function(e){
+      if(!solutionsItem.contains(e.relatedTarget)) setSolutionsOpen(false, false);
     });
     document.addEventListener('click', function(e){
-      if(!solutionsItem.contains(e.target)){ closeSolutions(); }
+      if(!solutionsItem.contains(e.target)) setSolutionsOpen(false, false);
     });
     document.addEventListener('keydown', function(e){
-      if(e.key === 'Escape'){ closeSolutions(); }
+      if(e.key === 'Escape' && solutionsIsOpen()) setSolutionsOpen(false, true);
     });
   }
 
-  /* Mobile nav sheet + accordion */
+  /* ---------- Nav: mobile sheet + accordion ----------
+     The sheet is a focus trap while open: Tab cycles through the toggle and the
+     sheet's own controls instead of escaping into the page behind it, which is
+     still visible but unreachable. Escape closes and restores focus. */
   var navToggle = document.getElementById('navToggle');
   var mobileMenu = document.getElementById('mobileMenu');
-  function closeMobileMenu(){
-    if(!mobileMenu) return;
-    mobileMenu.hidden = true;
-    navToggle.classList.remove('is-open');
-    navToggle.setAttribute('aria-expanded', 'false');
+
+  function mobileIsOpen(){
+    return !!mobileMenu && !mobileMenu.hidden;
   }
+  /* offsetParent filters out anything inside a collapsed accordion panel
+     (display:none), which must not be a tab stop. */
+  function mobileFocusables(){
+    if(!mobileMenu) return [];
+    var sel = 'a[href], button:not([disabled])';
+    var inSheet = Array.prototype.slice.call(mobileMenu.querySelectorAll(sel))
+      .filter(function(el){ return el.offsetParent !== null; });
+    return [navToggle].concat(inSheet);
+  }
+  function setMobileOpen(open, restoreFocus){
+    if(!mobileMenu || !navToggle) return;
+    mobileMenu.hidden = !open;
+    navToggle.classList.toggle('is-open', open);
+    navToggle.setAttribute('aria-expanded', String(open));
+    navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if(open){
+      var items = mobileFocusables();
+      if(items.length > 1) items[1].focus();
+    } else if(restoreFocus){
+      navToggle.focus();
+    }
+  }
+
   if(navToggle && mobileMenu){
     navToggle.addEventListener('click', function(){
-      var isOpen = mobileMenu.hidden;
-      mobileMenu.hidden = !isOpen;
-      navToggle.classList.toggle('is-open', isOpen);
-      navToggle.setAttribute('aria-expanded', String(isOpen));
+      setMobileOpen(!mobileIsOpen(), false);
     });
+
+    /* Links close the sheet on the way out; no focus restore since the page is
+       navigating (or jumping to an anchor). */
     mobileMenu.querySelectorAll('a').forEach(function(link){
-      link.addEventListener('click', closeMobileMenu);
+      link.addEventListener('click', function(){ setMobileOpen(false, false); });
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(!mobileIsOpen()) return;
+      if(e.key === 'Escape'){ setMobileOpen(false, true); return; }
+      if(e.key !== 'Tab') return;
+      var items = mobileFocusables();
+      if(!items.length) return;
+      var first = items[0];
+      var last = items[items.length - 1];
+      if(e.shiftKey && document.activeElement === first){
+        e.preventDefault(); last.focus();
+      } else if(!e.shiftKey && document.activeElement === last){
+        e.preventDefault(); first.focus();
+      }
     });
   }
+
   var mobileSolutionsTrigger = document.getElementById('mobileSolutionsTrigger');
   var mobileSolutionsPanel = document.getElementById('mobileSolutionsPanel');
   if(mobileSolutionsTrigger && mobileSolutionsPanel){
@@ -81,9 +163,14 @@ export function initLegacyBehaviors() {
       mobileSolutionsTrigger.setAttribute('aria-expanded', String(isOpen));
     });
   }
-  /* Collapse the mobile sheet if the viewport grows past the mobile breakpoint */
+  /* Collapse the mobile sheet if the viewport grows past the mobile breakpoint.
+     Restores focus only when it was inside the sheet, which is about to become
+     display:none - otherwise focus would be dropped to the document body. */
   window.addEventListener('resize', function(){
-    if(window.innerWidth >= 960){ closeMobileMenu(); }
+    if(window.innerWidth >= 960 && mobileIsOpen()){
+      var focusWasInside = mobileMenu.contains(document.activeElement);
+      setMobileOpen(false, focusWasInside);
+    }
   });
 
   /* Scroll-reveal fade/rise */

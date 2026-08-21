@@ -175,9 +175,17 @@
     padding:10px;
     display:grid; gap:2px;
     opacity:0; visibility:hidden; transform:translateY(-6px);
-    transition:opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    /* visibility is delayed rather than eased. It's a discrete property, so
+       easing it left the panel un-focusable partway through the open transition -
+       ArrowDown couldn't move focus into a still-hidden panel. Now it flips to
+       visible instantly on open (0s, no delay) and waits out the fade on close
+       (0s after 0.18s), so the fade-out is still visible. */
+    transition:opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
   }
-  .nav-menu-item.is-open .nav-dropdown{ opacity:1; visibility:visible; transform:translateY(0); }
+  .nav-menu-item.is-open .nav-dropdown{
+    opacity:1; visibility:visible; transform:translateY(0);
+    transition:opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s;
+  }
   .nav-dropdown-item{ display:block; padding:12px 14px; border-radius:10px; text-decoration:none; transition:background 0.15s ease; }
   .nav-dropdown-item:hover{ background:var(--paper); }
   .nav-dropdown-title{ display:block; font-family:'Instrument Sans', sans-serif; font-weight:600; font-size:14.5px; color:var(--ink); margin-bottom:2px; }
