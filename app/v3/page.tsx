@@ -11,7 +11,16 @@
 import { useEffect, useRef } from 'react';
 import './v3.css';
 import { initLegacyBehaviors, initBorderGlow } from './legacy-behaviors';
+import dynamic from 'next/dynamic';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
+import { useMotionPreference } from '@/lib/useMotionPreference';
+
+/* Code-split: SplitText pulls in GSAP (~86KB), which would otherwise land in
+   this route's first-load bundle and delay hydration for an animation that only
+   matters after paint. ssr stays true so the <h1> text is still in the
+   server-rendered HTML - it's the page's main heading, so it must not be
+   client-only. */
+const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
 /* Hero image for the clip-path reveal panel. Any of the 9 photos in
    public/img/hero/ will work - swapping this one line changes it. */
@@ -26,12 +35,12 @@ declare global {
   }
 }
 
-const GSAP_SRC = 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js';
-const SPLITTEXT_SRC = 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js';
+/* Only the GoHighLevel iframe resizer is loaded at runtime now. GSAP used to be
+   fetched from a CDN here too; it's a bundled npm dependency since the headline
+   moved to the real SplitText component. */
 const GHL_EMBED_SRC = 'https://link.msgsndr.com/js/form_embed.js';
 
-/* Appends a script once and resolves when it has loaded. Ordering matters here:
-   SplitText registers itself against a global gsap, so gsap must land first. */
+/* Appends a script once and resolves when it has loaded. */
 function loadScriptOnce(src: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>(`script[data-src="${src}"]`);
@@ -61,6 +70,10 @@ export default function V3Page() {
      would otherwise attach every listener and rAF loop twice. */
   const inited = useRef(false);
 
+  /* Passed down to SplitText so the headline reveal honors ?motion=1 the same
+     way HeroReveal and the legacy behaviors do. */
+  const { forceMotion } = useMotionPreference();
+
   useEffect(() => {
     if (inited.current) return;
     inited.current = true;
@@ -77,14 +90,6 @@ export default function V3Page() {
     let cancelled = false;
 
     (async () => {
-      /* The headline reveal degrades to plain text if GSAP can't load, so a
-         failure here must not block the rest of the page's behaviors. */
-      try {
-        await loadScriptOnce(GSAP_SRC);
-        await loadScriptOnce(SPLITTEXT_SRC);
-      } catch {
-        /* no-op: initHeroSplit checks for gsap before using it */
-      }
       try {
         await loadScriptOnce(GHL_EMBED_SRC);
       } catch {
@@ -145,7 +150,22 @@ export default function V3Page() {
         <div className="wrap"><div className="hero-inner">
           <div>
             <div className="eyebrow hero-eyebrow">Kingdom Impact Business Advisors</div>
-            <h1 id="heroHeadline">Funding and guidance<br />to power your business&rsquo;s<br />next move.</h1>
+            <SplitText
+              tag="h1"
+              id="heroHeadline"
+              /* 'words, chars' not 'chars': each char becomes an inline-block, so
+                 without a word wrapper the browser can break between any two
+                 letters (it split "business's" across lines). */
+              splitType="words, chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: 0 }}
+              duration={1.1}
+              delay={18}
+              ease="power3.out"
+              forceMotion={forceMotion}
+            >
+              Funding and guidance<br />to power your business&rsquo;s<br />next move.
+            </SplitText>
             <p className="hero-sub">We help business owners secure bank-ready capital and make confident financing decisions &mdash; backed by decades of lending experience and a commitment to doing what&rsquo;s right for every client.</p>
             <ul className="klist on-dark" style={{ maxWidth: '470px', margin: '0 0 30px' }}>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Straight answers on what you actually qualify for.</li>

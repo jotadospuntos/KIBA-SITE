@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useMotionPreference } from '@/lib/useMotionPreference';
 
 /*
  * The angled clip-path reveal lifted out of the 21st.dev HeroSection block.
@@ -28,22 +28,10 @@ interface HeroRevealProps {
 export default function HeroReveal({ image, alt, className }: HeroRevealProps) {
   const prefersReduced = useReducedMotion();
 
-  /* Mount gate. Two reasons: the search param can't be read during render
-     without breaking SSR, and framer-motion's useReducedMotion only looks at
-     the media query - it doesn't know about this page's ?motion=1 override, so
-     without this the reveal would be silently skipped on a machine that reports
-     reduce (e.g. KDE's "Instant" animation speed) even with the override on. */
-  const [mounted, setMounted] = useState(false);
-  const [forceMotion, setForceMotion] = useState(false);
-
-  useEffect(() => {
-    try {
-      setForceMotion(new URLSearchParams(window.location.search).get('motion') === '1');
-    } catch {
-      /* no-op: leaves forceMotion false, so the media query decides */
-    }
-    setMounted(true);
-  }, []);
+  /* framer-motion's useReducedMotion only checks the media query and knows
+     nothing about the ?motion=1 override, so it has to be consulted separately
+     or the wipe is silently skipped on a machine reporting reduce. */
+  const { mounted, forceMotion } = useMotionPreference();
 
   const shouldAnimate = !prefersReduced || forceMotion;
 

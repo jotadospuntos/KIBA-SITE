@@ -16,34 +16,8 @@ export function initLegacyBehaviors() {
 (function(){
   var reduceMotion = !window.__forceMotion && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Hero headline char-by-char reveal (React Bits SplitText, ported to vanilla GSAP) */
-  (function initHeroSplit(){
-    var heading = document.getElementById('heroHeadline');
-    if(!heading) return;
-    if(reduceMotion || typeof gsap === 'undefined' || typeof SplitText === 'undefined') return;
-    gsap.registerPlugin(SplitText);
-
-    function runSplit(){
-      /* Split words as well as chars: each char becomes an inline-block, so without
-         a word wrapper the browser is free to line-break between any two letters
-         (which split "business's" across two lines). Wrapping words keeps them intact. */
-      var split = new SplitText(heading, {
-        type: 'words, chars',
-        wordsClass: 'split-word',
-        charsClass: 'split-char'
-      });
-      gsap.fromTo(split.chars,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.018 }
-      );
-    }
-
-    if(document.fonts && document.fonts.status !== 'loaded'){
-      document.fonts.ready.then(runSplit);
-    } else {
-      runSplit();
-    }
-  })();
+  /* The hero headline reveal now lives in components/SplitText (real React
+     Bits component, bundled GSAP) rather than being driven from here. */
 
   /* Sticky nav shrink-on-scroll */
   var nav = document.getElementById('siteNav');
