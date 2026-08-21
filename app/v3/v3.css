@@ -569,21 +569,25 @@
   .hero-visual .blob{ position:absolute; right:-26px; top:-30px; width:170px; opacity:0.45; z-index:0; }
   .photo-frame{ position:relative; z-index:1; border-radius:14px; overflow:hidden; aspect-ratio:4/5; background:linear-gradient(150deg,var(--navy-soft),var(--blue)); box-shadow:0 40px 70px -35px rgba(2,0,98,0.45); }
 
-  /* DriftWall wrapper. Mirrors .photo-frame's footprint (same aspect-ratio,
-     radius and shadow) so dropping the 3D wall into the hero's right column
-     doesn't shift the grid at all. DriftWall itself fills 100% of this box. */
-  .hero-driftwall{
+  /* Clip-path reveal panel in the hero's right column. Keeps .photo-frame's
+     4/5 footprint so the hero grid height is unchanged.
+     No border-radius or box-shadow here on purpose: clip-path clips both, so
+     rounded corners would be sliced square and a shadow would be cut off at the
+     polygon edge. The diagonal edge is the shape treatment instead. */
+  .hero-reveal{
     position:relative; z-index:1;
-    border-radius:14px; overflow:hidden; aspect-ratio:4/5;
-    background:linear-gradient(150deg,var(--navy-soft),var(--blue));
-    box-shadow:0 40px 70px -35px rgba(2,0,98,0.45);
+    aspect-ratio:4/5;
+    background-color:var(--navy-soft);
+    background-size:cover;
+    background-position:center;
+    will-change:clip-path;
   }
-  /* Below 920px .hero-inner collapses to one column, which would stack a
-     continuously-animating 3D wall under the headline: heavy on a phone (it adds
-     a rAF loop on top of the WebGL canvas and BorderGlow) and it pushes the
-     hero CTAs well below the fold. Drop it there instead. */
+  /* Unlike the 3D tile wall this replaced, this is one background image and a
+     single clip-path transition - cheap enough to keep on phones. Shorter
+     aspect ratio though, so it doesn't push the hero CTAs off-screen once
+     .hero-inner collapses to a single column. */
   @media (max-width:920px){
-    .hero-driftwall{ display:none; }
+    .hero-reveal{ aspect-ratio:16/10; }
   }
   .photo-frame .photo-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   .photo-frame .ph{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:rgba(255,255,255,0.85); text-align:center; padding:24px; }

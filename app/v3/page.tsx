@@ -11,29 +11,12 @@
 import { useEffect, useRef } from 'react';
 import './v3.css';
 import { initLegacyBehaviors, initBorderGlow } from './legacy-behaviors';
-import DriftWall from '@/components/DriftWall/DriftWall';
+import HeroReveal from '@/components/HeroReveal/HeroReveal';
 
-/* Hero tiles. Root-relative hrefs so DriftWall navigates in place rather than
-   opening a new tab (see the target handling in components/DriftWall).
-   `title` becomes the tile's alt text, so it describes the photo rather than
-   the destination. Files live in public/img/hero/ - see the README there. */
-const HERO_TILES = [
-  { image: '/img/hero/advisor-consultation.webp', title: 'An advisor talking through financing options', href: '/book-rr' },
-  { image: '/img/hero/couple-consultation.webp', title: 'Business owners reviewing terms with an advisor', href: '/book-rr' },
-  { image: '/img/hero/owner-reviewing.webp', title: 'A business owner weighing funding options', href: '/business-acquisitions' },
-  { image: '/img/hero/advisor-on-call.webp', title: 'An advisor on a call with a client', href: '/book-rr' },
-  { image: '/img/hero/storefront-owner.webp', title: 'The owner of a neighborhood shop', href: '/business-acquisitions' },
-  { image: '/img/hero/boutique-owner.webp', title: 'A boutique owner taking stock', href: '/business-acquisitions' },
-  { image: '/img/hero/workshop-owner.webp', title: 'A workshop owner at his bench', href: '/business-acquisitions' },
-  { image: '/img/hero/deal-handshake.webp', title: 'A funding agreement being closed', href: '/referral-partners' },
-  { image: '/img/hero/partner-handshake.webp', title: 'A referral partner introduction', href: '/referral-partners' }
-];
-
-/* 3 columns x 3 items each. Deliberately not 9 columns: `columns` only sets how
-   many vertical strips the items are dealt into, and 9 strips would not fit the
-   hero's ~477px-wide box. Must stay <= HERO_TILES.length either way, or leftover
-   columns repeat items[0]. */
-const HERO_COLUMNS = 3;
+/* Hero image for the clip-path reveal panel. Any of the 9 photos in
+   public/img/hero/ will work - swapping this one line changes it. */
+const HERO_IMAGE = '/img/hero/couple-consultation.webp';
+const HERO_IMAGE_ALT = 'Business owners reviewing financing terms with a KIBA advisor';
 
 declare global {
   interface Window {
@@ -180,28 +163,7 @@ export default function V3Page() {
             <div className="cursor-blob" style={{ width: '180px', height: '180px', top: '-40px', left: '-50px', background: 'radial-gradient(circle,rgba(37,99,235,0.55),transparent 70%)' }} data-depth="18"></div>
             <div className="cursor-blob" style={{ width: '140px', height: '140px', bottom: '-30px', right: '-30px', background: 'radial-gradient(circle,rgba(109,148,245,0.5),transparent 70%)' }} data-depth="28"></div>
             <svg className="blob" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>
-            <div className="hero-driftwall">
-              <DriftWall
-                items={HERO_TILES}
-                columns={HERO_COLUMNS}
-                tileWidth={200}
-                tileHeight={132}
-                gap={18}
-                tilt={16}
-                turn={-14}
-                perspective={1200}
-                depth={120}
-                speed={38}
-                direction="up"
-                variance={0.45}
-                parallax={0.6}
-                lift={64}
-                fade={0.6}
-                dim={0.78}
-                overlayColor="#020062"
-              />
-              <div className="chip"><span className="k">$100M+</span> in capital accessed</div>
-            </div>
+            <HeroReveal className="hero-reveal" image={HERO_IMAGE} alt={HERO_IMAGE_ALT} />
           </div>
         </div></div>
       </header><section className="marquee-section" aria-hidden="true">
