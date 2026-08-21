@@ -11,6 +11,27 @@
 import { useEffect, useRef } from 'react';
 import './v3.css';
 import { initLegacyBehaviors, initBorderGlow } from './legacy-behaviors';
+import DriftWall from '@/components/DriftWall/DriftWall';
+
+/* Hero tiles. Root-relative hrefs so DriftWall navigates in place rather than
+   opening a new tab. Reusing each page's existing 1200x630 share image. */
+const HERO_TILES = [
+  {
+    image: '/img/business-acquisitions.png',
+    title: 'Business acquisition financing',
+    href: '/business-acquisitions'
+  },
+  {
+    image: '/img/referral-partners.png',
+    title: 'Referral partner program',
+    href: '/referral-partners'
+  },
+  {
+    image: '/img/book-rr.png',
+    title: 'Book a consultation',
+    href: '/book-rr'
+  }
+];
 
 declare global {
   interface Window {
@@ -157,12 +178,30 @@ export default function V3Page() {
             <div className="cursor-blob" style={{ width: '180px', height: '180px', top: '-40px', left: '-50px', background: 'radial-gradient(circle,rgba(37,99,235,0.55),transparent 70%)' }} data-depth="18"></div>
             <div className="cursor-blob" style={{ width: '140px', height: '140px', bottom: '-30px', right: '-30px', background: 'radial-gradient(circle,rgba(109,148,245,0.5),transparent 70%)' }} data-depth="28"></div>
             <svg className="blob" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>
-            <div className="photo-frame">
-
-              <div className="ph">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="14" rx="2" /><path d="M3 15l4.5-4.5a2 2 0 0 1 2.8 0L14 14" /><path d="M13 13l1.7-1.7a2 2 0 0 1 2.8 0L21 15" /><circle cx="8" cy="8.5" r="1.5" /></svg>
-                <span>Add a hero photo here</span>
-              </div>
+            <div className="hero-driftwall">
+              <DriftWall
+                items={HERO_TILES}
+                /* columns must stay <= HERO_TILES.length: the component
+                   round-robins items into columns and any leftover column falls
+                   back to repeating items[0], so columns=5 with 3 items would
+                   show the first tile three times. */
+                columns={HERO_TILES.length}
+                tileWidth={200}
+                tileHeight={132}
+                gap={18}
+                tilt={16}
+                turn={-14}
+                perspective={1200}
+                depth={120}
+                speed={38}
+                direction="up"
+                variance={0.45}
+                parallax={0.6}
+                lift={64}
+                fade={0.6}
+                dim={0.78}
+                overlayColor="#020062"
+              />
               <div className="chip"><span className="k">$100M+</span> in capital accessed</div>
             </div>
           </div>
