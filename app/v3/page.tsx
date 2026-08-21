@@ -39,12 +39,18 @@ import { useMotionPreference } from '@/lib/useMotionPreference';
    client-only. */
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
-/* Hero image for the clip-path reveal panel.
-   Sized deliberately: unlike the other photos in public/img/hero/ (which were
-   cut for 200x132 tiles at 800px wide), this one is cropped to the panel's own
-   0.726 aspect at 1163x1602. The panel is 639x880 CSS and full-bleed, so an
-   800px-wide file was being upscaled 1.65x by background-size:cover and looked
-   soft. Swapping to another photo here means re-cutting it at this size. */
+/* Hero image for the clip-path reveal panel, at 2600x2000.
+ *
+ * Sized deliberately, and NOT interchangeable with the other photos in
+ * public/img/hero/ - those were cut for 200x132 DriftWall tiles at 800px wide,
+ * which background-size:cover then upscaled ~1.65x here, rendering soft.
+ *
+ * The panel bleeds to the right viewport edge while the left column stays fixed,
+ * so its size is `viewport/2 - 81` wide by ~880 tall - i.e. the aspect swings
+ * from 0.64 (portrait, at 1280px) through 1.00 (square, at 1920px) to 1.36
+ * (landscape, at 2560px). 2600x2000 is the compromise: mildly landscape, and
+ * still downscaling at 2x DPR on a 2560px-wide viewport (which needs 2398x1760).
+ * Replacing this photo means re-cutting at roughly these dimensions. */
 const HERO_IMAGE = '/img/hero/owner-cafe-laptop.webp';
 const HERO_IMAGE_ALT = 'A small business owner working on a laptop at her counter';
 
