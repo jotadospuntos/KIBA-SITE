@@ -3,9 +3,26 @@
 /*
  * Homepage redesign, migrated from the static public/legacy/v2.html into a real
  * React route. Markup is a faithful JSX conversion and v3.css is the original
- * <style> block verbatim, so this should render pixel-identically to /v2 - that
- * equivalence is what makes it safe to start swapping in real React components
- * (DriftWall, SplitText, BorderGlow, shadcn nav/footer) one at a time.
+ * <style> block verbatim, so it renders pixel-identically to /v2 - that
+ * equivalence is what makes it safe to swap in real React components one at a
+ * time, verifying each against /v2 with a pixel diff.
+ *
+ * Swapped so far: the hero headline (components/SplitText) and the hero image
+ * panel (components/HeroReveal).
+ *
+ * Deliberately NOT swapped:
+ * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
+ *   (5 of the 14 glow cards are <a href> links), and its inner wrapper's
+ *   display:flex/overflow:auto breaks .solution-visual's margin-top:auto. Using
+ *   it would need a polymorphic-element fork, a display:contents neutralizer, a
+ *   skipped stylesheet and 6 tuned values re-passed as props - i.e. a heavier
+ *   fork than the vanilla implementation in legacy-behaviors.js, for identical
+ *   output. Not worth it.
+ * - shadcn NavigationMenu/Sheet/Accordion for the nav. They ship styled for
+ *   light/dark semantic tokens and would need rewriting for the navy nav. The
+ *   real gaps in the hand-rolled nav are a focus trap in the mobile sheet,
+ *   arrow-key navigation in the dropdown, and focus restore on close - all
+ *   fixable in place without the restyle risk.
  */
 
 import { useEffect, useRef } from 'react';
