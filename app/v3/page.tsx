@@ -23,10 +23,10 @@
  *   fork than the vanilla implementation in legacy-behaviors.js, for identical
  *   output. Not worth it.
  * - shadcn NavigationMenu/Sheet/Accordion for the nav. They ship styled for
- *   light/dark semantic tokens and would need rewriting for the navy nav. The
- *   real gaps in the hand-rolled nav are a focus trap in the mobile sheet,
- *   arrow-key navigation in the dropdown, and focus restore on close - all
- *   fixable in place without the restyle risk.
+ *   light/dark semantic tokens and would need rewriting for the navy nav, and
+ *   the accessibility they'd buy is already implemented by hand: the mobile
+ *   sheet traps focus, the dropdown handles ArrowUp/Down/Home/End, and both
+ *   restore focus on Escape. See components/SiteNav.
  */
 
 import { useEffect, useRef } from 'react';
