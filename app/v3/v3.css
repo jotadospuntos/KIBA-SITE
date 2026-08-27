@@ -984,3 +984,24 @@
     html:not(.force-motion) .border-glow-card::after,
     html:not(.force-motion) .border-glow-card > .edge-light{ transition:none !important; }
   }
+
+/*
+ * ---------------------------------------------------------------------------
+ * INTENTIONAL DIVERGENCE FROM public/legacy/v2.html
+ * ---------------------------------------------------------------------------
+ * Everything above this line is v2.html's <style> block verbatim. This rule is
+ * not in v2.html and is not being backported to it.
+ *
+ * Above 860px the three testimonial slides are all visible at once
+ * (flex:0 0 calc(100%/3)), so there is nowhere for the carousel to scroll and
+ * the arrows/dots are inert. components/TestimonialCarousel adds .fits-desktop
+ * when the slide count fits in one desktop view; add a fourth testimonial and
+ * the class - and so the controls - come back on their own.
+ *
+ * Done in CSS rather than a client-side viewport check so the controls never
+ * flash in and out during hydration. Two classes, so it wins over the
+ * single-class .testimonial-controls display:flex regardless of source order.
+ */
+@media (min-width:860px){
+  .testimonial-controls.fits-desktop{ display:none; }
+}

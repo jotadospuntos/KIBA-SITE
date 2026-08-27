@@ -25,12 +25,14 @@ The Fundwell-inspired homepage redesign lives in two forms today:
 
 - **`/v2`** (`public/legacy/v2.html`) — the original static redesign draft. `noindex`, not linked
   from anywhere, served via a rewrite. Kept **only as the pixel-diff reference**.
-- **`/v3`** (`app/v3/`) — the real-React port of `v2.html`, and the **active work**. It's a
-  faithful JSX conversion plus `v3.css` (the original `<style>` verbatim), so it renders
-  pixel-identically to `/v2` — which is what lets real React components be swapped in one at a
-  time and diffed against `/v2`. So far the hero headline (`components/SplitText`) and hero image
-  panel (`components/HeroReveal`) are real components; the rest is still driven by
-  `app/v3/legacy-behaviors.js` and gets replaced incrementally.
+- **`/v3`** (`app/v3/`) — the real-React port of `v2.html`, and the **active work**. It started as
+  a faithful JSX conversion plus `v3.css` (the original `<style>` verbatim), rendering
+  pixel-identically to `/v2` — which is what lets real React components be swapped in one at a time
+  and diffed against `/v2`. Real components so far: hero headline (`SplitText`), hero image panel
+  (`HeroReveal`), nav + footer (`SiteNav`, `SiteFooter`), scroll reveal (`Reveal`), stat counters
+  (`Counter`), testimonial carousel (`TestimonialCarousel`). The rest is still driven by
+  `app/v3/legacy-behaviors.js`. `/v3` now has a few **deliberate** behavior fixes that `/v2` doesn't
+  — they're listed in `CLAUDE.md`, and anything not on that list is a migration bug.
 
 Once `/v3` is component-complete and approved it gets promoted to the real homepage route of
 **`go.kibadvisors.com`**, and `v2.html` + its `/v2` rewrite are removed. The root redirect

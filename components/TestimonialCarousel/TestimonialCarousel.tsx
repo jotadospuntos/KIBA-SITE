@@ -8,9 +8,8 @@ import { prefersReducedMotion } from '@/lib/useMotionPreference';
  * Testimonial carousel, replacing the '#testimonialTrack' block in
  * app/v3/legacy-behaviors.js with real React state.
  *
- * Behavior is a faithful port of the vanilla version, quirks included - see the
- * PARITY NOTES below, because two of them look like bugs and are deliberate
- * holds rather than oversights.
+ * Ported from the vanilla version, then three of its bugs fixed - see FIXED
+ * RELATIVE TO THE VANILLA VERSION below.
  *
  * Slide width is measured from the live DOM rather than computed from
  * percentages, exactly as the vanilla version did: the slides are
@@ -18,24 +17,26 @@ import { prefersReducedMotion } from '@/lib/useMotionPreference';
  * on the viewport and has to be re-measured on resize.
  */
 
-/* PARITY NOTES - intentional carry-overs from the vanilla implementation:
+/* FIXED RELATIVE TO THE VANILLA VERSION (approved by the human, so /v3 now
+ * deliberately behaves better than /v2 here - /v2 is a static reference and is
+ * not being updated to match):
  *
- * 1. goTo clamps to slides.length - 1, NOT to maxIndex. On desktop all three
- *    slides are visible at once (perView 3, so maxIndex 0), which means the
- *    arrows and autoplay still translate the track into empty space. This is
- *    how /v2 and /v3 behave today; kept so the two stay comparable. Fixing it
- *    is a one-line change (clamp to maxIndex()) and is flagged for the human.
+ * 1. goTo now clamps to maxIndex, not slides.length - 1. The vanilla version
+ *    let the arrows and autoplay translate the track past the last full view,
+ *    so on desktop - where all three slides are already visible (perView 3,
+ *    maxIndex 0) - it scrolled into empty space every 6 seconds.
  *
- * 2. Autoplay stops permanently on mouseenter and never resumes on mouseleave.
- *    Reads as intentional in the original - once a visitor engages, stop moving
- *    text out from under them - so it's preserved rather than "fixed" into a
- *    pause/resume.
+ * 2. The controls hide themselves when there is nothing to scroll to. With
+ *    three slides and perView 3, desktop has a single reachable position, so
+ *    arrows and dots would be inert decoration. Handled in CSS via
+ *    .testimonial-controls.fits-desktop rather than a client-side viewport
+ *    read, so there is no hydration flash - and `fitsDesktop` is derived from
+ *    the slide count, so adding a fourth testimonial brings the controls back
+ *    automatically.
  *
- * 3. Dot clicks clamp to maxIndex, so on desktop every dot goes to index 0
- *    while the active dot still tracks the autoplay index. A consequence of
- *    (1); resolving (1) resolves this too.
+ * 3. Autoplay now resumes on mouseleave instead of stopping permanently on
+ *    first hover.
  */
-
 type Testimonial = {
   quote: string;
   /* Rendered as <strong>{name}</strong> — {role} */
@@ -69,6 +70,9 @@ const DESKTOP_MIN_WIDTH = 860;
 
 export default function TestimonialCarousel() {
   const count = TESTIMONIALS.length;
+  /* 3 = perView above 860px. If every slide fits there, the controls have
+     nothing to do on desktop and CSS hides them - see v3.css. */
+  const fitsDesktop = count <= 3;
   const trackRef = useRef<HTMLDivElement | null>(null);
 
   const [index, setIndex] = useState(0);
@@ -85,18 +89,23 @@ export default function TestimonialCarousel() {
     [count]
   );
 
-  const goTo = useCallback(
-    (i: number) => setIndex(Math.max(0, Math.min(i, count - 1))), // see PARITY NOTE 1
-    [count]
-  );
+  /* Clamped to maxIndex, so the track never scrolls past the last full view. */
+  const goTo = useCallback((i: number) => setIndex(Math.max(0, Math.min(i, maxIndex()))), [maxIndex]);
 
   /* Re-measure and reposition whenever the index changes or the window resizes.
      The vanilla version read slides[0].getBoundingClientRect().width on every
      update() call for the same reason. */
   useEffect(() => {
+    /* A resize can shrink maxIndex (mobile -> desktop) and leave the index out
+       past it; pull it back before measuring. */
+    const max = maxIndex();
+    if (index > max) {
+      setIndex(max);
+      return;
+    }
     const first = trackRef.current?.firstElementChild;
     setOffsetPx(index * (first ? first.getBoundingClientRect().width : 0));
-  }, [index, resizeTick]);
+  }, [index, resizeTick, maxIndex]);
 
   useEffect(() => {
     const onResize = () => setResizeTick((t) => t + 1);
@@ -106,17 +115,22 @@ export default function TestimonialCarousel() {
 
   useEffect(() => {
     if (paused || prefersReducedMotion()) return;
-    const id = setInterval(() => setIndex((i) => (i + 1 >= count ? 0 : i + 1)), AUTOPLAY_MS);
+    /* No-op while maxIndex is 0 (desktop): i + 1 > 0 wraps straight back to 0. */
+    const id = setInterval(
+      () => setIndex((i) => (i + 1 > maxIndex() ? 0 : i + 1)),
+      AUTOPLAY_MS
+    );
     /* The vanilla version never cleared this on teardown - fine for a script
        that ran once, a leak across client-side navigations. */
     return () => clearInterval(id);
-  }, [paused, count]);
+  }, [paused, maxIndex]);
 
   return (
     <Reveal
       className="testimonial-carousel reveal"
       id="testimonialCarousel"
-      onMouseEnter={() => setPaused(true)} // PARITY NOTE 2: no resume on leave
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
       <div className="testimonial-viewport">
         <div
@@ -136,12 +150,12 @@ export default function TestimonialCarousel() {
           ))}
         </div>
       </div>
-      <div className="testimonial-controls">
+      <div className={fitsDesktop ? 'testimonial-controls fits-desktop' : 'testimonial-controls'}>
         <button
           className="testimonial-arrow"
           id="testimonialPrev"
           aria-label="Previous testimonial"
-          onClick={() => goTo(index - 1 < 0 ? count - 1 : index - 1)}
+          onClick={() => goTo(index - 1 < 0 ? maxIndex() : index - 1)}
         ><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg></button>
         <div className="testimonial-dots" id="testimonialDots">
           {TESTIMONIALS.map((_, i) => (
@@ -149,7 +163,7 @@ export default function TestimonialCarousel() {
               key={i}
               className={i === index ? 'testimonial-dot is-active' : 'testimonial-dot'}
               aria-label={`Go to testimonial ${i + 1}`}
-              onClick={() => goTo(Math.min(i, maxIndex()))} // PARITY NOTE 3
+              onClick={() => goTo(i)}
             ></button>
           ))}
         </div>
@@ -157,7 +171,7 @@ export default function TestimonialCarousel() {
           className="testimonial-arrow"
           id="testimonialNext"
           aria-label="Next testimonial"
-          onClick={() => goTo(index + 1 >= count ? 0 : index + 1)}
+          onClick={() => goTo(index + 1 > maxIndex() ? 0 : index + 1)}
         ><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg></button>
       </div>
     </Reveal>

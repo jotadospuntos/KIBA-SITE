@@ -45,17 +45,32 @@ work; `/v2` is kept only as a reference.**
   grid, WebGL gradient CTA). Served via a `rewrites()` entry, `noindex`, not linked from
   anywhere. This is the **pixel-diff reference**, not the thing being shipped.
 - **`/v3`** — `app/v3/page.tsx` + `app/v3/v3.css`, the real-React port of `v2.html`. The markup
-  is a faithful JSX conversion and `v3.css` is the original `<style>` block verbatim, so `/v3`
-  renders **pixel-identically to `/v2`**. That equivalence is the whole point: it lets real React
-  components be swapped in **one at a time**, each verified against `/v2` with a pixel diff.
+  is a faithful JSX conversion and `v3.css` is the original `<style>` block verbatim **apart from
+  one clearly-marked block at the end of the file**, so `/v3` renders essentially pixel-identically
+  to `/v2`. That near-equivalence is the whole point: it lets real React components be swapped in
+  **one at a time**, each verified against `/v2`. Deliberate behavior fixes have since started
+  landing in `/v3` only — see the divergence list below before treating a difference as a bug.
   `app/v3/layout.tsx` carries the metadata and `noindex` (the page is a client component and
   can't export metadata itself).
 
-**Source-of-truth rule during the port:** while both exist, `/v3` is where new work goes, but any
-content or style change still has to be mirrored into `v2.html` (or the pixel diff stops being a
-valid check) — same drift risk the legacy pages have. Once `/v3` is component-complete and
-approved, it gets promoted to the real homepage route, and **`v2.html` + the `/v2` rewrite are
-deleted**. See "Open decisions" for what promotion depends on.
+**Source-of-truth rule during the port:** `/v3` is where all new work goes. `v2.html` is frozen
+and is **not** updated to match — so the pixel diff is now a diff with *known, listed* exceptions
+rather than an expected-identical check.
+
+**Known intentional divergences from `/v2`** (keep this list current — an unlisted difference is a
+migration bug):
+
+1. **Testimonial carousel behavior.** `/v2` clamps the carousel to `slides.length - 1`, so on
+   desktop — where all three slides are already visible — the arrows and autoplay scroll the track
+   into empty space every 6s, and every dot jumps to index 0. `/v3` clamps to `maxIndex`, hides the
+   inert controls above 860px (`.testimonial-controls.fits-desktop` — the one rule in `v3.css` that
+   is not in `v2.html`), and resumes autoplay on mouseleave instead of stopping for good.
+2. **Server-rendered detail.** The carousel dots and the stat numbers are in the SSR HTML rather
+   than being created/populated by script after mount, which removes a hydration layout shift.
+   Visually identical once hydrated.
+
+Once `/v3` is component-complete and approved, it gets promoted to the real homepage route, and
+**`v2.html` + the `/v2` rewrite are deleted**. See "Scope boundary" above for where it goes live.
 
 ### What's been ported to real components so far
 
@@ -63,15 +78,26 @@ deleted**. See "Open decisions" for what promotion depends on.
   no CDN script).
 - **Hero image panel** → `components/HeroReveal` (Framer Motion angled clip-path reveal, lifted
   from a 21st.dev block — only the image panel, not its bundled text column).
+- **Nav + footer** → `components/SiteNav`, `components/SiteFooter`. Extracted **before** a second
+  route gets migrated, so there's one copy to change. `SiteNav` still keeps every id
+  `legacy-behaviors.js` looks up (`siteNav`, `navMenu`, `solutions*`, `navToggle`, `mobileMenu`,
+  `mobileSolutions*`) — don't rename them until that behavior moves into React state.
+- **Scroll reveal** → `components/Reveal`. Renders the real element via an `as` prop, never a
+  wrapper: `v3.css` staggers siblings with `.reveal:nth-child(n)`, so an extra div would break both
+  the stagger and the grid layout.
+- **Stat counters** → `components/Counter`. SSR renders the final value ("25+"), so the real numbers
+  are in the HTML without JS; the count-up is decoration on top.
+- **Testimonial carousel** → `components/TestimonialCarousel`. Real state, quotes in one array, and
+  the three behavior fixes listed above.
 
 ### What's still driven by `app/v3/legacy-behaviors.js`
 
-A ~450-line module of the original inline scripts, run from a `useEffect` after mount, driving the
-DOM directly (`getElementById`/`querySelector`) against the ids/classNames in the JSX. Still owns:
-sticky nav shrink-on-scroll, the Solutions dropdown (with keyboard a11y), the mobile menu,
-IntersectionObserver reveal-on-scroll, animated stat counters, cursor-reactive hero blobs, the
-testimonial carousel, and the WebGL gradient blob on the CTA band. These get replaced by real
-React components incrementally.
+A module of the original inline scripts (~370 lines and shrinking), run from a `useEffect` after
+mount, driving the DOM directly (`getElementById`/`querySelector`) against the ids/classNames in the
+JSX. Still owns: sticky nav shrink-on-scroll, the Solutions dropdown (with keyboard a11y), the
+mobile menu, cursor-reactive hero blobs, the trust marquee duplication, and the WebGL gradient blob
+on the CTA band. These get replaced by real React components incrementally; each removed block
+leaves a pointer comment naming the component that took it over.
 
 - **`components/BorderGlow`** exists as a real component but is **deliberately NOT wired into
   `/v3`** — the 14 glow cards still use the vanilla `initBorderGlow` behavior + the
