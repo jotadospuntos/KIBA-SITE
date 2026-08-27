@@ -5,7 +5,7 @@ import { prefersReducedMotion } from '@/lib/useMotionPreference';
 
 /*
  * Animated stat counter, replacing the '[data-count-to]' block in
- * app/v3/legacy-behaviors.js. Counts 0 -> `to` over 1400ms on an easeOutCubic
+ * the since-removed app/v3/legacy-behaviors.js. Counts 0 -> `to` over 1400ms on an easeOutCubic
  * curve once the element is 60% visible, then pins the exact target value.
  * Same numbers, same easing, same threshold as the vanilla version.
  *

@@ -2,7 +2,7 @@
 
 /*
  * React Bits SplitText. Replaces the hand-written vanilla port that used to live
- * in app/v3/legacy-behaviors.js and pulled gsap + SplitText off a CDN at runtime.
+ * in the since-removed app/v3/legacy-behaviors.js and pulled gsap + SplitText off a CDN at runtime.
  * GSAP is now a versioned npm dependency (SplitText became free in gsap 3.13),
  * so there's no external script to fail, and useGSAP reverts the split on unmount.
  *

@@ -65,9 +65,13 @@ migration bug):
    into empty space every 6s, and every dot jumps to index 0. `/v3` clamps to `maxIndex`, hides the
    inert controls above 860px (`.testimonial-controls.fits-desktop` — the one rule in `v3.css` that
    is not in `v2.html`), and resumes autoplay on mouseleave instead of stopping for good.
-2. **Server-rendered detail.** The carousel dots and the stat numbers are in the SSR HTML rather
-   than being created/populated by script after mount, which removes a hydration layout shift.
+2. **Server-rendered detail.** The carousel dots, the stat numbers and both copies of the marquee
+   items are in the SSR HTML rather than being created by script after mount. Removes a hydration
+   layout shift (and for the marquee, a visible first-frames jump while it scrolled a single copy).
    Visually identical once hydrated.
+3. **Dead data attributes dropped.** `data-count-to`/`data-prefix`/`data-suffix` on the stats and
+   `data-depth` on the hero blobs existed only so the vanilla `querySelectorAll` could read config
+   off the DOM. That config is props now. No CSS selected on them.
 
 Once `/v3` is component-complete and approved, it gets promoted to the real homepage route, and
 **`v2.html` + the `/v2` rewrite are deleted**. See "Scope boundary" above for where it goes live.
@@ -89,15 +93,21 @@ Once `/v3` is component-complete and approved, it gets promoted to the real home
   are in the HTML without JS; the count-up is decoration on top.
 - **Testimonial carousel** → `components/TestimonialCarousel`. Real state, quotes in one array, and
   the three behavior fixes listed above.
+- **WebGL CTA gradient** → `components/GradientBlob`. Shader source unchanged; what's new is
+  teardown (rAF, observer, resize listener, and the GL context via `WEBGL_lose_context`), since the
+  vanilla version leaked all four across client-side navigations.
+- **Hero cursor blobs** → `components/HeroBlobs`. Renders the `.hero-visual` container and takes the
+  image panel as children; writes transforms via refs rather than state, since it fires on every
+  mousemove.
+- **Trust marquee** → `components/TrustMarquee`. The item list renders **twice**, which is required:
+  `@keyframes marqueeScroll` animates to `translateX(-50%)`, so the loop is only seamless with
+  exactly two copies. This replaced `marqueeTrack.innerHTML += marqueeTrack.innerHTML` — React's own
+  DOM being mutated behind its back after mount.
 
-### What's still driven by `app/v3/legacy-behaviors.js`
+### What's still vanilla: `app/v3/border-glow.js`
 
-A module of the original inline scripts (~370 lines and shrinking), run from a `useEffect` after
-mount, driving the DOM directly (`getElementById`/`querySelector`) against the ids/classNames in the
-JSX. Still owns: sticky nav shrink-on-scroll, the Solutions dropdown (with keyboard a11y), the
-mobile menu, cursor-reactive hero blobs, the trust marquee duplication, and the WebGL gradient blob
-on the CTA band. These get replaced by real React components incrementally; each removed block
-leaves a pointer comment naming the component that took it over.
+The port is **done**. `legacy-behaviors.js` (~450 lines at the start) shrank to a single function
+and was renamed `app/v3/border-glow.js` (54 lines). Nothing else on `/v3` touches the DOM directly.
 
 - **`components/BorderGlow`** exists as a real component but is **deliberately NOT wired into
   `/v3`** — the 14 glow cards still use the vanilla `initBorderGlow` behavior + the
@@ -146,11 +156,15 @@ leaves a pointer comment naming the component that took it over.
 │   └── v3/                       ← React port of the homepage redesign (see above)
 │       ├── page.tsx              ← the ported homepage (client component)
 │       ├── layout.tsx            ← metadata + noindex for /v3
-│       ├── v3.css                ← original <style> block, verbatim
-│       └── legacy-behaviors.js   ← ported inline scripts, replaced incrementally
+│       ├── v3.css                ← original <style> block, verbatim + one marked divergence
+│       └── border-glow.js        ← the one remaining vanilla behavior (was legacy-behaviors.js)
 ├── components/
-│   ├── SplitText/                ← hero headline (ported)
-│   ├── HeroReveal/               ← hero image panel (ported)
+│   ├── SplitText/                ← hero headline
+│   ├── HeroReveal/               ← hero image panel
+│   ├── SiteNav/ · SiteFooter/    ← shared nav + footer (use these on new routes)
+│   ├── Reveal/ · Counter/        ← scroll reveal, animated stat counters
+│   ├── TestimonialCarousel/ · TrustMarquee/
+│   ├── HeroBlobs/ · GradientBlob/ ← hero cursor parallax, WebGL CTA gradient
 │   ├── BorderGlow/               ← exists, deliberately NOT wired into /v3 yet
 │   └── ui/button.tsx             ← shadcn button (currently unused; CTAs use .btn classes)
 ├── lib/

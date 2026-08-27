@@ -5,7 +5,7 @@ import { prefersReducedMotion } from '@/lib/useMotionPreference';
 
 /*
  * Animated WebGL gradient blob behind the CTA band, replacing the '#blobCanvas'
- * block in app/v3/legacy-behaviors.js.
+ * block in the since-removed app/v3/legacy-behaviors.js.
  *
  * The GLSL below is the original shader source, unchanged - this port is about
  * lifecycle, not visuals. What it adds over the vanilla version is real

@@ -6,7 +6,7 @@ import { prefersReducedMotion } from '@/lib/useMotionPreference';
 
 /*
  * Scroll-reveal fade/rise, replacing the '.reveal' IntersectionObserver block
- * in app/v3/legacy-behaviors.js. Each instance owns one observer and
+ * in the since-removed app/v3/legacy-behaviors.js. Each instance owns one observer and
  * disconnects it after the element first comes into view (the vanilla version
  * called io.unobserve for the same reason - the animation only ever plays once).
  *

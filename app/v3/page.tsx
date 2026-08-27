@@ -13,7 +13,8 @@
  * route reuses them rather than copy-pasting the markup), and the scroll
  * reveal (components/Reveal), the stat counters (components/Counter), and the
  * testimonial carousel (components/TestimonialCarousel), and the WebGL CTA
- * gradient (components/GradientBlob).
+ * gradient (components/GradientBlob), the hero cursor blobs
+ * (components/HeroBlobs), and the trust marquee (components/TrustMarquee).
  *
  * Deliberately NOT swapped:
  * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
@@ -21,7 +22,7 @@
  *   display:flex/overflow:auto breaks .solution-visual's margin-top:auto. Using
  *   it would need a polymorphic-element fork, a display:contents neutralizer, a
  *   skipped stylesheet and 6 tuned values re-passed as props - i.e. a heavier
- *   fork than the vanilla implementation in legacy-behaviors.js, for identical
+ *   fork than the vanilla implementation in border-glow.js, for identical
  *   output. Not worth it.
  * - shadcn NavigationMenu/Sheet/Accordion for the nav. They ship styled for
  *   light/dark semantic tokens and would need rewriting for the navy nav, and
@@ -32,7 +33,7 @@
 
 import { useEffect, useRef } from 'react';
 import './v3.css';
-import { initLegacyBehaviors, initBorderGlow } from './legacy-behaviors';
+import { initBorderGlow } from './border-glow';
 import dynamic from 'next/dynamic';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import SiteNav from '@/components/SiteNav/SiteNav';
@@ -40,6 +41,8 @@ import Reveal from '@/components/Reveal/Reveal';
 import Counter from '@/components/Counter/Counter';
 import TestimonialCarousel from '@/components/TestimonialCarousel/TestimonialCarousel';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
+import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
+import TrustMarquee from '@/components/TrustMarquee/TrustMarquee';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 
@@ -105,11 +108,11 @@ function loadScriptOnce(src: string): Promise<void> {
 
 export default function V3Page() {
   /* Guards against React 18 StrictMode double-invoking the effect in dev, which
-     would otherwise attach every listener and rAF loop twice. */
+     would otherwise attach the border-glow listeners twice. */
   const inited = useRef(false);
 
   /* Passed down to SplitText so the headline reveal honors ?motion=1 the same
-     way HeroReveal and the legacy behaviors do. */
+     way every other animated component here does. */
   const { forceMotion } = useMotionPreference();
 
   useEffect(() => {
@@ -134,7 +137,6 @@ export default function V3Page() {
         /* no-op: only needed to size the GHL iframe */
       }
       if (cancelled) return;
-      initLegacyBehaviors();
       initBorderGlow();
     })();
 
@@ -180,29 +182,12 @@ export default function V3Page() {
               <div className="stat"><Counter className="stat-num" to={50} suffix="+" /><div className="stat-label">States Served</div></div>
             </div>
           </div>
-          <div className="hero-visual" id="heroVisual">
-            <div className="cursor-blob" style={{ width: '180px', height: '180px', top: '-40px', left: '-50px', background: 'radial-gradient(circle,rgba(37,99,235,0.55),transparent 70%)' }} data-depth="18"></div>
-            <div className="cursor-blob" style={{ width: '140px', height: '140px', bottom: '-30px', right: '-30px', background: 'radial-gradient(circle,rgba(109,148,245,0.5),transparent 70%)' }} data-depth="28"></div>
+          <HeroBlobs>
             <svg className="blob" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>
             <HeroReveal className="hero-reveal" image={HERO_IMAGE} alt={HERO_IMAGE_ALT} />
-          </div>
+          </HeroBlobs>
         </div></div>
-      </header><section className="marquee-section" aria-hidden="true">
-        <div className="marquee-track" id="marqueeTrack">
-          <div className="marquee-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>$100M+ Capital Accessed</div>
-          <div className="marquee-dot"></div>
-          <div className="marquee-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg>25+ Years Experience</div>
-          <div className="marquee-dot"></div>
-          <div className="marquee-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z" /></svg>500+ Deals Funded</div>
-          <div className="marquee-dot"></div>
-          <div className="marquee-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 3v18M3 12h18" /></svg>50+ States Served</div>
-          <div className="marquee-dot"></div>
-          <div className="marquee-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Bank-Ready Guidance</div>
-          <div className="marquee-dot"></div>
-          <div className="marquee-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>SBA-Preferred Process</div>
-          <div className="marquee-dot"></div>
-        </div>
-      </section><section>
+      </header><TrustMarquee /><section>
         <div className="wrap">
           <Reveal className="section-head reveal">
             <div className="eyebrow">Funding Paths</div>

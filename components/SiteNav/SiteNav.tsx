@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  *
  * All of the interactive behavior is React state now - the sticky-scroll class,
  * both open/closed flags, and the accordion. It used to live in
- * app/v3/legacy-behaviors.js driving these nodes by getElementById.
+ * the since-removed app/v3/legacy-behaviors.js driving these nodes by getElementById.
  *
  * The ids (siteNav, navMenu, solutionsItem, ...) are kept even though nothing
  * looks them up anymore: they're in the rendered HTML of the static /v2

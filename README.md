@@ -28,11 +28,13 @@ The Fundwell-inspired homepage redesign lives in two forms today:
 - **`/v3`** (`app/v3/`) — the real-React port of `v2.html`, and the **active work**. It started as
   a faithful JSX conversion plus `v3.css` (the original `<style>` verbatim), rendering
   pixel-identically to `/v2` — which is what lets real React components be swapped in one at a time
-  and diffed against `/v2`. Real components so far: hero headline (`SplitText`), hero image panel
-  (`HeroReveal`), nav + footer (`SiteNav`, `SiteFooter`), scroll reveal (`Reveal`), stat counters
-  (`Counter`), testimonial carousel (`TestimonialCarousel`). The rest is still driven by
-  `app/v3/legacy-behaviors.js`. `/v3` now has a few **deliberate** behavior fixes that `/v2` doesn't
-  — they're listed in `CLAUDE.md`, and anything not on that list is a migration bug.
+  and diffed against `/v2`. **That port is now complete** — hero headline (`SplitText`), hero image
+  panel (`HeroReveal`), nav + footer (`SiteNav`, `SiteFooter`), scroll reveal (`Reveal`), stat
+  counters (`Counter`), testimonial carousel (`TestimonialCarousel`), hero cursor blobs
+  (`HeroBlobs`), trust marquee (`TrustMarquee`), WebGL CTA gradient (`GradientBlob`). The only
+  vanilla holdout is `app/v3/border-glow.js` (deliberate — see `CLAUDE.md`). `/v3` also has a few
+  **deliberate** behavior fixes that `/v2` doesn't — they're listed in `CLAUDE.md`, and anything not
+  on that list is a migration bug.
 
 Once `/v3` is component-complete and approved it gets promoted to the real homepage route of
 **`go.kibadvisors.com`**, and `v2.html` + its `/v2` rewrite are removed. The root redirect

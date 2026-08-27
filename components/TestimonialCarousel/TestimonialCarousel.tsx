@@ -6,7 +6,7 @@ import { prefersReducedMotion } from '@/lib/useMotionPreference';
 
 /*
  * Testimonial carousel, replacing the '#testimonialTrack' block in
- * app/v3/legacy-behaviors.js with real React state.
+ * the since-removed app/v3/legacy-behaviors.js with real React state.
  *
  * Ported from the vanilla version, then three of its bugs fixed - see FIXED
  * RELATIVE TO THE VANILLA VERSION below.
