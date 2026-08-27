@@ -11,7 +11,7 @@
  * panel (components/HeroReveal), and the shared nav + footer
  * (components/SiteNav, components/SiteFooter - extracted so the next migrated
  * route reuses them rather than copy-pasting the markup), and the scroll
- * reveal (components/Reveal).
+ * reveal (components/Reveal), and the stat counters (components/Counter).
  *
  * Deliberately NOT swapped:
  * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
@@ -35,6 +35,7 @@ import dynamic from 'next/dynamic';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import SiteNav from '@/components/SiteNav/SiteNav';
 import Reveal from '@/components/Reveal/Reveal';
+import Counter from '@/components/Counter/Counter';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 
@@ -169,10 +170,10 @@ export default function V3Page() {
             </ul>
             <div className="cta-row"><a href="#talk" className="btn btn-primary">Get Funded</a><a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a></div>
             <div className="stat-row">
-              <div className="stat"><div className="stat-num" data-count-to="25" data-prefix="" data-suffix="+">25+</div><div className="stat-label">Years Experience</div></div>
-              <div className="stat"><div className="stat-num" data-count-to="500" data-prefix="" data-suffix="+">500+</div><div className="stat-label">Deals Funded</div></div>
-              <div className="stat"><div className="stat-num" data-count-to="100" data-prefix="$" data-suffix="M+">$100M+</div><div className="stat-label">Capital Accessed</div></div>
-              <div className="stat"><div className="stat-num" data-count-to="50" data-prefix="" data-suffix="+">50+</div><div className="stat-label">States Served</div></div>
+              <div className="stat"><Counter className="stat-num" to={25} suffix="+" /><div className="stat-label">Years Experience</div></div>
+              <div className="stat"><Counter className="stat-num" to={500} suffix="+" /><div className="stat-label">Deals Funded</div></div>
+              <div className="stat"><Counter className="stat-num" to={100} prefix="$" suffix="M+" /><div className="stat-label">Capital Accessed</div></div>
+              <div className="stat"><Counter className="stat-num" to={50} suffix="+" /><div className="stat-label">States Served</div></div>
             </div>
           </div>
           <div className="hero-visual" id="heroVisual">

@@ -176,37 +176,9 @@ export function initLegacyBehaviors() {
   /* The scroll-reveal fade/rise now lives in components/Reveal (one observer
      per element, torn down on unmount) rather than being driven from here. */
 
-  /* Animated stat counters */
-  var counters = document.querySelectorAll('[data-count-to]');
-  function animateCounter(el){
-    var target = parseFloat(el.getAttribute('data-count-to')) || 0;
-    var prefix = el.getAttribute('data-prefix') || '';
-    var suffix = el.getAttribute('data-suffix') || '';
-    if(reduceMotion){ el.textContent = prefix + target + suffix; return; }
-    var start = null;
-    var duration = 1400;
-    function step(ts){
-      if(!start) start = ts;
-      var progress = Math.min((ts - start) / duration, 1);
-      var eased = 1 - Math.pow(1 - progress, 3);
-      var value = Math.floor(eased * target);
-      el.textContent = prefix + value + suffix;
-      if(progress < 1){ requestAnimationFrame(step); }
-      else{ el.textContent = prefix + target + suffix; }
-    }
-    requestAnimationFrame(step);
-  }
-  if('IntersectionObserver' in window){
-    var cio = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting){
-          animateCounter(entry.target);
-          cio.unobserve(entry.target);
-        }
-      });
-    }, { threshold:0.6 });
-    counters.forEach(function(el){ cio.observe(el); });
-  }
+  /* The animated stat counters now live in components/Counter (per-element
+     observer + rAF, both cancelled on unmount) rather than being driven from
+     here. */
 
   /* Cursor-reactive hero blobs */
   var heroVisual = document.getElementById('heroVisual');
