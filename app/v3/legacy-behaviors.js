@@ -204,50 +204,9 @@ export function initLegacyBehaviors() {
     marqueeTrack.innerHTML += marqueeTrack.innerHTML;
   }
 
-  /* Testimonial carousel */
-  var track = document.getElementById('testimonialTrack');
-  var dotsWrap = document.getElementById('testimonialDots');
-  var prevBtn = document.getElementById('testimonialPrev');
-  var nextBtn = document.getElementById('testimonialNext');
-  if(track && dotsWrap){
-    var slides = track.querySelectorAll('.testimonial-slide');
-    var perView = window.innerWidth >= 860 ? 3 : 1;
-    var maxIndex = Math.max(0, slides.length - perView);
-    var index = 0;
-
-    slides.forEach(function(_, i){
-      var dot = document.createElement('button');
-      dot.className = 'testimonial-dot' + (i === 0 ? ' is-active' : '');
-      dot.setAttribute('aria-label', 'Go to testimonial ' + (i + 1));
-      dot.addEventListener('click', function(){ goTo(i > maxIndex ? maxIndex : i); });
-      dotsWrap.appendChild(dot);
-    });
-
-    function update(){
-      var slideWidth = slides[0].getBoundingClientRect().width;
-      track.style.transform = 'translateX(-' + (index * slideWidth) + 'px)';
-      Array.prototype.forEach.call(dotsWrap.children, function(dot, i){
-        dot.classList.toggle('is-active', i === index);
-      });
-    }
-    function goTo(i){
-      index = Math.max(0, Math.min(i, slides.length - 1));
-      update();
-    }
-    prevBtn && prevBtn.addEventListener('click', function(){ goTo(index - 1 < 0 ? slides.length - 1 : index - 1); });
-    nextBtn && nextBtn.addEventListener('click', function(){ goTo(index + 1 >= slides.length ? 0 : index + 1); });
-    window.addEventListener('resize', function(){
-      perView = window.innerWidth >= 860 ? 3 : 1;
-      maxIndex = Math.max(0, slides.length - perView);
-      update();
-    });
-    update();
-
-    if(!reduceMotion){
-      var autoplay = setInterval(function(){ goTo(index + 1 >= slides.length ? 0 : index + 1); }, 6000);
-      track.closest('.testimonial-carousel').addEventListener('mouseenter', function(){ clearInterval(autoplay); });
-    }
-  }
+  /* The testimonial carousel now lives in components/TestimonialCarousel (real
+     React state; autoplay interval cleared on unmount) rather than being driven
+     from here. */
 
   /* Animated WebGL gradient blob (CTA band) */
   var canvas = document.getElementById('blobCanvas');

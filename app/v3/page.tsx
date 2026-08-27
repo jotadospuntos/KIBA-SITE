@@ -11,7 +11,8 @@
  * panel (components/HeroReveal), and the shared nav + footer
  * (components/SiteNav, components/SiteFooter - extracted so the next migrated
  * route reuses them rather than copy-pasting the markup), and the scroll
- * reveal (components/Reveal), and the stat counters (components/Counter).
+ * reveal (components/Reveal), the stat counters (components/Counter), and the
+ * testimonial carousel (components/TestimonialCarousel).
  *
  * Deliberately NOT swapped:
  * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
@@ -36,6 +37,7 @@ import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import SiteNav from '@/components/SiteNav/SiteNav';
 import Reveal from '@/components/Reveal/Reveal';
 import Counter from '@/components/Counter/Counter';
+import TestimonialCarousel from '@/components/TestimonialCarousel/TestimonialCarousel';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 
@@ -324,38 +326,7 @@ export default function V3Page() {
       </section><section className="testimonial-section">
         <div className="wrap">
           <Reveal className="section-head reveal"><div className="eyebrow">What Our Clients &amp; Partners Say</div></Reveal>
-          <Reveal className="testimonial-carousel reveal" id="testimonialCarousel">
-            <div className="testimonial-viewport">
-              <div className="testimonial-track" id="testimonialTrack">
-                <div className="testimonial-slide">
-                  <div className="testimonial-card border-glow-card"><span className="edge-light"></span>
-                    <div className="quote-mark">&ldquo;</div>
-                    <p className="quote">Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout. He made an otherwise stressful process easy and successful! Highly recommend his services!</p>
-                    <div className="testimonial-attrib"><strong>Business Owner</strong> &mdash; SBA Loan Client</div>
-                  </div>
-                </div>
-                <div className="testimonial-slide">
-                  <div className="testimonial-card border-glow-card"><span className="edge-light"></span>
-                    <div className="quote-mark">&ldquo;</div>
-                    <p className="quote">Michael &amp; Barbara helped us navigate the complexities of an SBA loan. They were patient and proficient with their work, and made the process extremely easy. I would work with them again.</p>
-                    <div className="testimonial-attrib"><strong>Business Owner</strong> &mdash; SBA Loan Client</div>
-                  </div>
-                </div>
-                <div className="testimonial-slide">
-                  <div className="testimonial-card border-glow-card"><span className="edge-light"></span>
-                    <div className="quote-mark">&ldquo;</div>
-                    <p className="quote">We continue to work with Michael because of his deep experience in the lending space and his genuine commitment to doing what&rsquo;s right for each client. That level of integrity is why we confidently refer our clients to him.</p>
-                    <div className="testimonial-attrib"><strong>Paul Childers</strong> &mdash; RivenWay Business Solutions</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial-controls">
-              <button className="testimonial-arrow" id="testimonialPrev" aria-label="Previous testimonial"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg></button>
-              <div className="testimonial-dots" id="testimonialDots"></div>
-              <button className="testimonial-arrow" id="testimonialNext" aria-label="Next testimonial"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg></button>
-            </div>
-          </Reveal>
+          <TestimonialCarousel />
         </div>
       </section><section className="cta-band" id="talk">
         <div className="blob-canvas-wrap" aria-hidden="true"><canvas id="blobCanvas"></canvas></div>
