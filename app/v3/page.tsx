@@ -12,7 +12,8 @@
  * (components/SiteNav, components/SiteFooter - extracted so the next migrated
  * route reuses them rather than copy-pasting the markup), and the scroll
  * reveal (components/Reveal), the stat counters (components/Counter), and the
- * testimonial carousel (components/TestimonialCarousel).
+ * testimonial carousel (components/TestimonialCarousel), and the WebGL CTA
+ * gradient (components/GradientBlob).
  *
  * Deliberately NOT swapped:
  * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
@@ -38,6 +39,7 @@ import SiteNav from '@/components/SiteNav/SiteNav';
 import Reveal from '@/components/Reveal/Reveal';
 import Counter from '@/components/Counter/Counter';
 import TestimonialCarousel from '@/components/TestimonialCarousel/TestimonialCarousel';
+import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 
@@ -329,7 +331,7 @@ export default function V3Page() {
           <TestimonialCarousel />
         </div>
       </section><section className="cta-band" id="talk">
-        <div className="blob-canvas-wrap" aria-hidden="true"><canvas id="blobCanvas"></canvas></div>
+        <GradientBlob />
         <Reveal className="wrap cta-band-inner reveal">
           <h2>Let&rsquo;s talk about your next move</h2>
           <p>Book a time with a KIBA advisor and find out what your business qualifies for.</p>
