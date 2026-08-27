@@ -173,21 +173,8 @@ export function initLegacyBehaviors() {
     }
   });
 
-  /* Scroll-reveal fade/rise */
-  var revealEls = document.querySelectorAll('.reveal');
-  if('IntersectionObserver' in window && !reduceMotion){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting){
-          entry.target.classList.add('in-view');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold:0.15, rootMargin:'0px 0px -40px 0px' });
-    revealEls.forEach(function(el){ io.observe(el); });
-  } else {
-    revealEls.forEach(function(el){ el.classList.add('in-view'); });
-  }
+  /* The scroll-reveal fade/rise now lives in components/Reveal (one observer
+     per element, torn down on unmount) rather than being driven from here. */
 
   /* Animated stat counters */
   var counters = document.querySelectorAll('[data-count-to]');

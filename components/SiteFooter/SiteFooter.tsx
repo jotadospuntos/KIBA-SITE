@@ -1,3 +1,5 @@
+import Reveal from '@/components/Reveal/Reveal';
+
 /*
  * Shared site footer (brand column + social + link columns).
  *
@@ -5,9 +7,9 @@
  * this instead of copy-pasting the markup - the same drift trap the legacy
  * public/legacy/*.html pages fell into (see CLAUDE.md "Golden rules").
  *
- * The .reveal classNames are load-bearing: app/v3/legacy-behaviors.js wires
- * every .reveal to an IntersectionObserver for the scroll-in animation. Keep
- * them until that behavior becomes a React hook/wrapper.
+ * The four link columns animate in on scroll via <Reveal>, which renders the
+ * column div itself (not a wrapper) so v3.css's
+ * `.footer-grid .reveal:nth-child(n)` stagger delays still line up.
  *
  * Rendered output is byte-for-byte the same as the inline version it replaced,
  * so /v3 still pixel-diffs clean against /v2.
@@ -19,7 +21,7 @@ export default function SiteFooter() {
     <div className="footer-top-line" aria-hidden="true"></div>
     <div className="wrap">
       <div className="footer-grid">
-        <div className="footer-col footer-brand reveal">
+        <Reveal className="footer-col footer-brand reveal">
           <a className="logo-mark" href="https://kibadvisors.com" aria-label="Kingdom Impact Business Advisors home"><svg viewBox="0 0 1500 736.33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ height: '34px', width: 'auto' }}>
                 <g fill="#ffffff">
                   <polygon points="515.23 206.04 439.07 206.04 327.41 356.49 327.41 206.04 262.93 206.04 262.93 535.9 270.41 535.9 370.86 400.41 456.36 531.23 533.92 531.23 410.57 346.68 515.23 206.04" />
@@ -34,18 +36,18 @@ export default function SiteFooter() {
             <a href="https://www.facebook.com/kibadvisors" target="_blank" rel="noopener noreferrer" aria-label="KIBA on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z" /></svg></a>
           </div>
           <p className="footer-copy">&copy; 2026 Kingdom Impact Business Advisors. All rights reserved.</p>
-        </div>
+        </Reveal>
 
-        <div className="footer-col reveal">
+        <Reveal className="footer-col reveal">
           <h3>Solutions</h3>
           <ul>
             <li><a href="/business-acquisitions">Business Acquisitions</a></li>
             <li><a href="/book-rr">Book a Consultation</a></li>
             <li><a href="/referral-partners">Referral Partners</a></li>
           </ul>
-        </div>
+        </Reveal>
 
-        <div className="footer-col reveal">
+        <Reveal className="footer-col reveal">
           <h3>Company</h3>
           <ul>
             <li><a href="https://kibadvisors.com">About</a></li>
@@ -53,15 +55,15 @@ export default function SiteFooter() {
             <li><a href="https://kibadvisors.com/privacy-policy/">Privacy Policy</a></li>
             <li><a href="https://kibadvisors.com/terms-and-conditions/">Terms &amp; Conditions</a></li>
           </ul>
-        </div>
+        </Reveal>
 
-        <div className="footer-col reveal">
+        <Reveal className="footer-col reveal">
           <h3>Get in Touch</h3>
           <ul>
             <li><a href="tel:2512108445">251-210-8445</a></li>
             <li><a href="mailto:info@kibadvisors.com">info@kibadvisors.com</a></li>
           </ul>
-        </div>
+        </Reveal>
       </div>
     </div>
     </footer>

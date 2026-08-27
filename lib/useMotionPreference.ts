@@ -30,3 +30,23 @@ export function useMotionPreference() {
 
   return state;
 }
+
+/*
+ * Imperative version of the same check, for use inside effects (where hooks
+ * can't go). Mirrors the `reduceMotion` line at the top of
+ * app/v3/legacy-behaviors.js exactly: the visitor's prefers-reduced-motion is
+ * honored unless ?motion=1 forces animation on for previewing.
+ *
+ * Reads the query string directly rather than window.__forceMotion, because
+ * child effects run before the parent effect that sets that flag.
+ */
+export function prefersReducedMotion(): boolean {
+  let forceMotion = false;
+  try {
+    forceMotion = new URLSearchParams(window.location.search).get('motion') === '1';
+  } catch {
+    /* no-op: leaves forceMotion false, so the media query alone decides */
+  }
+  if (forceMotion) return false;
+  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}

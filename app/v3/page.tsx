@@ -10,7 +10,8 @@
  * Swapped so far: the hero headline (components/SplitText), the hero image
  * panel (components/HeroReveal), and the shared nav + footer
  * (components/SiteNav, components/SiteFooter - extracted so the next migrated
- * route reuses them rather than copy-pasting the markup).
+ * route reuses them rather than copy-pasting the markup), and the scroll
+ * reveal (components/Reveal).
  *
  * Deliberately NOT swapped:
  * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
@@ -33,6 +34,7 @@ import { initLegacyBehaviors, initBorderGlow } from './legacy-behaviors';
 import dynamic from 'next/dynamic';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import SiteNav from '@/components/SiteNav/SiteNav';
+import Reveal from '@/components/Reveal/Reveal';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 
@@ -197,13 +199,13 @@ export default function V3Page() {
         </div>
       </section><section>
         <div className="wrap">
-          <div className="section-head reveal">
+          <Reveal className="section-head reveal">
             <div className="eyebrow">Funding Paths</div>
             <h2>Capital solutions built around how your business works</h2>
             <p>Every business raises capital differently. Here&rsquo;s where most of our clients start.</p>
-          </div>
+          </Reveal>
           <div className="solutions-row row-3">
-            <a href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
+            <Reveal as="a" href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z" /><path d="M9 5v12M15 8v12" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -217,8 +219,8 @@ export default function V3Page() {
                   <div className="mock-approval-sub">10-yr term &middot; 6.25% rate</div>
                 </div>
               </div>
-            </a>
-            <a href="/business-acquisitions" className="solution-card is-cream reveal border-glow-card"><span className="edge-light"></span>
+            </Reveal>
+            <Reveal as="a" href="/business-acquisitions" className="solution-card is-cream reveal border-glow-card"><span className="edge-light"></span>
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -229,8 +231,8 @@ export default function V3Page() {
                 <div className="mock-chart-label">Deal value trending <strong>+38%</strong></div>
                 <div className="mock-bars"><span style={{ height: '30%' }}></span><span style={{ height: '45%' }}></span><span style={{ height: '55%' }}></span><span style={{ height: '72%' }}></span><span style={{ height: '95%' }}></span></div>
               </div>
-            </a>
-            <a href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
+            </Reveal>
+            <Reveal as="a" href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -242,10 +244,10 @@ export default function V3Page() {
                 <div className="mock-progress"><div className="mock-progress-fill" style={{ width: '64%' }}></div></div>
                 <div className="mock-days"><span></span><span></span><span className="is-active"></span><span></span><span></span><span></span><span></span></div>
               </div>
-            </a>
+            </Reveal>
           </div>
           <div className="solutions-row row-2">
-            <a href="/referral-partners" className="solution-card is-cream reveal border-glow-card"><span className="edge-light"></span>
+            <Reveal as="a" href="/referral-partners" className="solution-card is-cream reveal border-glow-card"><span className="edge-light"></span>
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3.2" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17.5" cy="8.5" r="2.6" /><path d="M15.5 14.2c2.8.4 5 2.5 5 5.8" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -258,8 +260,8 @@ export default function V3Page() {
                   <div className="mock-network-badge">Trusted by CPAs<span>&amp; community bankers</span></div>
                 </div>
               </div>
-            </a>
-            <a href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
+            </Reveal>
+            <Reveal as="a" href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -271,7 +273,7 @@ export default function V3Page() {
                 <div className="mock-booking-time">Tomorrow &middot; 10:00 AM</div>
                 <div className="mock-booking-btn">Book Now <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg></div>
               </div>
-            </a>
+            </Reveal>
           </div>
         </div>
       </section><section className="image-band">
@@ -280,48 +282,48 @@ export default function V3Page() {
           <div className="bg"></div>
           <div className="ov"></div>
           <svg className="bandtri" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#ffffff" d="M76 0 L152 172 H0 Z" /></svg>
-          <div className="content reveal">
+          <Reveal className="content reveal">
             <div className="big">Clarity first. Capital second. Stewardship always.</div>
             <div className="sub">The principles behind every client we serve and every professional we partner with.</div>
-          </div>
+          </Reveal>
         </div>
       </section><section className="section-alt">
         <div className="wrap">
-          <div className="section-head reveal">
+          <Reveal className="section-head reveal">
             <div className="eyebrow">How It Works</div>
             <h2>Funding, made straightforward</h2>
             <p>Three steps between where your business is today and the capital it needs to grow.</p>
-          </div>
+          </Reveal>
           <div className="benefits-grid">
-            <div className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>1</span></div><h3>Tell us about your business</h3><p>A short conversation about your goals, your numbers, and what you&rsquo;re trying to accomplish.</p></div>
-            <div className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>2</span></div><h3>We build your strategy</h3><p>We structure a bank-ready funding plan matched to your business &mdash; not a one-size-fits-all pitch.</p></div>
-            <div className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>3</span></div><h3>Get matched &amp; funded</h3><p>We connect you with the right lender and stay with you through closing &mdash; start to finish.</p></div>
+            <Reveal className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>1</span></div><h3>Tell us about your business</h3><p>A short conversation about your goals, your numbers, and what you&rsquo;re trying to accomplish.</p></Reveal>
+            <Reveal className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>2</span></div><h3>We build your strategy</h3><p>We structure a bank-ready funding plan matched to your business &mdash; not a one-size-fits-all pitch.</p></Reveal>
+            <Reveal className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>3</span></div><h3>Get matched &amp; funded</h3><p>We connect you with the right lender and stay with you through closing &mdash; start to finish.</p></Reveal>
           </div>
         </div>
       </section><section>
         <div className="wrap">
-          <div className="section-head reveal">
+          <Reveal className="section-head reveal">
             <div className="eyebrow">Who We Work With</div>
             <h2>Whether you&rsquo;re raising capital or referring a client</h2>
             <p>Two paths in. The same standard of care either way.</p>
-          </div>
+          </Reveal>
           <div className="grid-2">
-            <a href="/book-rr" className="benefit-card reveal border-glow-card" style={{ textDecoration: 'none', display: 'block' }}><span className="edge-light"></span>
+            <Reveal as="a" href="/book-rr" className="benefit-card reveal border-glow-card" style={{ textDecoration: 'none', display: 'block' }}><span className="edge-light"></span>
               <div className="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z" /><path d="M9 5v12M15 8v12" /></svg></div>
               <h3>I&rsquo;m a business owner</h3>
               <p>Book a call with a KIBA advisor and find out what you actually qualify for &mdash; no pressure, no obligation.</p>
-            </a>
-            <a href="/referral-partners" className="benefit-card reveal border-glow-card" style={{ textDecoration: 'none', display: 'block' }}><span className="edge-light"></span>
+            </Reveal>
+            <Reveal as="a" href="/referral-partners" className="benefit-card reveal border-glow-card" style={{ textDecoration: 'none', display: 'block' }}><span className="edge-light"></span>
               <div className="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3.2" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17.5" cy="8.5" r="2.6" /><path d="M15.5 14.2c2.8.4 5 2.5 5 5.8" /></svg></div>
               <h3>I&rsquo;m a referral partner</h3>
               <p>CPAs, bankers, and advisors &mdash; give your clients thoughtful, well-structured guidance without leaving the relationship.</p>
-            </a>
+            </Reveal>
           </div>
         </div>
       </section><section className="testimonial-section">
         <div className="wrap">
-          <div className="section-head reveal"><div className="eyebrow">What Our Clients &amp; Partners Say</div></div>
-          <div className="testimonial-carousel reveal" id="testimonialCarousel">
+          <Reveal className="section-head reveal"><div className="eyebrow">What Our Clients &amp; Partners Say</div></Reveal>
+          <Reveal className="testimonial-carousel reveal" id="testimonialCarousel">
             <div className="testimonial-viewport">
               <div className="testimonial-track" id="testimonialTrack">
                 <div className="testimonial-slide">
@@ -352,11 +354,11 @@ export default function V3Page() {
               <div className="testimonial-dots" id="testimonialDots"></div>
               <button className="testimonial-arrow" id="testimonialNext" aria-label="Next testimonial"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg></button>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section><section className="cta-band" id="talk">
         <div className="blob-canvas-wrap" aria-hidden="true"><canvas id="blobCanvas"></canvas></div>
-        <div className="wrap cta-band-inner reveal">
+        <Reveal className="wrap cta-band-inner reveal">
           <h2>Let&rsquo;s talk about your next move</h2>
           <p>Book a time with a KIBA advisor and find out what your business qualifies for.</p>
           <div className="talk-card border-glow-card"><span className="edge-light"></span><div className="talk-embed">
@@ -366,7 +368,7 @@ export default function V3Page() {
             <a className="contact-item" href="tel:2512108445"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.4 2.1L8 9.9a16 16 0 0 0 6 6l1.4-1.4a2 2 0 0 1 2.1-.4c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.8 2Z" /></svg>251-210-8445</a>
             <a className="contact-item" href="mailto:info@kibadvisors.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>info@kibadvisors.com</a>
           </div>
-        </div>
+        </Reveal>
       </section>
       <SiteFooter />
     </>
