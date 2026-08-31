@@ -20,38 +20,85 @@
  * band consistent with the homepage instead of a light-mode card grid.
  */
 
+import dynamic from 'next/dynamic';
 import '../home.css';
 import SiteNav from '@/components/SiteNav/SiteNav';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import Reveal from '@/components/Reveal/Reveal';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
+import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
+import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import { TeamSectionBlock } from '@/components/ui/team-section-block-shadcnui';
+import { useMotionPreference } from '@/lib/useMotionPreference';
 import { TEAM } from './team-data';
 
+/* Code-split for the same reason as the homepage: SplitText pulls in GSAP
+   (~86KB), which would otherwise sit in this route's first-load bundle. ssr
+   stays true so the <h1> is still server-rendered - it's the page's main
+   heading. */
+const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
+
+/* The one hero photo cut for this panel (2600x2000) - see the note in
+   app/HomePage.tsx. The other photos in public/img/hero/ are 800px wide, cut
+   for small tiles, and visibly soft when stretched to a ~640x700 panel. Shared
+   with the homepage hero until there's a real photo of the team to put here. */
+const HERO_IMAGE = '/img/hero/owner-cafe-laptop.webp';
+const HERO_IMAGE_ALT = 'A KIBA advisor meeting with a business owner';
+
 export default function MeetOurTeamPage() {
+  /* Passed to SplitText so the headline reveal honors ?motion=1 like every
+     other animated component here. */
+  const { forceMotion } = useMotionPreference();
+
   return (
     <>
       <SiteNav />
 
+      {/* Same hero as the homepage, structurally: watermark, split-text headline,
+          the cursor-parallax blobs and the angled clip-path image panel that
+          bleeds to the right viewport edge. The panel is what makes this hero
+          full-height - .hero's own padding is left alone, because .hero-visual's
+          -76px/-96px margins are tuned to it. */}
       <header className="hero">
-        <div className="wrap">
-          <div style={{ position: 'relative', zIndex: 1, maxWidth: '720px' }}>
+        <svg className="hero-watermark" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>
+        <div className="wrap"><div className="hero-inner">
+          <div>
             <div className="eyebrow hero-eyebrow">Our Team</div>
-            <h1>Meet the Team</h1>
-            <p className="hero-sub" style={{ maxWidth: '620px' }}>
+            <SplitText
+              tag="h1"
+              /* 'words, chars', not 'chars': each char is an inline-block, so
+                 without the word wrapper the browser can break mid-word. */
+              splitType="words, chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: 0 }}
+              duration={1.1}
+              delay={18}
+              ease="power3.out"
+              forceMotion={forceMotion}
+            >
+              Meet the team behind<br />every funding decision.
+            </SplitText>
+            <p className="hero-sub">
               A small, experienced team you actually talk to. Every client works directly with the
               people below &mdash; from the first conversation through funding.
             </p>
+            <ul className="klist on-dark" style={{ maxWidth: '470px', margin: '0 0 30px' }}>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>One point of contact from first call through funding.</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Over 50 years of combined lending experience.</li>
+            </ul>
             <div className="cta-row" style={{ marginBottom: 0 }}>
               <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </div>
           </div>
-        </div>
+          <HeroBlobs>
+            <svg className="blob" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>
+            <HeroReveal className="hero-reveal" image={HERO_IMAGE} alt={HERO_IMAGE_ALT} />
+          </HeroBlobs>
+        </div></div>
       </header>
 
-      <div className="dark">
-        <TeamSectionBlock
+      <TeamSectionBlock
           eyebrow="Who You’ll Work With"
           heading="The people behind"
           headingAccent="Kingdom Impact Business Advisors"
@@ -61,10 +108,9 @@ export default function MeetOurTeamPage() {
             title: 'Start the Conversation',
             body: 'Tell us where your business is headed and we’ll walk you through your real options — no pressure, no obligation.',
             label: 'Book a Consultation',
-            href: '/book-rr'
-          }}
-        />
-      </div>
+          href: '/book-rr'
+        }}
+      />
 
       {/* The company line, using the same image band the homepage uses for it. */}
       <section className="image-band">

@@ -148,8 +148,16 @@ example of how a new route should be assembled.
   `/advisors/*` booking pages use. Each card's calendar icon deep-links to that person's booking
   page.
 - **Structure:** `page.tsx` (server component: metadata + noindex) → `MeetOurTeamPage.tsx` (client),
-  reusing `SiteNav`, `SiteFooter`, `Reveal`, `GradientBlob` and the `.hero` / `.band` / `.cta-band`
-  shells from `home.css`. Only the team block itself is new.
+  reusing `SiteNav`, `SiteFooter`, `Reveal`, `GradientBlob`, `SplitText`, `HeroBlobs`, `HeroReveal`
+  and the `.hero` / `.band` / `.cta-band` shells from `home.css`. Only the team block itself is new.
+- **The hero is the homepage hero**, structurally: watermark, two-column `.hero-inner`, the
+  split-text headline, the cursor-parallax blobs and the angled clip-path image panel. Don't change
+  `.hero`'s padding to resize it — `.hero-inner > .hero-visual`'s `-76px/-96px` margins are tuned to
+  that exact padding, and the panel is what gives the hero its height anyway.
+- **The hero photo is `owner-cafe-laptop.webp`, shared with the homepage.** It's the only image in
+  `public/img/hero/` cut for this panel (2600x2000); the rest are 800px wide and visibly soft when
+  stretched to it. Swap in a real photo of the team when there is one, cut to roughly those
+  dimensions.
 - **`noindex`** matches the rest of the subdomain and is doubly deliberate here: the same bios are
   live on kibadvisors.com, and two indexable copies would compete. The human's call to change.
 - **`SiteNav` gained a "Team" link** pointing at this route, so it now shows on the homepage too.
@@ -158,11 +166,15 @@ example of how a new route should be assembled.
 
 `components/ui/team-section-block-shadcnui.tsx` is an integrated third-party shadcn block
 (framer-motion 3D-tilt cards). Two things were changed on the way in: it's **props-driven** (content
-lives in `team-data.ts`, not in the component), and it's styled **only off the semantic tokens**
-(`bg-card`, `text-muted-foreground`, `bg-primary`, …) with no literal colors. The page wraps it in
-`<div className="dark">`, which is what maps those tokens onto KIBA's navy palette via the `.dark`
-block in `globals.css` — that's how a generic light-mode block became an on-brand navy band without
-restyling it.
+lives in `team-data.ts`, not in the component), and it's restyled onto **KIBA's palette tokens from
+the `@theme` block** in `globals.css` (`bg-navy-deep`, `text-ink`, `text-slate`, `ring-line`,
+`bg-blue`, …) rather than the block's own colors or the light/dark semantic tokens. The result is
+the homepage's own combination — white cards on a navy band, same contrast as `.solution-card` /
+`.benefit-card`. (An earlier pass wrapped it in `<div className="dark">` to remap the semantic
+tokens instead; that produced blue-on-blue cards and is gone.)
+
+Cards size to their own content (`items-start`, no `h-full`): expanding one bio used to stretch its
+two siblings and leave big empty panels beside it.
 
 **The trap:** `home.css` is a plain **unlayered** stylesheet, and every Tailwind utility lives in
 `@layer utilities`. Unlayered CSS beats layered CSS regardless of specificity, so on any route that
