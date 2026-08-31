@@ -778,140 +778,6 @@
   .mock-booking-time{ font-family:'General Sans','Instrument Sans',sans-serif; font-weight:700; font-size:18px; color:var(--ink); margin-bottom:12px; }
   .mock-booking-btn{ display:inline-flex; align-items:center; gap:6px; background:var(--navy-deep); color:#fff; font-family:'Instrument Sans',sans-serif; font-size:12.5px; font-weight:600; padding:8px 16px; border-radius:999px; }
 
-  /* ---------- BORDER GLOW (React Bits, vanilla JS/CSS port) ---------- */
-  .border-glow-card{
-    --edge-proximity:0;
-    --cursor-angle:45deg;
-    --edge-sensitivity:24;
-    --color-sensitivity:calc(var(--edge-sensitivity) + 20);
-    --glow-padding:8px;
-    --cone-spread:25;
-    --fill-opacity:0.30;
-    --card-bg:#ffffff;
-
-    --gradient-one: radial-gradient(at 80% 55%, #2563eb 0px, transparent 50%);
-    --gradient-two: radial-gradient(at 69% 34%, #6d94f5 0px, transparent 50%);
-    --gradient-three: radial-gradient(at 8% 6%, #0025ae 0px, transparent 50%);
-    --gradient-four: radial-gradient(at 41% 38%, #2563eb 0px, transparent 50%);
-    --gradient-five: radial-gradient(at 86% 85%, #6d94f5 0px, transparent 50%);
-    --gradient-six: radial-gradient(at 82% 18%, #0025ae 0px, transparent 50%);
-    --gradient-seven: radial-gradient(at 51% 4%, #6d94f5 0px, transparent 50%);
-    --gradient-base: linear-gradient(#2563eb 0 100%);
-
-    --glow-color: hsl(221deg 83% 55% / 100%);
-    --glow-color-60: hsl(221deg 83% 55% / 60%);
-    --glow-color-50: hsl(221deg 83% 55% / 50%);
-    --glow-color-40: hsl(221deg 83% 55% / 40%);
-    --glow-color-30: hsl(221deg 83% 55% / 30%);
-    --glow-color-20: hsl(221deg 83% 55% / 20%);
-    --glow-color-10: hsl(221deg 83% 55% / 10%);
-
-    position:relative;
-    isolation:isolate;
-    transform:translate3d(0,0,0.01px);
-    overflow:visible;
-  }
-  .border-glow-card.is-cream{ --card-bg:#f8f4ee; }
-  /* solution-card keeps overflow:hidden (clips the bottom mockup graphic to its
-     rounded corners), so its glow stays inside the card rather than bleeding out */
-  .solution-card.border-glow-card{ --glow-padding:0px; }
-
-  .border-glow-card::before,
-  .border-glow-card::after,
-  .border-glow-card > .edge-light{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:inherit;
-    transition:opacity 0.25s ease-out;
-    z-index:-1;
-  }
-  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::before,
-  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::after,
-  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on) > .edge-light{
-    opacity:0;
-    transition:opacity 0.75s ease-in-out;
-  }
-  .border-glow-card::before{
-    border:1px solid transparent;
-    background:
-      linear-gradient(var(--card-bg) 0 100%) padding-box,
-      linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
-      var(--gradient-one) border-box,
-      var(--gradient-two) border-box,
-      var(--gradient-three) border-box,
-      var(--gradient-four) border-box,
-      var(--gradient-five) border-box,
-      var(--gradient-six) border-box,
-      var(--gradient-seven) border-box,
-      var(--gradient-base) border-box;
-    opacity:calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
-    mask-image:
-      conic-gradient(
-        from var(--cursor-angle) at center,
-        black calc(var(--cone-spread) * 1%),
-        transparent calc((var(--cone-spread) + 15) * 1%),
-        transparent calc((100 - var(--cone-spread) - 15) * 1%),
-        black calc((100 - var(--cone-spread)) * 1%)
-      );
-  }
-  .border-glow-card::after{
-    border:1px solid transparent;
-    background:
-      var(--gradient-one) padding-box,
-      var(--gradient-two) padding-box,
-      var(--gradient-three) padding-box,
-      var(--gradient-four) padding-box,
-      var(--gradient-five) padding-box,
-      var(--gradient-six) padding-box,
-      var(--gradient-seven) padding-box,
-      var(--gradient-base) padding-box;
-    mask-image:
-      linear-gradient(to bottom, black, black),
-      radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
-      radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
-      radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
-      radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
-      radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
-      conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
-    mask-composite: subtract, add, add, add, add, add;
-    opacity:calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
-    mix-blend-mode:multiply;
-  }
-  .border-glow-card > .edge-light{
-    inset:calc(var(--glow-padding) * -1);
-    pointer-events:none;
-    z-index:-1;
-    mask-image:
-      conic-gradient(from var(--cursor-angle) at center, black 15%, transparent 34%, transparent 66%, black 85%);
-    opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
-    mix-blend-mode:normal;
-  }
-  .border-glow-card > .edge-light::before{
-    content:"";
-    position:absolute;
-    inset:var(--glow-padding);
-    border-radius:inherit;
-    box-shadow:
-      inset 0 0 0 1px var(--glow-color),
-      inset 0 0 1px 0 var(--glow-color-60),
-      inset 0 0 2px 0 var(--glow-color-50),
-      inset 0 0 4px 0 var(--glow-color-40),
-      inset 0 0 8px 0 var(--glow-color-30),
-      inset 0 0 14px 1px var(--glow-color-20),
-      inset 0 0 26px 1px var(--glow-color-10),
-      0 0 1px 0 var(--glow-color-60),
-      0 0 2px 0 var(--glow-color-50),
-      0 0 4px 0 var(--glow-color-40),
-      0 0 8px 0 var(--glow-color-30),
-      0 0 14px 1px var(--glow-color-20),
-      0 0 26px 1px var(--glow-color-10);
-  }
-  @media (prefers-reduced-motion: reduce){
-    html:not(.force-motion) .border-glow-card::before,
-    html:not(.force-motion) .border-glow-card::after,
-    html:not(.force-motion) .border-glow-card > .edge-light{ transition:none !important; }
-  }
 </style><!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -1022,7 +888,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <p>Every business raises capital differently. Here&rsquo;s where most of our clients start.</p>
     </div>
     <div class="solutions-row row-3">
-      <a href="/book-rr" class="solution-card reveal border-glow-card"><span class="edge-light"></span>
+      <a href="/book-rr" class="solution-card reveal">
         <div class="solution-card-top">
           <div class="solution-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z"/><path d="M9 5v12M15 8v12"/></svg></div>
           <span class="solution-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
@@ -1037,7 +903,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
           </div>
         </div>
       </a>
-      <a href="/business-acquisitions" class="solution-card is-cream reveal border-glow-card"><span class="edge-light"></span>
+      <a href="/business-acquisitions" class="solution-card is-cream reveal">
         <div class="solution-card-top">
           <div class="solution-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></div>
           <span class="solution-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
@@ -1049,7 +915,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
           <div class="mock-bars"><span style="height:30%"></span><span style="height:45%"></span><span style="height:55%"></span><span style="height:72%"></span><span style="height:95%"></span></div>
         </div>
       </a>
-      <a href="/book-rr" class="solution-card reveal border-glow-card"><span class="edge-light"></span>
+      <a href="/book-rr" class="solution-card reveal">
         <div class="solution-card-top">
           <div class="solution-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
           <span class="solution-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
@@ -1064,7 +930,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       </a>
     </div>
     <div class="solutions-row row-2">
-      <a href="/referral-partners" class="solution-card is-cream reveal border-glow-card"><span class="edge-light"></span>
+      <a href="/referral-partners" class="solution-card is-cream reveal">
         <div class="solution-card-top">
           <div class="solution-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15.5 14.2c2.8.4 5 2.5 5 5.8"/></svg></div>
           <span class="solution-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
@@ -1078,7 +944,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
           </div>
         </div>
       </a>
-      <a href="/book-rr" class="solution-card reveal border-glow-card"><span class="edge-light"></span>
+      <a href="/book-rr" class="solution-card reveal">
         <div class="solution-card-top">
           <div class="solution-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
           <span class="solution-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
@@ -1112,9 +978,9 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <p>Three steps between where your business is today and the capital it needs to grow.</p>
     </div>
     <div class="benefits-grid">
-      <div class="benefit-card reveal border-glow-card"><span class="edge-light"></span><div class="benefit-icon"><span style="font-family:'General Sans','Instrument Sans',sans-serif;font-weight:700;font-size:19px;color:#fff;">1</span></div><h3>Tell us about your business</h3><p>A short conversation about your goals, your numbers, and what you&rsquo;re trying to accomplish.</p></div>
-      <div class="benefit-card reveal border-glow-card"><span class="edge-light"></span><div class="benefit-icon"><span style="font-family:'General Sans','Instrument Sans',sans-serif;font-weight:700;font-size:19px;color:#fff;">2</span></div><h3>We build your strategy</h3><p>We structure a bank-ready funding plan matched to your business &mdash; not a one-size-fits-all pitch.</p></div>
-      <div class="benefit-card reveal border-glow-card"><span class="edge-light"></span><div class="benefit-icon"><span style="font-family:'General Sans','Instrument Sans',sans-serif;font-weight:700;font-size:19px;color:#fff;">3</span></div><h3>Get matched &amp; funded</h3><p>We connect you with the right lender and stay with you through closing &mdash; start to finish.</p></div>
+      <div class="benefit-card reveal"><div class="benefit-icon"><span style="font-family:'General Sans','Instrument Sans',sans-serif;font-weight:700;font-size:19px;color:#fff;">1</span></div><h3>Tell us about your business</h3><p>A short conversation about your goals, your numbers, and what you&rsquo;re trying to accomplish.</p></div>
+      <div class="benefit-card reveal"><div class="benefit-icon"><span style="font-family:'General Sans','Instrument Sans',sans-serif;font-weight:700;font-size:19px;color:#fff;">2</span></div><h3>We build your strategy</h3><p>We structure a bank-ready funding plan matched to your business &mdash; not a one-size-fits-all pitch.</p></div>
+      <div class="benefit-card reveal"><div class="benefit-icon"><span style="font-family:'General Sans','Instrument Sans',sans-serif;font-weight:700;font-size:19px;color:#fff;">3</span></div><h3>Get matched &amp; funded</h3><p>We connect you with the right lender and stay with you through closing &mdash; start to finish.</p></div>
     </div>
   </div>
 </section><section>
@@ -1125,12 +991,12 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <p>Two paths in. The same standard of care either way.</p>
     </div>
     <div class="grid-2">
-      <a href="/book-rr" class="benefit-card reveal border-glow-card" style="text-decoration:none;display:block;"><span class="edge-light"></span>
+      <a href="/book-rr" class="benefit-card reveal" style="text-decoration:none;display:block;">
         <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z"/><path d="M9 5v12M15 8v12"/></svg></div>
         <h3>I&rsquo;m a business owner</h3>
         <p>Book a call with a KIBA advisor and find out what you actually qualify for &mdash; no pressure, no obligation.</p>
       </a>
-      <a href="/referral-partners" class="benefit-card reveal border-glow-card" style="text-decoration:none;display:block;"><span class="edge-light"></span>
+      <a href="/referral-partners" class="benefit-card reveal" style="text-decoration:none;display:block;">
         <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15.5 14.2c2.8.4 5 2.5 5 5.8"/></svg></div>
         <h3>I&rsquo;m a referral partner</h3>
         <p>CPAs, bankers, and advisors &mdash; give your clients thoughtful, well-structured guidance without leaving the relationship.</p>
@@ -1144,21 +1010,21 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <div class="testimonial-viewport">
         <div class="testimonial-track" id="testimonialTrack">
           <div class="testimonial-slide">
-            <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
+            <div class="testimonial-card">
               <div class="quote-mark">&ldquo;</div>
               <p class="quote">Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout. He made an otherwise stressful process easy and successful! Highly recommend his services!</p>
               <div class="testimonial-attrib"><strong>Business Owner</strong> &mdash; SBA Loan Client</div>
             </div>
           </div>
           <div class="testimonial-slide">
-            <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
+            <div class="testimonial-card">
               <div class="quote-mark">&ldquo;</div>
               <p class="quote">Michael &amp; Barbara helped us navigate the complexities of an SBA loan. They were patient and proficient with their work, and made the process extremely easy. I would work with them again.</p>
               <div class="testimonial-attrib"><strong>Business Owner</strong> &mdash; SBA Loan Client</div>
             </div>
           </div>
           <div class="testimonial-slide">
-            <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
+            <div class="testimonial-card">
               <div class="quote-mark">&ldquo;</div>
               <p class="quote">We continue to work with Michael because of his deep experience in the lending space and his genuine commitment to doing what&rsquo;s right for each client. That level of integrity is why we confidently refer our clients to him.</p>
               <div class="testimonial-attrib"><strong>Paul Childers</strong> &mdash; RivenWay Business Solutions</div>
@@ -1178,7 +1044,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
   <div class="wrap cta-band-inner reveal">
     <h2>Let&rsquo;s talk about your next move</h2>
     <p>Book a time with a KIBA advisor and find out what your business qualifies for.</p>
-    <div class="talk-card border-glow-card"><span class="edge-light"></span><div class="talk-embed">
+    <div class="talk-card"><div class="talk-embed">
       <iframe src="https://api.leadconnectorhq.com/widget/booking/hNVlyN1rtNcxpWkSshP8" scrolling="no" title="Schedule a conversation with KIBA"></iframe>
     </div></div>
     <div class="contact-row" style="margin-top:36px;">
@@ -1574,43 +1440,6 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       if(canvas && canvas.parentNode){ canvas.parentNode.style.display = 'none'; }
     }
   }
-})();
-</script>
-<script>
-/* BorderGlow hover effect — vanilla port of the React Bits BorderGlow component */
-(function(){
-  function center(el){ var r = el.getBoundingClientRect(); return [r.width/2, r.height/2]; }
-  function edgeProximity(el, x, y){
-    var c = center(el), dx = x - c[0], dy = y - c[1];
-    var kx = Infinity, ky = Infinity;
-    if(dx !== 0) kx = c[0] / Math.abs(dx);
-    if(dy !== 0) ky = c[1] / Math.abs(dy);
-    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
-  }
-  function cursorAngle(el, x, y){
-    var c = center(el), dx = x - c[0], dy = y - c[1];
-    if(dx === 0 && dy === 0) return 0;
-    var deg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
-    if(deg < 0) deg += 360;
-    return deg;
-  }
-  /* The glow is driven purely by pointer position, so it is hover feedback,
-     not autonomous animation. It therefore stays enabled under
-     prefers-reduced-motion; the eased transition is dropped in CSS instead,
-     so the glow appears instantly with no animation. */
-  document.querySelectorAll('.border-glow-card').forEach(function(card){
-    card.addEventListener('pointermove', function(e){
-      var rect = card.getBoundingClientRect();
-      var x = e.clientX - rect.left, y = e.clientY - rect.top;
-      card.style.setProperty('--edge-proximity', (edgeProximity(card, x, y) * 100).toFixed(3));
-      card.style.setProperty('--cursor-angle', cursorAngle(card, x, y).toFixed(3) + 'deg');
-    });
-    card.addEventListener('pointerenter', function(){ card.classList.add('glow-on'); });
-    card.addEventListener('pointerleave', function(){
-      card.classList.remove('glow-on');
-      card.style.setProperty('--edge-proximity', '0');
-    });
-  });
 })();
 </script>
 </body></html>

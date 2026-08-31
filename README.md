@@ -16,8 +16,8 @@ production never breaks mid-migration:
 - `public/legacy/partners/_template.html` and `public/legacy/advisors/_template.html` are the
   templates to copy when adding a new partner/advisor page — see `CLAUDE.md` for the full
   add-a-page steps.
-- `dev/` holds one-off dev/diagnostic HTML files (e.g. component previews) — not deployed, kept
-  out of `public/` on purpose so they aren't publicly reachable.
+- `dev/` (currently empty) is where one-off dev/diagnostic HTML goes — kept out of `public/` on
+  purpose so it isn't publicly reachable.
 
 ## Homepage
 
@@ -27,12 +27,18 @@ The Fundwell-inspired redesign **is** the homepage of go.kibadvisors.com:
   `app/home.css`. It was built at `/v3` as a React port of the old static draft and promoted to the
   root once every behavior was a real component: `SplitText`, `HeroReveal`, `SiteNav`, `SiteFooter`,
   `Reveal`, `Counter`, `TestimonialCarousel`, `HeroBlobs`, `TrustMarquee`, `GradientBlob`. `/v3` now
-  redirects to `/`. The only vanilla holdout is `app/border-glow.js` (deliberate).
+  redirects to `/`. No vanilla DOM code is left.
 - **`/v2`** (`public/legacy/v2.html`) — the original static draft, still served and still `noindex`.
   **Kept on purpose** as the visual reference to diff the homepage against; not cleanup.
 - The homepage is **`noindex`** by decision: this subdomain is a landing/booking host, and
   `kibadvisors.com` (a separate WordPress site this repo never touches) stays the only indexable
   KIBA homepage. See `CLAUDE.md` before changing that or the divergence list.
+
+## Removed: the border glow
+
+The cursor-following card glow was removed from the whole repo by request — homepage, every legacy
+page, both templates, and the `/v2` draft — along with `components/BorderGlow/` and the `dev/`
+previews. It's a design decision, not lost work; see `CLAUDE.md` before re-adding anything like it.
 
 ## Build
 

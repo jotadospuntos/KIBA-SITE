@@ -16,14 +16,7 @@
  * Styling is app/home.css: v2.html's <style> block verbatim apart from one
  * clearly-marked rule at the end. Deliberately NOT Tailwind - see CLAUDE.md.
  *
- * Deliberately NOT swapped:
- * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
- *   (5 of the 14 glow cards are <a href> links), and its inner wrapper's
- *   display:flex/overflow:auto breaks .solution-visual's margin-top:auto. Using
- *   it would need a polymorphic-element fork, a display:contents neutralizer, a
- *   skipped stylesheet and 6 tuned values re-passed as props - i.e. a heavier
- *   fork than the vanilla implementation in border-glow.js, for identical
- *   output. Not worth it.
+ * Deliberately NOT used:
  * - shadcn NavigationMenu/Sheet/Accordion for the nav. They ship styled for
  *   light/dark semantic tokens and would need rewriting for the navy nav, and
  *   the accessibility they'd buy is already implemented by hand: the mobile
@@ -33,7 +26,6 @@
 
 import { useEffect, useRef } from 'react';
 import './home.css';
-import { initBorderGlow } from './border-glow';
 import dynamic from 'next/dynamic';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import SiteNav from '@/components/SiteNav/SiteNav';
@@ -107,8 +99,8 @@ function loadScriptOnce(src: string): Promise<void> {
 }
 
 export default function HomePage() {
-  /* Guards against React 18 StrictMode double-invoking the effect in dev, which
-     would otherwise attach the border-glow listeners twice. */
+  /* Guards against React 18 StrictMode double-invoking this one-time setup in
+     dev (the ?motion=1 flag and the GHL embed script). */
   const inited = useRef(false);
 
   /* Passed down to SplitText so the headline reveal honors ?motion=1 the same
@@ -137,7 +129,6 @@ export default function HomePage() {
         /* no-op: only needed to size the GHL iframe */
       }
       if (cancelled) return;
-      initBorderGlow();
     })();
 
     return () => {
@@ -195,7 +186,7 @@ export default function HomePage() {
             <p>Every business raises capital differently. Here&rsquo;s where most of our clients start.</p>
           </Reveal>
           <div className="solutions-row row-3">
-            <Reveal as="a" href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
+            <Reveal as="a" href="/book-rr" className="solution-card reveal">
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z" /><path d="M9 5v12M15 8v12" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -210,7 +201,7 @@ export default function HomePage() {
                 </div>
               </div>
             </Reveal>
-            <Reveal as="a" href="/business-acquisitions" className="solution-card is-cream reveal border-glow-card"><span className="edge-light"></span>
+            <Reveal as="a" href="/business-acquisitions" className="solution-card is-cream reveal">
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -222,7 +213,7 @@ export default function HomePage() {
                 <div className="mock-bars"><span style={{ height: '30%' }}></span><span style={{ height: '45%' }}></span><span style={{ height: '55%' }}></span><span style={{ height: '72%' }}></span><span style={{ height: '95%' }}></span></div>
               </div>
             </Reveal>
-            <Reveal as="a" href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
+            <Reveal as="a" href="/book-rr" className="solution-card reveal">
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -237,7 +228,7 @@ export default function HomePage() {
             </Reveal>
           </div>
           <div className="solutions-row row-2">
-            <Reveal as="a" href="/referral-partners" className="solution-card is-cream reveal border-glow-card"><span className="edge-light"></span>
+            <Reveal as="a" href="/referral-partners" className="solution-card is-cream reveal">
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3.2" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17.5" cy="8.5" r="2.6" /><path d="M15.5 14.2c2.8.4 5 2.5 5 5.8" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -251,7 +242,7 @@ export default function HomePage() {
                 </div>
               </div>
             </Reveal>
-            <Reveal as="a" href="/book-rr" className="solution-card reveal border-glow-card"><span className="edge-light"></span>
+            <Reveal as="a" href="/book-rr" className="solution-card reveal">
               <div className="solution-card-top">
                 <div className="solution-icon"><svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg></div>
                 <span className="solution-arrow"><svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg></span>
@@ -285,9 +276,9 @@ export default function HomePage() {
             <p>Three steps between where your business is today and the capital it needs to grow.</p>
           </Reveal>
           <div className="benefits-grid">
-            <Reveal className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>1</span></div><h3>Tell us about your business</h3><p>A short conversation about your goals, your numbers, and what you&rsquo;re trying to accomplish.</p></Reveal>
-            <Reveal className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>2</span></div><h3>We build your strategy</h3><p>We structure a bank-ready funding plan matched to your business &mdash; not a one-size-fits-all pitch.</p></Reveal>
-            <Reveal className="benefit-card reveal border-glow-card"><span className="edge-light"></span><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>3</span></div><h3>Get matched &amp; funded</h3><p>We connect you with the right lender and stay with you through closing &mdash; start to finish.</p></Reveal>
+            <Reveal className="benefit-card reveal"><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>1</span></div><h3>Tell us about your business</h3><p>A short conversation about your goals, your numbers, and what you&rsquo;re trying to accomplish.</p></Reveal>
+            <Reveal className="benefit-card reveal"><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>2</span></div><h3>We build your strategy</h3><p>We structure a bank-ready funding plan matched to your business &mdash; not a one-size-fits-all pitch.</p></Reveal>
+            <Reveal className="benefit-card reveal"><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>3</span></div><h3>Get matched &amp; funded</h3><p>We connect you with the right lender and stay with you through closing &mdash; start to finish.</p></Reveal>
           </div>
         </div>
       </section><section>
@@ -298,12 +289,12 @@ export default function HomePage() {
             <p>Two paths in. The same standard of care either way.</p>
           </Reveal>
           <div className="grid-2">
-            <Reveal as="a" href="/book-rr" className="benefit-card reveal border-glow-card" style={{ textDecoration: 'none', display: 'block' }}><span className="edge-light"></span>
+            <Reveal as="a" href="/book-rr" className="benefit-card reveal" style={{ textDecoration: 'none', display: 'block' }}>
               <div className="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z" /><path d="M9 5v12M15 8v12" /></svg></div>
               <h3>I&rsquo;m a business owner</h3>
               <p>Book a call with a KIBA advisor and find out what you actually qualify for &mdash; no pressure, no obligation.</p>
             </Reveal>
-            <Reveal as="a" href="/referral-partners" className="benefit-card reveal border-glow-card" style={{ textDecoration: 'none', display: 'block' }}><span className="edge-light"></span>
+            <Reveal as="a" href="/referral-partners" className="benefit-card reveal" style={{ textDecoration: 'none', display: 'block' }}>
               <div className="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3.2" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17.5" cy="8.5" r="2.6" /><path d="M15.5 14.2c2.8.4 5 2.5 5 5.8" /></svg></div>
               <h3>I&rsquo;m a referral partner</h3>
               <p>CPAs, bankers, and advisors &mdash; give your clients thoughtful, well-structured guidance without leaving the relationship.</p>
@@ -320,7 +311,7 @@ export default function HomePage() {
         <Reveal className="wrap cta-band-inner reveal">
           <h2>Let&rsquo;s talk about your next move</h2>
           <p>Book a time with a KIBA advisor and find out what your business qualifies for.</p>
-          <div className="talk-card border-glow-card"><span className="edge-light"></span><div className="talk-embed">
+          <div className="talk-card"><div className="talk-embed">
             <iframe src="https://api.leadconnectorhq.com/widget/booking/hNVlyN1rtNcxpWkSshP8" scrolling="no" title="Schedule a conversation with KIBA"></iframe>
           </div></div>
           <div className="contact-row" style={{ marginTop: '36px' }}>

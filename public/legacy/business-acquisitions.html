@@ -482,140 +482,6 @@
   .testimonial-grid-3{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; max-width:1100px; margin:0 auto; }
   @media (max-width:860px){ .testimonial-grid-3{ grid-template-columns:1fr; max-width:560px; } }
 
-  /* ---------- BORDER GLOW (React Bits, vanilla JS/CSS port) ---------- */
-  .border-glow-card{
-    --edge-proximity:0;
-    --cursor-angle:45deg;
-    --edge-sensitivity:24;
-    --color-sensitivity:calc(var(--edge-sensitivity) + 20);
-    --glow-padding:8px;
-    --cone-spread:25;
-    --fill-opacity:0.30;
-    --card-bg:#ffffff;
-
-    --gradient-one: radial-gradient(at 80% 55%, #2563eb 0px, transparent 50%);
-    --gradient-two: radial-gradient(at 69% 34%, #6d94f5 0px, transparent 50%);
-    --gradient-three: radial-gradient(at 8% 6%, #0025ae 0px, transparent 50%);
-    --gradient-four: radial-gradient(at 41% 38%, #2563eb 0px, transparent 50%);
-    --gradient-five: radial-gradient(at 86% 85%, #6d94f5 0px, transparent 50%);
-    --gradient-six: radial-gradient(at 82% 18%, #0025ae 0px, transparent 50%);
-    --gradient-seven: radial-gradient(at 51% 4%, #6d94f5 0px, transparent 50%);
-    --gradient-base: linear-gradient(#2563eb 0 100%);
-
-    --glow-color: hsl(221deg 83% 55% / 100%);
-    --glow-color-60: hsl(221deg 83% 55% / 60%);
-    --glow-color-50: hsl(221deg 83% 55% / 50%);
-    --glow-color-40: hsl(221deg 83% 55% / 40%);
-    --glow-color-30: hsl(221deg 83% 55% / 30%);
-    --glow-color-20: hsl(221deg 83% 55% / 20%);
-    --glow-color-10: hsl(221deg 83% 55% / 10%);
-
-    position:relative;
-    isolation:isolate;
-    transform:translate3d(0,0,0.01px);
-    overflow:visible;
-  }
-  .border-glow-card.is-cream{ --card-bg:#f8f4ee; }
-  /* solution-card keeps overflow:hidden (clips the bottom mockup graphic to its
-     rounded corners), so its glow stays inside the card rather than bleeding out */
-  .solution-card.border-glow-card{ --glow-padding:0px; }
-
-  .border-glow-card::before,
-  .border-glow-card::after,
-  .border-glow-card > .edge-light{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:inherit;
-    transition:opacity 0.25s ease-out;
-    z-index:-1;
-  }
-  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::before,
-  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on)::after,
-  .border-glow-card:not(:hover):not(.sweep-active):not(.glow-on) > .edge-light{
-    opacity:0;
-    transition:opacity 0.75s ease-in-out;
-  }
-  .border-glow-card::before{
-    border:1px solid transparent;
-    background:
-      linear-gradient(var(--card-bg) 0 100%) padding-box,
-      linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
-      var(--gradient-one) border-box,
-      var(--gradient-two) border-box,
-      var(--gradient-three) border-box,
-      var(--gradient-four) border-box,
-      var(--gradient-five) border-box,
-      var(--gradient-six) border-box,
-      var(--gradient-seven) border-box,
-      var(--gradient-base) border-box;
-    opacity:calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
-    mask-image:
-      conic-gradient(
-        from var(--cursor-angle) at center,
-        black calc(var(--cone-spread) * 1%),
-        transparent calc((var(--cone-spread) + 15) * 1%),
-        transparent calc((100 - var(--cone-spread) - 15) * 1%),
-        black calc((100 - var(--cone-spread)) * 1%)
-      );
-  }
-  .border-glow-card::after{
-    border:1px solid transparent;
-    background:
-      var(--gradient-one) padding-box,
-      var(--gradient-two) padding-box,
-      var(--gradient-three) padding-box,
-      var(--gradient-four) padding-box,
-      var(--gradient-five) padding-box,
-      var(--gradient-six) padding-box,
-      var(--gradient-seven) padding-box,
-      var(--gradient-base) padding-box;
-    mask-image:
-      linear-gradient(to bottom, black, black),
-      radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
-      radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
-      radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
-      radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
-      radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
-      conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
-    mask-composite: subtract, add, add, add, add, add;
-    opacity:calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
-    mix-blend-mode:multiply;
-  }
-  .border-glow-card > .edge-light{
-    inset:calc(var(--glow-padding) * -1);
-    pointer-events:none;
-    z-index:-1;
-    mask-image:
-      conic-gradient(from var(--cursor-angle) at center, black 15%, transparent 34%, transparent 66%, black 85%);
-    opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
-    mix-blend-mode:normal;
-  }
-  .border-glow-card > .edge-light::before{
-    content:"";
-    position:absolute;
-    inset:var(--glow-padding);
-    border-radius:inherit;
-    box-shadow:
-      inset 0 0 0 1px var(--glow-color),
-      inset 0 0 1px 0 var(--glow-color-60),
-      inset 0 0 2px 0 var(--glow-color-50),
-      inset 0 0 4px 0 var(--glow-color-40),
-      inset 0 0 8px 0 var(--glow-color-30),
-      inset 0 0 14px 1px var(--glow-color-20),
-      inset 0 0 26px 1px var(--glow-color-10),
-      0 0 1px 0 var(--glow-color-60),
-      0 0 2px 0 var(--glow-color-50),
-      0 0 4px 0 var(--glow-color-40),
-      0 0 8px 0 var(--glow-color-30),
-      0 0 14px 1px var(--glow-color-20),
-      0 0 26px 1px var(--glow-color-10);
-  }
-  @media (prefers-reduced-motion: reduce){
-    .border-glow-card::before,
-    .border-glow-card::after,
-    .border-glow-card > .edge-light{ transition:none !important; }
-  }
 </style><!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -667,11 +533,11 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <p>Every acquisition is different. We match the financing to the deal &mdash; not the other way around.</p>
     </div>
     <div class="solutions-grid">
-      <div class="solution-card border-glow-card"><span class="edge-light"></span>SBA Loans</div>
-      <div class="solution-card border-glow-card"><span class="edge-light"></span>Term Loans</div>
-      <div class="solution-card border-glow-card"><span class="edge-light"></span>Acquisition Loans</div>
-      <div class="solution-card border-glow-card"><span class="edge-light"></span>Asset-Backed Lines</div>
-      <div class="solution-card border-glow-card"><span class="edge-light"></span>Debt Restructuring</div>
+      <div class="solution-card">SBA Loans</div>
+      <div class="solution-card">Term Loans</div>
+      <div class="solution-card">Acquisition Loans</div>
+      <div class="solution-card">Asset-Backed Lines</div>
+      <div class="solution-card">Debt Restructuring</div>
     </div>
     <p style="text-align:center; font-style:italic; color:var(--slate); font-family:'Instrument Serif',serif; font-size:16px; margin-top:26px;">Acquisition Term Loans available for Non-US Citizen Green Card holders.</p>
   </div>
@@ -694,27 +560,27 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
       <p>Acquiring a business is one of the biggest financial decisions you&rsquo;ll make. We help you make it with confidence.</p>
     </div>
     <div class="grid-2">
-      <div class="benefit-card border-glow-card"><span class="edge-light"></span><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.6.5 1.3 1.4 1.3 2.3h5c0-.9.7-1.8 1.3-2.3A6 6 0 0 0 12 3Z"/></svg></div><h3>Personalized Guidance</h3><p>We take the time to understand your business, financial position and goals before recommending a path forward.</p></div>
-      <div class="benefit-card border-glow-card"><span class="edge-light"></span><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Advisor-First Approach</h3><p>We walk you through your options, explain the pros and cons, and provide honest feedback &mdash; not sales pressure.</p></div>
-      <div class="benefit-card border-glow-card"><span class="edge-light"></span><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></div><h3>Underwriting-Level Preparation</h3><p>We help you understand what needs to be in place before pursuing financing, so you can move forward from a stronger position.</p></div>
-      <div class="benefit-card border-glow-card"><span class="edge-light"></span><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z"/><path d="M9 5v12M15 8v12"/></svg></div><h3>Long-Term Thinking</h3><p>We look beyond today&rsquo;s funding need and consider how a financial decision can affect your business down the road.</p></div>
+      <div class="benefit-card"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.6.5 1.3 1.4 1.3 2.3h5c0-.9.7-1.8 1.3-2.3A6 6 0 0 0 12 3Z"/></svg></div><h3>Personalized Guidance</h3><p>We take the time to understand your business, financial position and goals before recommending a path forward.</p></div>
+      <div class="benefit-card"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Advisor-First Approach</h3><p>We walk you through your options, explain the pros and cons, and provide honest feedback &mdash; not sales pressure.</p></div>
+      <div class="benefit-card"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></div><h3>Underwriting-Level Preparation</h3><p>We help you understand what needs to be in place before pursuing financing, so you can move forward from a stronger position.</p></div>
+      <div class="benefit-card"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z"/><path d="M9 5v12M15 8v12"/></svg></div><h3>Long-Term Thinking</h3><p>We look beyond today&rsquo;s funding need and consider how a financial decision can affect your business down the road.</p></div>
     </div>
   </div>
 </section><section class="testimonial-section">
   <div class="wrap">
     <div class="section-head"><div class="eyebrow">What Our Clients Say</div></div>
     <div class="testimonial-grid-3">
-      <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
+      <div class="testimonial-card">
         <div class="quote-mark">&ldquo;</div>
         <p class="quote">Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout the process. He made an otherwise stressful process easy and successful! Highly recommend his services!</p>
         <div class="testimonial-attrib"><strong>Nick R.</strong></div>
       </div>
-      <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
+      <div class="testimonial-card">
         <div class="quote-mark">&ldquo;</div>
         <p class="quote">Michael was excellent in trying to find every possible solution for my funding needs. He stayed connected to the deal at all times to make sure we got to the closing table.</p>
                 <div class="testimonial-attrib"><strong>Richard R.</strong></div>
       </div>
-      <div class="testimonial-card border-glow-card"><span class="edge-light"></span>
+      <div class="testimonial-card">
         <div class="quote-mark">&ldquo;</div>
         <p class="quote">Michael &amp; Barbara helped us navigate the complexities of SBA loan. They were patient and proficient with their work, made the process extremely easy. I would work with them again.</p>
         <div class="testimonial-attrib"><strong>Raul G.</strong></div>
@@ -743,7 +609,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
   <div class="wrap cta-band-inner">
     <h2>Ready to talk?</h2>
     <p>Schedule your strategic assessment with Michael.</p>
-    <div class="talk-card border-glow-card"><span class="edge-light"></span><div class="talk-embed">
+    <div class="talk-card"><div class="talk-embed">
       <iframe src="https://api.leadconnectorhq.com/widget/booking/hNVlyN1rtNcxpWkSshP8" scrolling="no" title="Schedule a conversation with KIBA"></iframe>
     </div></div>
   </div>
@@ -763,41 +629,4 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
   </div>
   <div class="footer-links"><a href="https://kibadvisors.com/privacy-policy/">Privacy Policy</a><a href="https://kibadvisors.com/terms-and-conditions/">Terms &amp; Conditions</a><a href="tel:2512108445">251-210-8445</a></div>
   <div class="footer-copy">&copy; 2026 Kingdom Impact Business Advisors. All rights reserved.</div>
-</div></footer><script src="https://link.msgsndr.com/js/form_embed.js"></script><script>
-/* BorderGlow hover effect — vanilla port of the React Bits BorderGlow component */
-(function(){
-  function center(el){ var r = el.getBoundingClientRect(); return [r.width/2, r.height/2]; }
-  function edgeProximity(el, x, y){
-    var c = center(el), dx = x - c[0], dy = y - c[1];
-    var kx = Infinity, ky = Infinity;
-    if(dx !== 0) kx = c[0] / Math.abs(dx);
-    if(dy !== 0) ky = c[1] / Math.abs(dy);
-    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
-  }
-  function cursorAngle(el, x, y){
-    var c = center(el), dx = x - c[0], dy = y - c[1];
-    if(dx === 0 && dy === 0) return 0;
-    var deg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
-    if(deg < 0) deg += 360;
-    return deg;
-  }
-  /* The glow is driven purely by pointer position, so it is hover feedback,
-     not autonomous animation. It therefore stays enabled under
-     prefers-reduced-motion; the eased transition is dropped in CSS instead,
-     so the glow appears instantly with no animation. */
-  document.querySelectorAll('.border-glow-card').forEach(function(card){
-    card.addEventListener('pointermove', function(e){
-      var rect = card.getBoundingClientRect();
-      var x = e.clientX - rect.left, y = e.clientY - rect.top;
-      card.style.setProperty('--edge-proximity', (edgeProximity(card, x, y) * 100).toFixed(3));
-      card.style.setProperty('--cursor-angle', cursorAngle(card, x, y).toFixed(3) + 'deg');
-    });
-    card.addEventListener('pointerenter', function(){ card.classList.add('glow-on'); });
-    card.addEventListener('pointerleave', function(){
-      card.classList.remove('glow-on');
-      card.style.setProperty('--edge-proximity', '0');
-    });
-  });
-})();
-</script>
-</body></html>
+</div></footer><script src="https://link.msgsndr.com/js/form_embed.js"></script></body></html>

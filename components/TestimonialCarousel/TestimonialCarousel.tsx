@@ -141,7 +141,7 @@ export default function TestimonialCarousel() {
         >
           {TESTIMONIALS.map((t, i) => (
             <div className="testimonial-slide" key={i}>
-              <div className="testimonial-card border-glow-card"><span className="edge-light"></span>
+              <div className="testimonial-card">
                 <div className="quote-mark">&ldquo;</div>
                 <p className="quote">{t.quote}</p>
                 <div className="testimonial-attrib"><strong>{t.name}</strong>{` — ${t.role}`}</div>

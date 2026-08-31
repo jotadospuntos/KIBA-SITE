@@ -108,18 +108,30 @@ them (see above), and `noindex` stays until the human decides otherwise.
   exactly two copies. This replaced `marqueeTrack.innerHTML += marqueeTrack.innerHTML` — React's own
   DOM being mutated behind its back after mount.
 
-### What's still vanilla: `app/border-glow.js`
+### No vanilla DOM code left
 
-The port is **done**. `legacy-behaviors.js` (~450 lines at the start) shrank to a single function,
-now `app/border-glow.js` (54 lines). Nothing else on the homepage touches the DOM directly.
+The port is **done and then some**. `legacy-behaviors.js` (~450 lines at the start) shrank to a
+single function, `app/border-glow.js` — and that file is gone too, along with the hover glow it
+drove (removed by request across the whole repo; see "Removed: the border glow" below). Nothing on
+the homepage touches the DOM directly anymore.
 
-- **`components/BorderGlow`** exists as a real component but is **deliberately NOT wired in** —
-  the 14 glow cards still use the vanilla `initBorderGlow` behavior + the
-  `.border-glow-card`/`.edge-light` markup. Wiring the component in would need a
-  polymorphic-element fork (5 of the cards are `<a href>` links) plus layout neutralizers, for
-  identical output. Leave it deferred unless that calculus changes.
 - **Motion preference:** every animation honors `prefers-reduced-motion`, with a `?motion=1`
   override for previewing (see `lib/useMotionPreference.ts` and `window.__forceMotion`).
+
+---
+
+## Removed: the border glow (don't re-add it)
+
+The cursor-following border glow on cards (`.border-glow-card` + `.edge-light`, the React Bits
+BorderGlow port) was **removed from the entire repo by request** — the homepage, all 11 live legacy
+pages, both `_template.html` files, and the `/v2` reference draft. Deleted with it:
+`app/border-glow.js`, `components/BorderGlow/`, and the two `dev/borderglow-*.html` previews (which
+emptied `dev/`).
+
+Cards now use only their own styling (`.solution-card`, `.benefit-card`, `.talk-card`,
+`.testimonial-card` and the `.benefit-card:hover` lift). If you are reading old commits or the
+component list and wondering where the glow went: it was a deliberate design decision, not lost
+work. Don't reintroduce it without being asked.
 
 ---
 
@@ -158,8 +170,7 @@ now `app/border-glow.js` (54 lines). Nothing else on the homepage touches the DO
 │   ├── globals.css               ← Tailwind v4 @theme tokens + shadcn semantic tokens
 │   ├── page.tsx                  ← "/" route: metadata + noindex, renders HomePage
 │   ├── HomePage.tsx              ← the homepage itself (client component)
-│   ├── home.css                  ← v2.html's <style> block, verbatim + one marked divergence
-│   └── border-glow.js            ← the one remaining vanilla behavior
+│   └── home.css                  ← v2.html's <style> block, minus the glow + one divergence
 ├── components/
 │   ├── SplitText/                ← hero headline
 │   ├── HeroReveal/               ← hero image panel
@@ -167,12 +178,10 @@ now `app/border-glow.js` (54 lines). Nothing else on the homepage touches the DO
 │   ├── Reveal/ · Counter/        ← scroll reveal, animated stat counters
 │   ├── TestimonialCarousel/ · TrustMarquee/
 │   ├── HeroBlobs/ · GradientBlob/ ← hero cursor parallax, WebGL CTA gradient
-│   ├── BorderGlow/               ← exists, deliberately NOT wired in (see above)
 │   └── ui/button.tsx             ← shadcn button (currently unused; CTAs use .btn classes)
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
 │   └── useMotionPreference.ts    ← ?motion=1 override for previewing animations
-├── dev/                          ← one-off dev/diagnostic HTML (NOT deployed; kept out of public/)
 └── public/
     ├── img/ · partners/img/ · advisors/img/ · favicons   ← original public paths, unchanged
     └── legacy/                   ← unmigrated pages, served via next.config.js rewrites()
