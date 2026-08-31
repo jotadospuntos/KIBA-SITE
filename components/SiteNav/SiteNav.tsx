@@ -48,6 +48,7 @@ const SOLUTIONS = [
    "About" points at the separate kibadvisors.com WordPress site on purpose. */
 const NAV_LINKS = [
   { href: 'https://kibadvisors.com', label: 'About' },
+  { href: '/meet-our-team', label: 'Team' },
   { href: '/referral-partners', label: 'Partners' },
   { href: '#talk', label: 'Contact' }
 ];

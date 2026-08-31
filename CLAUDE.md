@@ -135,6 +135,54 @@ work. Don't reintroduce it without being asked.
 
 ---
 
+## `/meet-our-team` (shipped) — the second real route
+
+`app/meet-our-team/` is the first page built *after* the homepage port, so it's the working
+example of how a new route should be assembled.
+
+- **Content is copied from the WordPress site**, https://kibadvisors.com/meet-our-team/. Names,
+  roles, taglines and bios in `app/meet-our-team/team-data.ts` are **verbatim** from there — the
+  only editorial change is splitting each bio into paragraphs at existing sentence boundaries. If
+  that page changes, re-copy; don't paraphrase. (The `focus` badge tags are ours.)
+- **Photos are the existing advisor headshots** (`/advisors/img/*.jpg`), the same files the legacy
+  `/advisors/*` booking pages use. Each card's calendar icon deep-links to that person's booking
+  page.
+- **Structure:** `page.tsx` (server component: metadata + noindex) → `MeetOurTeamPage.tsx` (client),
+  reusing `SiteNav`, `SiteFooter`, `Reveal`, `GradientBlob` and the `.hero` / `.band` / `.cta-band`
+  shells from `home.css`. Only the team block itself is new.
+- **`noindex`** matches the rest of the subdomain and is doubly deliberate here: the same bios are
+  live on kibadvisors.com, and two indexable copies would compete. The human's call to change.
+- **`SiteNav` gained a "Team" link** pointing at this route, so it now shows on the homepage too.
+
+### The team block, and the one CSS trap to know about
+
+`components/ui/team-section-block-shadcnui.tsx` is an integrated third-party shadcn block
+(framer-motion 3D-tilt cards). Two things were changed on the way in: it's **props-driven** (content
+lives in `team-data.ts`, not in the component), and it's styled **only off the semantic tokens**
+(`bg-card`, `text-muted-foreground`, `bg-primary`, …) with no literal colors. The page wraps it in
+`<div className="dark">`, which is what maps those tokens onto KIBA's navy palette via the `.dark`
+block in `globals.css` — that's how a generic light-mode block became an on-brand navy band without
+restyling it.
+
+**The trap:** `home.css` is a plain **unlayered** stylesheet, and every Tailwind utility lives in
+`@layer utilities`. Unlayered CSS beats layered CSS regardless of specificity, so on any route that
+imports `home.css` (i.e. any route using the shared nav/footer) these bare element rules silently
+win over your Tailwind classes:
+
+```css
+section{ padding:96px 0; background-color:#ffffff; }
+button,.btn{ padding:14px 28px; border:none; font-size:15.5px; }
+a{ color:inherit; }
+```
+
+The first pass at this page shipped white text on a white band because of exactly that. The fixes
+used, and the ones to reuse: mark the colliding utilities with `!` (`bg-background!`, `py-24!`,
+`p-0!`, `text-xs!`, `text-muted-foreground!`), and prefer `ring-1 ring-border` over `border`, since
+`home.css` never touches `ring`. Everything `home.css` doesn't select is plain Tailwind — don't
+blanket-`!` a component.
+
+---
+
 ## Golden rules (read first)
 
 - **Filename = URL.** `public/legacy/partners/rivenway.html` serves at `/partners/rivenway` via
@@ -170,7 +218,8 @@ work. Don't reintroduce it without being asked.
 │   ├── globals.css               ← Tailwind v4 @theme tokens + shadcn semantic tokens
 │   ├── page.tsx                  ← "/" route: metadata + noindex, renders HomePage
 │   ├── HomePage.tsx              ← the homepage itself (client component)
-│   └── home.css                  ← v2.html's <style> block, minus the glow + one divergence
+│   ├── home.css                  ← v2.html's <style> block, minus the glow + one divergence
+│   └── meet-our-team/            ← "/meet-our-team": page.tsx + MeetOurTeamPage.tsx + team-data.ts
 ├── components/
 │   ├── SplitText/                ← hero headline
 │   ├── HeroReveal/               ← hero image panel
@@ -178,7 +227,8 @@ work. Don't reintroduce it without being asked.
 │   ├── Reveal/ · Counter/        ← scroll reveal, animated stat counters
 │   ├── TestimonialCarousel/ · TrustMarquee/
 │   ├── HeroBlobs/ · GradientBlob/ ← hero cursor parallax, WebGL CTA gradient
-│   └── ui/button.tsx             ← shadcn button (currently unused; CTAs use .btn classes)
+│   └── ui/                       ← shadcn primitives: button.tsx (unused), badge.tsx, card.tsx
+│       └── team-section-block-shadcnui.tsx  ← props-driven team grid (used by /meet-our-team)
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
 │   └── useMotionPreference.ts    ← ?motion=1 override for previewing animations
@@ -278,8 +328,9 @@ Tokens live in **`app/globals.css`** for the `app/` side and are duplicated in e
 - **Look:** dark navy hero, white "card" surfaces with a blue accent, rounded corners, soft
   shadows. `--radius-sm 12px` / `--radius-md 16px`; `--shadow-soft` for elevated cards.
 - **shadcn** is configured (`components.json`, style `base-nova`, `cssVariables: true`,
-  `iconLibrary: lucide`). `components/ui/button.tsx` is present but currently **unused** — the
-  homepage CTAs use hand-rolled `.btn`/`.btn-primary` classes from `home.css`. If you migrate the nav to
+  `iconLibrary: lucide`). `badge.tsx` and `card.tsx` were added via `npx shadcn add` for the team
+  block and are in use; `components/ui/button.tsx` is used only inside that block — the homepage
+  and every page CTA still use hand-rolled `.btn`/`.btn-primary` classes from `home.css`. If you migrate the nav to
   shadcn later, weigh the restyle work needed to fit the navy palette (this was considered for the
   nav and deferred).
 
