@@ -1,20 +1,20 @@
 'use client';
 
 /*
- * Homepage redesign, migrated from the static public/legacy/v2.html into a real
- * React route. Markup is a faithful JSX conversion and v3.css is the original
- * <style> block verbatim, so it renders pixel-identically to /v2 - that
- * equivalence is what makes it safe to swap in real React components one at a
- * time, verifying each against /v2 with a pixel diff.
+ * The homepage of go.kibadvisors.com.
  *
- * Swapped so far: the hero headline (components/SplitText), the hero image
- * panel (components/HeroReveal), and the shared nav + footer
- * (components/SiteNav, components/SiteFooter - extracted so the next migrated
- * route reuses them rather than copy-pasting the markup), and the scroll
- * reveal (components/Reveal), the stat counters (components/Counter), and the
- * testimonial carousel (components/TestimonialCarousel), and the WebGL CTA
- * gradient (components/GradientBlob), the hero cursor blobs
- * (components/HeroBlobs), and the trust marquee (components/TrustMarquee).
+ * This is the Fundwell-inspired redesign, migrated from the static
+ * public/legacy/v2.html into real React. It lived at /v3 during the port and was
+ * promoted to the root route once every behavior was a real component. /v2 is
+ * still served (see next.config.js) purely as the visual reference to diff
+ * against; /v3 now redirects here.
+ *
+ * app/page.tsx is the route - it's a server component so it can export
+ * metadata, and renders this client component, which needs to be a client
+ * component for the animation hooks.
+ *
+ * Styling is app/home.css: v2.html's <style> block verbatim apart from one
+ * clearly-marked rule at the end. Deliberately NOT Tailwind - see CLAUDE.md.
  *
  * Deliberately NOT swapped:
  * - BorderGlow. components/BorderGlow exists, but it renders a hardcoded <div>
@@ -32,7 +32,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import './v3.css';
+import './home.css';
 import { initBorderGlow } from './border-glow';
 import dynamic from 'next/dynamic';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
@@ -106,7 +106,7 @@ function loadScriptOnce(src: string): Promise<void> {
   });
 }
 
-export default function V3Page() {
+export default function HomePage() {
   /* Guards against React 18 StrictMode double-invoking the effect in dev, which
      would otherwise attach the border-glow listeners twice. */
   const inited = useRef(false);

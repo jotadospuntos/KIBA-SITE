@@ -19,30 +19,20 @@ production never breaks mid-migration:
 - `dev/` holds one-off dev/diagnostic HTML files (e.g. component previews) — not deployed, kept
   out of `public/` on purpose so they aren't publicly reachable.
 
-## Homepage redesign: `/v2` and `/v3`
+## Homepage
 
-The Fundwell-inspired homepage redesign lives in two forms today:
+The Fundwell-inspired redesign **is** the homepage of go.kibadvisors.com:
 
-- **`/v2`** (`public/legacy/v2.html`) — the original static redesign draft. `noindex`, not linked
-  from anywhere, served via a rewrite. Kept **only as the pixel-diff reference**.
-- **`/v3`** (`app/v3/`) — the real-React port of `v2.html`, and the **active work**. It started as
-  a faithful JSX conversion plus `v3.css` (the original `<style>` verbatim), rendering
-  pixel-identically to `/v2` — which is what lets real React components be swapped in one at a time
-  and diffed against `/v2`. **That port is now complete** — hero headline (`SplitText`), hero image
-  panel (`HeroReveal`), nav + footer (`SiteNav`, `SiteFooter`), scroll reveal (`Reveal`), stat
-  counters (`Counter`), testimonial carousel (`TestimonialCarousel`), hero cursor blobs
-  (`HeroBlobs`), trust marquee (`TrustMarquee`), WebGL CTA gradient (`GradientBlob`). The only
-  vanilla holdout is `app/v3/border-glow.js` (deliberate — see `CLAUDE.md`). `/v3` also has a few
-  **deliberate** behavior fixes that `/v2` doesn't — they're listed in `CLAUDE.md`, and anything not
-  on that list is a migration bug.
-
-Once `/v3` is component-complete and approved it gets promoted to the real homepage route of
-**`go.kibadvisors.com`**, and `v2.html` + its `/v2` rewrite are removed. The root redirect
-(`/` → `kibadvisors.com`) is dropped at that point.
-
-**Scope boundary:** this repo only ever changes `go.kibadvisors.com`. The separate
-`kibadvisors.com` WordPress site is never touched, migrated, or repointed by work here — see
-"Scope boundary" in `CLAUDE.md`.
+- **`/`** — `app/page.tsx` (route + metadata) and `app/HomePage.tsx` (the page itself), styled by
+  `app/home.css`. It was built at `/v3` as a React port of the old static draft and promoted to the
+  root once every behavior was a real component: `SplitText`, `HeroReveal`, `SiteNav`, `SiteFooter`,
+  `Reveal`, `Counter`, `TestimonialCarousel`, `HeroBlobs`, `TrustMarquee`, `GradientBlob`. `/v3` now
+  redirects to `/`. The only vanilla holdout is `app/border-glow.js` (deliberate).
+- **`/v2`** (`public/legacy/v2.html`) — the original static draft, still served and still `noindex`.
+  **Kept on purpose** as the visual reference to diff the homepage against; not cleanup.
+- The homepage is **`noindex`** by decision: this subdomain is a landing/booking host, and
+  `kibadvisors.com` (a separate WordPress site this repo never touches) stays the only indexable
+  KIBA homepage. See `CLAUDE.md` before changing that or the divergence list.
 
 ## Build
 

@@ -1,21 +1,42 @@
-// Placeholder root route.
-//
-// "/" is currently redirected to https://kibadvisors.com by next.config.js
-// (ported from the old vercel.json), so this component isn't reachable in
-// production yet. It exists so the Next.js build has a valid root page while
-// Phase 1 (static-page migration scaffold) lands.
-//
-// Phase 2: replace this with the real homepage. The redesign is already being
-// built as a real route at app/v3/ (the React port of public/legacy/v2.html —
-// Fundwell-inspired hero, solutions bento grid, WebGL gradient CTA). Once /v3
-// is component-complete and approved it gets promoted here, and the root
-// redirect above is revisited. See CLAUDE.md → "Homepage redesign".
-export default function HomePage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-paper text-ink">
-      <p className="font-mono text-xs uppercase tracking-widest text-slate">
-        Next.js migration — Phase 1 scaffold
-      </p>
-    </main>
-  );
+import type { Metadata } from 'next';
+import HomePage from './HomePage';
+
+/*
+ * Root route of go.kibadvisors.com - the promoted homepage redesign (was /v3).
+ *
+ * This file is a server component purely so it can export metadata; the page
+ * itself is app/HomePage.tsx, which must be a client component for the
+ * animation hooks. (The old /v3 route did the same thing with a layout.tsx.)
+ *
+ * NOINDEX IS DELIBERATE - DO NOT "FIX" IT.
+ * This subdomain is a landing/booking host: every page on it is campaign- or
+ * partner-targeted and reached by direct link, not search. The main
+ * kibadvisors.com WordPress site (a separate property this repo never touches)
+ * stays the only indexable KIBA homepage, so this one is kept out of the index
+ * rather than competing with it for the same terms.
+ *
+ * Flipping it later is a one-line change - `robots: { index: true, follow: true }`
+ * - and is the human's call, not an agent's. The canonical is already the real
+ * URL, so nothing else needs to change if that decision is made.
+ */
+export const metadata: Metadata = {
+  title: 'Kingdom Impact Business Advisors — Funding & Growth Capital',
+  description:
+    'Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience.',
+  robots: { index: false, follow: false },
+  alternates: { canonical: 'https://go.kibadvisors.com/' },
+  openGraph: {
+    type: 'website',
+    url: 'https://go.kibadvisors.com/',
+    title: 'Kingdom Impact Business Advisors — Funding & Growth Capital',
+    description:
+      'Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital.',
+    /* Filename is historical (it was the /v2 draft preview); the image is the
+       current hero and is referenced absolutely by other pages' og tags too. */
+    images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+  }
+};
+
+export default function Page() {
+  return <HomePage />;
 }

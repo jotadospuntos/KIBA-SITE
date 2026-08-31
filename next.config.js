@@ -10,9 +10,11 @@ const nextConfig = {
   // entry here and its file under public/legacy/.
   async rewrites() {
     return [
-      // Homepage redesign preview. noindex'd; not linked from anywhere. Once it's
-      // approved this becomes the real app/page.tsx and the root redirect below
-      // gets revisited.
+      // The original static redesign draft. The React port of this page is now
+      // the real homepage (app/page.tsx), and /v2 is kept ONLY as the visual
+      // reference to diff the homepage against - it is noindex'd and not linked
+      // from anywhere. Deleting it is a deliberate, separate decision; until
+      // then it must not be "cleaned up".
       { source: '/v2', destination: '/legacy/v2.html' },
       { source: '/referral-partners', destination: '/legacy/referral-partners.html' },
       { source: '/business-acquisitions', destination: '/legacy/business-acquisitions.html' },
@@ -27,10 +29,21 @@ const nextConfig = {
     ];
   },
 
-  // Ported 1:1 from the old vercel.json.
   async redirects() {
     return [
-      { source: '/', destination: 'https://kibadvisors.com', permanent: false },
+      // '/' used to redirect to https://kibadvisors.com because this repo had no
+      // homepage of its own. It has one now - the promoted redesign at
+      // app/page.tsx - so the redirect is gone. kibadvisors.com is untouched by
+      // that change; it remains a separate WordPress property (see CLAUDE.md
+      // "Scope boundary").
+
+      // /v3 was where the React port was built and reviewed. It's the root route
+      // now, so the old path forwards rather than 404ing any bookmark or link
+      // shared during the review. Temporary (307) on purpose: nothing external
+      // depends on /v3, and a cached 308 would be awkward to undo.
+      { source: '/v3', destination: '/', permanent: false },
+
+      // Ported 1:1 from the old vercel.json.
       { source: '/partners/ace-tools', destination: '/partners/integ-funding', permanent: true },
     ];
   },
