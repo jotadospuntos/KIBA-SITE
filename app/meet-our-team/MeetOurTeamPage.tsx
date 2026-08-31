@@ -112,17 +112,39 @@ export default function MeetOurTeamPage() {
         }}
       />
 
-      {/* The company line, using the same image band the homepage uses for it. */}
-      <section className="image-band">
-        <div className="band">
-          <div className="bg"></div>
-          <div className="ov"></div>
-          <svg className="bandtri" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#ffffff" d="M76 0 L152 172 H0 Z" /></svg>
-          <Reveal className="content reveal">
-            <div className="big">Clarity first. Capital second. Stewardship always.</div>
-            <div className="sub">The principles behind every client we serve and every professional we partner with.</div>
-          </Reveal>
-        </div>
+      {/* The company line. The homepage renders this as a navy .band; here it's a
+          light band instead, because it sits between the navy team section and
+          the navy CTA band and would otherwise read as one unbroken block of
+          navy. Built with Tailwind rather than reusing home.css's `.band` rules,
+          since those are shared with the homepage and must not change there. The
+          triangle is the same shape, recolored from white-on-navy to blue-on-paper.
+
+          `py-0!` and `bg-transparent!` beat home.css's unlayered
+          `section{ padding:96px 0; background-color:#ffffff }` — see the note in
+          components/ui/team-section-block-shadcnui.tsx. */}
+      <section className="relative flex min-h-[300px] items-center justify-center overflow-hidden bg-gradient-to-br from-white via-paper to-ivory bg-transparent! py-0!">
+        {/* Same triangle as the navy band, but filled with the brand blue ramp
+            instead of flat white — at 0.18 it reads as a deliberate mark on the
+            light background rather than a smudge. Narrower on phones, where a
+            fixed 220px would crowd the text. */}
+        <svg
+          className="pointer-events-none absolute right-[6%] top-1/2 w-[150px] -translate-y-1/2 opacity-[0.18] sm:w-[220px]"
+          viewBox="0 0 152 172"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="bandTriFill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#2563eb" />
+              <stop offset="100%" stopColor="#6d94f5" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#bandTriFill)" d="M76 0 L152 172 H0 Z" />
+        </svg>
+        <Reveal className="reveal relative z-10 max-w-[720px] px-6 py-[70px] text-center">
+          <div className="font-serif text-[clamp(24px,3.4vw,36px)] leading-[1.3] text-navy-deep">Clarity first. Capital second. Stewardship always.</div>
+          <div className="mt-3 font-sans text-[15px] leading-relaxed text-slate">The principles behind every client we serve and every professional we partner with.</div>
+        </Reveal>
       </section>
 
       {/* #talk exists on every page with the shared nav — its "Let's Talk" button

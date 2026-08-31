@@ -158,6 +158,10 @@ example of how a new route should be assembled.
   `public/img/hero/` cut for this panel (2600x2000); the rest are 800px wide and visibly soft when
   stretched to it. Swap in a real photo of the team when there is one, cut to roughly those
   dimensions.
+- **The "Clarity first…" band is light here, navy on the homepage.** Deliberate: on this page it
+  sits between the navy team section and the navy CTA band, and reusing home.css's `.band` would
+  make the three read as one unbroken block. It's built with Tailwind rather than by editing
+  `.band`, since those rules are shared with the homepage. Same triangle, recolored to a blue ramp.
 - **`noindex`** matches the rest of the subdomain and is doubly deliberate here: the same bios are
   live on kibadvisors.com, and two indexable copies would compete. The human's call to change.
 - **`SiteNav` gained a "Team" link** pointing at this route, so it now shows on the homepage too.
