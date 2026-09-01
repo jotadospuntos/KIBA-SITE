@@ -199,6 +199,30 @@ blanket-`!` a component.
 
 ---
 
+## `/about-us` (shipped)
+
+`app/about-us/` is the third real route, built the same way as `/meet-our-team` — same hero
+(SplitText + HeroBlobs + HeroReveal), the shared nav/footer/Reveal, `home.css`'s
+`.section-head` / `.benefit-card` / `.klist` shells, and Tailwind only for the two sections
+`home.css` has no shell for (the navy "How we're different" band and the light motto band).
+
+- **The copy is adapted, not verbatim** — unlike `team-data.ts`. The source page
+  (https://kibadvisors.com/about-us/) is a list of statements with no connective tissue, so the
+  sentences that carry meaning are kept word-for-word in `about-content.ts` (the origin line, the
+  problem statement, the vision, the five values, the differentiation line, the services, the
+  client profile, the closing commitment) and the headings and connecting lines around them were
+  written for this layout. Anything quoted on the source page is reproduced exactly.
+- **The nav's "About" link now points here** instead of at `https://kibadvisors.com`. That's the
+  only reason the link existed off-site — there was no about page in this repo. The WordPress
+  about page is untouched and stays the indexable copy.
+- **The hero photo is `couple-consultation.webp`, which is 800x533** and therefore upscales in a
+  panel that wants ~640x700. It's the best editorial fit available and it holds up at 1x, but
+  re-cutting that shot at ~2600x2000 (like `owner-cafe-laptop.webp`) is the real fix.
+- **The five values render 3 + 2**, the same split the homepage uses for its solution rows
+  (`.benefits-grid` then `.grid-2`).
+
+---
+
 ## Golden rules (read first)
 
 - **Filename = URL.** `public/legacy/partners/rivenway.html` serves at `/partners/rivenway` via
@@ -235,7 +259,8 @@ blanket-`!` a component.
 │   ├── page.tsx                  ← "/" route: metadata + noindex, renders HomePage
 │   ├── HomePage.tsx              ← the homepage itself (client component)
 │   ├── home.css                  ← v2.html's <style> block, minus the glow + one divergence
-│   └── meet-our-team/            ← "/meet-our-team": page.tsx + MeetOurTeamPage.tsx + team-data.ts
+│   ├── meet-our-team/            ← "/meet-our-team": page.tsx + MeetOurTeamPage.tsx + team-data.ts
+│   └── about-us/                 ← "/about-us": page.tsx + AboutUsPage.tsx + about-content.ts
 ├── components/
 │   ├── SplitText/                ← hero headline
 │   ├── HeroReveal/               ← hero image panel

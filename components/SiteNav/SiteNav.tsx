@@ -45,9 +45,12 @@ const SOLUTIONS = [
 ];
 
 /* Top-level links, likewise rendered in both the desktop bar and the sheet.
-   "About" points at the separate kibadvisors.com WordPress site on purpose. */
+   "About" used to point at the separate kibadvisors.com WordPress site, because
+   this repo had no about page. It has one now (app/about-us), so the link stays
+   on this subdomain. kibadvisors.com/about-us/ is untouched and still the
+   indexable copy - see CLAUDE.md "Scope boundary". */
 const NAV_LINKS = [
-  { href: 'https://kibadvisors.com', label: 'About' },
+  { href: '/about-us', label: 'About' },
   { href: '/meet-our-team', label: 'Team' },
   { href: '/referral-partners', label: 'Partners' },
   { href: '#talk', label: 'Contact' }
