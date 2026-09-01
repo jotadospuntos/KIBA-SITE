@@ -70,18 +70,21 @@ export default function AboutUsPage() {
             >
               Built for business.<br />Grounded in faith.<br />Focused on impact.
             </SplitText>
-            <p className="hero-sub">
+            {/* The headline animates via SplitText; everything under it fades up
+                behind it on a hand-set stagger. home.css only ships nth-child
+                delays for the grids, so the delays are inline here. */}
+            <Reveal as="p" className="hero-sub reveal" style={{ transitionDelay: '0.10s' }}>
               Kingdom Impact Business Advisors was born from a conviction that business was never
               meant to be just about numbers.
-            </p>
-            <ul className="klist on-dark" style={{ maxWidth: '470px', margin: '0 0 30px' }}>
+            </Reveal>
+            <Reveal as="ul" className="klist on-dark reveal" style={{ maxWidth: '470px', margin: '0 0 30px', transitionDelay: '0.18s' }}>
               <li><Check />We tell the truth even when it&rsquo;s not the easiest answer.</li>
               <li><Check />Most advisors sell products. We prepare businesses.</li>
-            </ul>
-            <div className="cta-row" style={{ marginBottom: 0 }}>
+            </Reveal>
+            <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
               <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
               <a href="/meet-our-team" className="btn btn-ghost">Meet the Team</a>
-            </div>
+            </Reveal>
           </div>
           <HeroBlobs>
             <svg className="blob" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>
@@ -165,9 +168,10 @@ export default function AboutUsPage() {
 
           {/* What preparation buys you */}
           <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {OUTCOMES.map((outcome) => (
+            {OUTCOMES.map((outcome, i) => (
               <Reveal
                 className="reveal rounded-[14px] bg-white/[0.06] px-6 py-7 text-center ring-1 ring-white/15"
+                style={{ transitionDelay: `${i * 0.08}s` }}
                 key={outcome}
               >
                 <svg className="mx-auto mb-3 h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" /></svg>

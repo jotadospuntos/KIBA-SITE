@@ -78,18 +78,21 @@ export default function MeetOurTeamPage() {
             >
               Meet the team behind<br />every funding decision.
             </SplitText>
-            <p className="hero-sub">
+            {/* The headline animates via SplitText; everything under it fades up
+                behind it on a hand-set stagger. home.css only ships nth-child
+                delays for the grids, so the delays are inline here. */}
+            <Reveal as="p" className="hero-sub reveal" style={{ transitionDelay: '0.10s' }}>
               A small, experienced team you actually talk to. Every client works directly with the
               people below &mdash; from the first conversation through funding.
-            </p>
-            <ul className="klist on-dark" style={{ maxWidth: '470px', margin: '0 0 30px' }}>
+            </Reveal>
+            <Reveal as="ul" className="klist on-dark reveal" style={{ maxWidth: '470px', margin: '0 0 30px', transitionDelay: '0.18s' }}>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>One point of contact from first call through funding.</li>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Over 50 years of combined lending experience.</li>
-            </ul>
-            <div className="cta-row" style={{ marginBottom: 0 }}>
+            </Reveal>
+            <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
               <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
-            </div>
+            </Reveal>
           </div>
           <HeroBlobs>
             <svg className="blob" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>

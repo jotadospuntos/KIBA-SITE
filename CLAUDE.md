@@ -241,6 +241,9 @@ blanket-`!` a component.
 - **New `app/` routes use Tailwind, not hand-rolled CSS** (except the homepage, which intentionally
   keeps `home.css` verbatim so it stays diffable against `/v2` — see above). See "Design system"
   for where the tokens live.
+- **Every new page gets the animations wired up.** Not optional and not a polish pass — a page
+  whose content just appears is a bug on this site. See "Motion" below for the checklist and the
+  one mistake that has now been made twice.
 - **Show diffs and let the human approve.** Prefer minimal, targeted edits. Run `npm run build`
   and validate any embedded JS before finishing.
 
@@ -350,6 +353,61 @@ nothing else.
 If you change any shared element, apply the same change to every legacy page and both templates.
 (For the migrated `app/` side, the fix is the opposite: extract the nav/footer into shared React
 components so there's only one copy — do this before migrating a second real page.)
+
+---
+
+## Motion — required on every page (checklist)
+
+Every page on this site animates its content in. A new route where text and blocks simply appear
+is not "done" — treat it the same as a missing style. Match the homepage: it is the reference for
+what animates and how.
+
+**Wire these up on any new page:**
+
+| Element | What it uses |
+| --- | --- |
+| The `<h1>` | `components/SplitText` (per-character GSAP reveal) |
+| The hero image panel | `components/HeroReveal` (clip-path wipe) + `components/HeroBlobs` |
+| Section heads, cards, list blocks, CTA bands | `components/Reveal` with `reveal` in the className |
+| Numbers/stats | `components/Counter` |
+| Navy CTA band | `components/GradientBlob` |
+
+`Reveal` renders the real element via `as` — never a wrapper (it would break the `nth-child`
+stagger and grid layout). `home.css` ships stagger delays only for `.benefits-grid`, `.grid-2`,
+`.solutions-row`, `.testimonial-grid` and `.footer-grid`; anywhere else, set
+`style={{ transitionDelay: '0.08s' }}` by hand, as the two hero columns and the `/about-us` outcome
+tiles do.
+
+**The `?motion=1` trap — this has bitten twice, don't make it three times.** Motion has two halves:
+
+1. **JS-driven** (GSAP, framer-motion, the `Reveal` observer) — reads `forceMotion` from
+   `lib/useMotionPreference.ts`.
+2. **CSS-driven** (every `.reveal` fade, every hover transition) — governed by
+   `@media (prefers-reduced-motion: reduce){ html:not(.force-motion) *{ transition-duration:0.001ms !important } }`
+   in `home.css`, so it needs the **`force-motion` class on `<html>`**.
+
+That class is set by `useMotionPreference()` and nowhere else. It originally lived in
+`app/HomePage.tsx`'s own effect, which meant `?motion=1` did half a job on `/meet-our-team` and
+`/about-us`: JS animations ran, every CSS transition stayed clamped to 0.001ms, and the pages
+looked static on any machine reporting reduce. **Any page with animations must call
+`useMotionPreference()`** (pass its `forceMotion` to `SplitText`). Don't reimplement the flag
+locally.
+
+**How to verify, and why the obvious check lies.** On a machine that does *not* report
+`prefers-reduced-motion: reduce`, everything animates whether or not the override works — so a
+local eyeball test proves nothing. Check it the way the bug was actually found:
+
+```js
+// playwright
+const page = await browser.newPage({ reducedMotion: 'reduce' });
+await page.goto('http://localhost:3000/<route>?motion=1');
+await page.evaluate(() => document.documentElement.className);        // must be "force-motion"
+await page.evaluate(() => getComputedStyle(document.querySelector('.hero-sub')).transitionDuration);
+// must be 0.7s, NOT 0.000001s
+```
+
+Then sample opacity a few hundred ms apart to confirm the reveal is actually mid-flight rather
+than snapping to its end state.
 
 ---
 

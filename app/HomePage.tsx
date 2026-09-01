@@ -60,14 +60,6 @@ const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ss
 const HERO_IMAGE = '/img/hero/owner-cafe-laptop.webp';
 const HERO_IMAGE_ALT = 'A small business owner working on a laptop at her counter';
 
-declare global {
-  interface Window {
-    /* Set before the legacy behaviors run; they read it to decide whether to
-       honor prefers-reduced-motion. See the ?motion=1 escape hatch below. */
-    __forceMotion?: boolean;
-  }
-}
-
 /* Only the GoHighLevel iframe resizer is loaded at runtime now. GSAP used to be
    fetched from a CDN here too; it's a bundled npm dependency since the headline
    moved to the real SplitText component. */
@@ -111,14 +103,10 @@ export default function HomePage() {
     if (inited.current) return;
     inited.current = true;
 
-    /* Preview escape hatch, same as the static page: motion respects the
-       visitor's prefers-reduced-motion setting unless ?motion=1 is passed. */
-    try {
-      window.__forceMotion = new URLSearchParams(window.location.search).get('motion') === '1';
-      if (window.__forceMotion) document.documentElement.classList.add('force-motion');
-    } catch {
-      window.__forceMotion = false;
-    }
+    /* The ?motion=1 escape hatch (window.__forceMotion + the .force-motion class
+       on <html>) used to be set here. It lives in useMotionPreference now, which
+       this page already calls - it has to be shared, or every other route gets
+       only the JS half of the override. See lib/useMotionPreference.ts. */
 
     let cancelled = false;
 
