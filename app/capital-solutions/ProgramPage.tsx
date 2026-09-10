@@ -30,6 +30,7 @@ import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
 import { ServiceCarousel } from '@/components/ui/services-card';
+import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import {
   PROGRAMS,
@@ -228,6 +229,14 @@ export default function ProgramPage({ slug }: { slug: string }) {
           </Reveal>
         </div>
       </section>
+
+      {/* Testimonials. Every page on this site carries this section - see
+          CLAUDE.md "Testimonials". Content is lib/testimonials.ts; only the
+          heading is per-page. */}
+      <TestimonialsSection
+        heading="Trusted through every step"
+        intro="Business owners and referral partners on what it’s actually like to work with KIBA."
+      />
 
       {/* Cross-links to the other five programs, as a bento grid.
           Five cards over two rows of three: the fourth spans two columns so the

@@ -21,6 +21,7 @@ import Reveal from '@/components/Reveal/Reveal';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
+import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import {
   PROGRAMS,
@@ -186,6 +187,14 @@ export default function CapitalSolutionsPage() {
           </Reveal>
         </div>
       </section>
+
+      {/* Testimonials. Every page on this site carries this section - see
+          CLAUDE.md "Testimonials". Content is lib/testimonials.ts; only the
+          heading is per-page. */}
+      <TestimonialsSection
+        heading="Owners who chose with clarity"
+        intro="Business owners and referral partners on what it’s actually like to work with KIBA."
+      />
 
       {/* Start with clarity */}
       <section className="relative flex min-h-[300px] items-center justify-center overflow-hidden bg-gradient-to-br from-white via-paper to-ivory bg-transparent! py-0!">

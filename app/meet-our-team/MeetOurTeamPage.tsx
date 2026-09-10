@@ -28,6 +28,7 @@ import Reveal from '@/components/Reveal/Reveal';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
+import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { TeamSectionBlock } from '@/components/ui/team-section-block-shadcnui';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import { TEAM } from './team-data';
@@ -113,6 +114,14 @@ export default function MeetOurTeamPage() {
             label: 'Book a Consultation',
           href: '/book-rr'
         }}
+      />
+
+      {/* Testimonials. Every page on this site carries this section - see
+          CLAUDE.md "Testimonials". Content is lib/testimonials.ts; only the
+          heading is per-page. */}
+      <TestimonialsSection
+        heading="What it’s like to work with this team"
+        intro="The people above, in the words of the business owners and partners they’ve worked with."
       />
 
       {/* The company line. The homepage renders this as a navy .band; here it's a

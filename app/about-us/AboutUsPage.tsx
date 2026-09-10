@@ -24,6 +24,7 @@ import Reveal from '@/components/Reveal/Reveal';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
+import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import { VALUES, OUTCOMES, SERVICES, CLIENT_PROFILE } from './about-content';
 
@@ -212,6 +213,14 @@ export default function AboutUsPage() {
           </Reveal>
         </div>
       </section>
+
+      {/* Testimonials. Every page on this site carries this section - see
+          CLAUDE.md "Testimonials". Content is lib/testimonials.ts; only the
+          heading is per-page. */}
+      <TestimonialsSection
+        heading="The proof is in how clients talk about us"
+        intro="Business owners and referral partners on what it’s actually like to work with KIBA."
+      />
 
       {/* The motto, as the light band. Same treatment as /meet-our-team: light,
           because it sits between a navy CTA band and the rest of the page and

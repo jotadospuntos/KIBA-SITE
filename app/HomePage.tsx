@@ -31,7 +31,7 @@ import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import SiteNav from '@/components/SiteNav/SiteNav';
 import Reveal from '@/components/Reveal/Reveal';
 import Counter from '@/components/Counter/Counter';
-import { TestimonialsSection } from '@/components/ui/testimonials-columns-1';
+import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import TrustMarquee from '@/components/TrustMarquee/TrustMarquee';
@@ -290,8 +290,7 @@ export default function HomePage() {
           </div>
         </div>
       </section><TestimonialsSection
-        className="testimonial-section"
-        eyebrow="What Our Clients & Partners Say"
+        badge="What Our Clients & Partners Say"
         heading="Trusted through every step"
       /><section className="cta-band" id="talk">
         <GradientBlob />

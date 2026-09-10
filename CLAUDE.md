@@ -97,8 +97,8 @@ them (see above), and `noindex` stays until the human decides otherwise.
   the stagger and the grid layout.
 - **Stat counters** → `components/Counter`. SSR renders the final value ("25+"), so the real numbers
   are in the HTML without JS; the count-up is decoration on top.
-- **Testimonials** → `components/ui/testimonials-columns-1.tsx` (replaced `TestimonialCarousel`,
-  which is deleted). See "Testimonials" below — it's one treatment for the whole repo.
+- **Testimonials** → `components/ui/testimonial-v2.tsx` (replaced `TestimonialCarousel`, then
+  `testimonials-columns-1.tsx`; both deleted). See "Testimonials" below.
 - **WebGL CTA gradient** → `components/GradientBlob`. Shader source unchanged; what's new is
   teardown (rAF, observer, resize listener, and the GL context via `WEBGL_lose_context`), since the
   vanilla version leaked all four across client-side navigations.
@@ -266,11 +266,29 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
 
 ---
 
-## Testimonials — one treatment, whole repo
+## Testimonials — one treatment, on EVERY page
 
-Every testimonial block on the site is the scrolling-columns design from
-`components/ui/testimonials-columns-1.tsx`. There is no second style; if you are adding a
-testimonial section anywhere, use `<TestimonialsSection />`.
+**Every page in this repo carries a testimonial section.** Not "most" — all of them, including the
+`/thank-you` and `/ty-cal` confirmation pages. If you add a page, it gets one; that is a standing
+requirement, like the animations.
+
+The design is `components/ui/testimonial-v2.tsx` (v2: semantic list/blockquote/cite markup, cards
+that lift on hover *and* keyboard focus, a pill badge above the heading, a section entrance
+animation). There is no second style — use `<TestimonialsSection />`, overriding only `heading`
+and `intro` per page.
+
+Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-solutions`, all six
+`/capital-solutions/*`, and every legacy page except `v2.html` (frozen reference — leave it alone).
+
+**Two element selectors will bite you here.** `home.css` and every legacy page style the SITE
+footer and sections with bare element rules, and unlayered CSS beats Tailwind's layered utilities:
+
+- `footer{ background:var(--navy-soft); padding:64px 0 40px }` — the card's own `<footer>` renders
+  as a **navy block** unless it opts out (`bg-transparent! px-0! pb-0! pt-5!`, or the `.tcard footer`
+  rule on the legacy side). This shipped broken once.
+- The legacy pages don't share a body font (`thank-you.html` sets Instrument Serif on `<body>`), so
+  anything in the section that inherits its family renders differently page to page. Families are
+  set explicitly on `.tsec-head p` and `.trole` for that reason — don't remove them.
 
 - **`lib/testimonials.ts` is the single source of truth** for the React routes. The legacy pages
   can't import it, so each carries the same list in a `TESTIMONIALS` config array — keep them in
@@ -288,6 +306,9 @@ testimonial section anywhere, use `<TestimonialsSection />`.
 - The attributions were unified on the way in: the homepage used to say "Business Owner" where the
   legacy pages named the client, and `business-acquisitions.html` had lost a word from Raul's
   quote. The named versions won.
+- **Known gap, deliberate:** the scroll does not pause on hover, matching the source block. WCAG
+  2.2.2 wants a pause mechanism for content that auto-moves for more than five seconds, so this is
+  worth revisiting — it's flagged rather than silently changed, because it alters the feel.
 
 ### Adapting third-party blocks: what gets substituted
 
@@ -401,7 +422,7 @@ fills exactly instead of reading as a 3+2 with a hole in it.
 │   ├── HeroBlobs/ · GradientBlob/ ← hero cursor parallax, WebGL CTA gradient
 │   └── ui/                       ← shadcn primitives: button.tsx, badge.tsx, card.tsx
 │       ├── team-section-block-shadcnui.tsx  ← props-driven team grid (/meet-our-team)
-│       ├── testimonials-columns-1.tsx       ← THE testimonial treatment, whole site
+│       ├── testimonial-v2.tsx               ← THE testimonial treatment, whole site
 │       ├── bento-grid.tsx                   ← program cross-links (/capital-solutions/*)
 │       └── services-card.tsx                ← Embla carousel, "may make sense if…" cards
 ├── lib/
