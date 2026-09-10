@@ -5,10 +5,11 @@
  * live on ONE page. This site splits them into a page each, so the copy is
  * adapted the way app/about-us/about-content.ts is:
  *
- *  - `summary` and every `fit` bullet and `caution` line are VERBATIM from the
- *    source page. Those are the sentences that carry KIBA's actual position on
+ *  - `summary`, every `fit[].point` and every `caution` line are VERBATIM from
+ *    the source page. Those are the sentences that carry KIBA's actual position on
  *    each product - don't reword them. If the WordPress page changes, re-copy.
- *  - Headlines, hero subs, `expand`, and `usedFor` are written for this layout.
+ *  - Headlines, hero subs, `expand`, `usedFor` and the `fit[].label` headings
+ *    are written for this layout.
  *
  * DELIBERATELY NO NUMBERS. The source page quotes no rates, terms, amounts or
  * qualification thresholds, and none are invented here. Anything of that kind
@@ -22,7 +23,24 @@
  */
 
 import type { LucideIcon } from 'lucide-react';
-import { Building2, CalendarClock, Handshake, Landmark, Repeat, Wrench } from 'lucide-react';
+import {
+  Banknote,
+  Building2,
+  CalendarClock,
+  FileCheck,
+  Handshake,
+  KeyRound,
+  Landmark,
+  PiggyBank,
+  Repeat,
+  Scale,
+  ShieldCheck,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Waves,
+  Wrench
+} from 'lucide-react';
 
 export type Program = {
   /* URL is /capital-solutions/<slug>. */
@@ -47,8 +65,10 @@ export type Program = {
   expand: string;
   /* Ours: what the product typically funds. Non-numeric on purpose. */
   usedFor: string[];
-  /* VERBATIM from the source page - the "may make sense if" list. */
-  fit: string[];
+  /* The "may make sense if" list. `point` is VERBATIM from the source page;
+     `label` is ours - a 2-4 word heading, because the carousel card needs a
+     title above the sentence. Never edit `point` to make a label fit. */
+  fit: { label: string; point: string; icon: LucideIcon }[];
   /* VERBATIM from the source page - the caveat KIBA leads with. */
   caution: string;
   metaDescription: string;
@@ -81,10 +101,10 @@ export const PROGRAMS: Program[] = [
       'Working capital tied to a long-term plan'
     ],
     fit: [
-      'Your business has consistent cash flow',
-      "You're planning long-term growth or acquisition",
-      "You're comfortable with documentation and a structured process",
-      'You want predictable, extended repayment terms'
+      { label: "Consistent cash flow", point: "Your business has consistent cash flow", icon: Banknote },
+      { label: "Long-term growth", point: "You're planning long-term growth or acquisition", icon: TrendingUp },
+      { label: "Ready for the paperwork", point: "You're comfortable with documentation and a structured process", icon: FileCheck },
+      { label: "Predictable terms", point: "You want predictable, extended repayment terms", icon: CalendarClock }
     ],
     caution: 'If speed or flexibility is your top priority, an SBA loan is probably not the right tool.',
     metaDescription:
@@ -116,10 +136,10 @@ export const PROGRAMS: Program[] = [
       'Acquiring a book of business or a location'
     ],
     fit: [
-      'The target business has reliable cash flow',
-      'The combined businesses can support the debt',
-      "You've thought through integration and risk",
-      'The purchase supports your long-term goals'
+      { label: "The target holds up", point: "The target business has reliable cash flow", icon: Banknote },
+      { label: "The combination carries it", point: "The combined businesses can support the debt", icon: Scale },
+      { label: "Integration thought through", point: "You've thought through integration and risk", icon: ShieldCheck },
+      { label: "Fits the long game", point: "The purchase supports your long-term goals", icon: Target }
     ],
     caution: "If the deal only works “on paper,” it's worth slowing down.",
     metaDescription:
@@ -151,10 +171,10 @@ export const PROGRAMS: Program[] = [
       'One-time investments with a clear return'
     ],
     fit: [
-      'You have a defined use for the funds',
-      'Cash flow can support fixed monthly payments',
-      'The loan replaces higher-cost or less stable debt',
-      'You want a clear payoff timeline'
+      { label: "A defined purpose", point: "You have a defined use for the funds", icon: Target },
+      { label: "Payments that fit", point: "Cash flow can support fixed monthly payments", icon: Banknote },
+      { label: "Replaces costlier debt", point: "The loan replaces higher-cost or less stable debt", icon: TrendingDown },
+      { label: "A clear payoff date", point: "You want a clear payoff timeline", icon: CalendarClock }
     ],
     caution: "If payments would feel tight, it's usually a sign to reassess.",
     metaDescription:
@@ -186,10 +206,10 @@ export const PROGRAMS: Program[] = [
       'Replacing aging equipment before it fails'
     ],
     fit: [
-      'The equipment directly supports revenue or productivity',
-      'The useful life matches the loan term',
-      'Cash flow remains comfortable after the payment',
-      'Ownership makes more sense than renting or outsourcing'
+      { label: "It earns its keep", point: "The equipment directly supports revenue or productivity", icon: TrendingUp },
+      { label: "Life matches the term", point: "The useful life matches the loan term", icon: CalendarClock },
+      { label: "Comfortable afterwards", point: "Cash flow remains comfortable after the payment", icon: Banknote },
+      { label: "Owning beats renting", point: "Ownership makes more sense than renting or outsourcing", icon: KeyRound }
     ],
     caution: "If the equipment won't clearly pay for itself, it's worth considering alternatives.",
     metaDescription:
@@ -221,10 +241,10 @@ export const PROGRAMS: Program[] = [
       'Refinancing an existing commercial mortgage'
     ],
     fit: [
-      'Ownership improves long-term stability or cost control',
-      'You have sufficient cash reserves after the purchase',
-      'The property aligns with your growth plans',
-      "The business isn't stretched thin by the commitment"
+      { label: "Stability and cost control", point: "Ownership improves long-term stability or cost control", icon: Building2 },
+      { label: "Reserves intact", point: "You have sufficient cash reserves after the purchase", icon: PiggyBank },
+      { label: "Fits the growth plan", point: "The property aligns with your growth plans", icon: Target },
+      { label: "Not stretched thin", point: "The business isn't stretched thin by the commitment", icon: ShieldCheck }
     ],
     caution: 'If liquidity is critical, leasing may be the better option.',
     metaDescription:
@@ -256,10 +276,10 @@ export const PROGRAMS: Program[] = [
       'Standing capacity for unplanned opportunities'
     ],
     fit: [
-      'Cash flow timing varies month to month',
-      'You need short-term working capital flexibility',
-      'You plan to pay balances down regularly',
-      'The line supports operations, not losses'
+      { label: "Uneven month to month", point: "Cash flow timing varies month to month", icon: Waves },
+      { label: "Short-term flexibility", point: "You need short-term working capital flexibility", icon: Repeat },
+      { label: "Paid down regularly", point: "You plan to pay balances down regularly", icon: TrendingDown },
+      { label: "Supports operations", point: "The line supports operations, not losses", icon: ShieldCheck }
     ],
     caution: "If it's covering ongoing shortfalls, it's a sign to step back and reassess.",
     metaDescription:

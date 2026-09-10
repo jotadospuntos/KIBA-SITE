@@ -247,9 +247,11 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
   create a seventh route folder.
 - **`SiteNav` and `SiteFooter` both import `PROGRAMS`** so the menu, the footer and the pages
   can't drift apart. The nav dropdown is titled **"Capital Solutions"** (was "Solutions").
-- **Copy provenance, marked in the file:** every `summary`, `fit` bullet and `caution` line is
-  **verbatim** from https://kibadvisors.com/capital-solutions/ — those are KIBA's actual position
-  on each product. Headlines, hero subs, `expand` and `usedFor` were written for this layout.
+- **Copy provenance, marked in the file:** every `summary`, every `fit[].point` and every
+  `caution` line is **verbatim** from https://kibadvisors.com/capital-solutions/ — those are KIBA's
+  actual position on each product. Headlines, hero subs, `expand`, `usedFor` and the `fit[].label`
+  card headings were written for this layout. The labels exist because the carousel card needs a
+  title above the sentence; never trim a `point` to make its label fit.
 - **No numbers, deliberately.** The source quotes no rates, terms, amounts or qualification
   thresholds and none were invented. Anything of that kind is a lending claim and has to come from
   the human — don't let a future copy pass add "typical terms" tables.
@@ -300,7 +302,31 @@ same:
 | Radix-Slot `Button` + `asChild` | `components/ui/button.tsx` + `render` | Repo's shadcn style is `base-nova` on `@base-ui/react`. Two Buttons with one name is worse than an adapted import. |
 | Block's own colors / semantic tokens | KIBA `@theme` tokens | `bg-navy-deep`, `text-ink`, `text-slate`, `ring-line`, `bg-blue`. |
 
-Nothing new was installed for either component.
+Install only what genuinely adds capability. Across three blocks the only real new dependency was
+`embla-carousel-react` (for `services-card.tsx`) — everything else on their lists was already here
+under a different name.
+
+**One exception to the Button rule, found the hard way.** `services-card.tsx`'s carousel arrows are
+plain `<button>`s, not `components/ui/button.tsx`. Wired to the repo's Base UI Button the click
+silently did nothing — Embla was fine (ArrowRight and dragging both moved the track), the handler
+just never ran. For a control that must work, and where none of the Button variants were being
+used anyway, a native button is the right call. **If you use the repo Button for something
+interactive, click it in a browser** — this failure mode is silent and the build is clean.
+
+---
+
+## The "may make sense if…" carousel (`/capital-solutions/*`)
+
+Each program page presents its four `fit` points as an Embla carousel of tall gradient cards
+(`components/ui/services-card.tsx`), three visible at a time on desktop and one on mobile, with the
+fourth reachable via the arrows, arrow keys or a drag.
+
+- Card tints come from `FIT_GRADIENTS` in `ProgramPage.tsx`, by position — cool tints only, because
+  the section sits on `.section-alt`'s warm cream and a warm card in that reads as a mistake.
+- No `<Reveal>` around it: the carousel runs its own in-view stagger, and both would double-fade.
+- Under reduced motion the entrance stagger is skipped and Embla's `duration` drops to 0, so the
+  carousel still works but jumps rather than glides. Verified: cards sit at opacity 1 and the
+  arrows still page.
 
 ---
 
@@ -376,7 +402,8 @@ fills exactly instead of reading as a 3+2 with a hole in it.
 │   └── ui/                       ← shadcn primitives: button.tsx, badge.tsx, card.tsx
 │       ├── team-section-block-shadcnui.tsx  ← props-driven team grid (/meet-our-team)
 │       ├── testimonials-columns-1.tsx       ← THE testimonial treatment, whole site
-│       └── bento-grid.tsx                   ← program cross-links (/capital-solutions/*)
+│       ├── bento-grid.tsx                   ← program cross-links (/capital-solutions/*)
+│       └── services-card.tsx                ← Embla carousel, "may make sense if…" cards
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
 │   ├── testimonials.ts           ← the four real client testimonials (single source)

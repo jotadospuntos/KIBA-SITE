@@ -29,6 +29,7 @@ import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
+import { ServiceCarousel } from '@/components/ui/services-card';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import {
   PROGRAMS,
@@ -39,6 +40,16 @@ import {
 } from './solutions-data';
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
+
+/* Card tints for the "may make sense if" carousel, by position. Cool tints
+   only - the section sits on .section-alt's warm cream, and mixing a warm card
+   into that reads as a mistake rather than variety. */
+const FIT_GRADIENTS = [
+  'from-[#eef2f8] to-white',
+  'from-[#dfe9fd] to-white',
+  'from-[#f2f4fa] to-white',
+  'from-[#e6ecfb] to-white'
+];
 
 function Check({ color = '#6d94f5' }: { color?: string }) {
   return (
@@ -149,14 +160,18 @@ export default function ProgramPage({ slug }: { slug: string }) {
             <h2>This may make sense if&hellip;</h2>
             <p>Four things we look at before we recommend this over anything else on the list.</p>
           </Reveal>
-          <div className="grid-2">
-            {program.fit.map((point, i) => (
-              <Reveal className="benefit-card reveal" key={point}>
-                <div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>{i + 1}</span></div>
-                <h3>{point}</h3>
-              </Reveal>
-            ))}
-          </div>
+          {/* The four "may make sense if" points as a carousel. No <Reveal>
+              wrapper: ServiceCarousel runs its own in-view stagger, and both
+              would mean two fades on the same element. */}
+          <ServiceCarousel
+            services={program.fit.map((item, i) => ({
+              number: String(i + 1).padStart(3, '0'),
+              title: item.label,
+              description: item.point,
+              icon: item.icon,
+              gradient: FIT_GRADIENTS[i % FIT_GRADIENTS.length]
+            }))}
+          />
         </div>
       </section>
 
