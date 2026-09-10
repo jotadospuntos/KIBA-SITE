@@ -28,13 +28,14 @@ import Reveal from '@/components/Reveal/Reveal';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import {
   PROGRAMS,
   DECISION_FACTORS,
   DECISION_LEAD,
   DECISION_PHILOSOPHY,
-  type Program
+  getProgram
 } from './solutions-data';
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
@@ -45,8 +46,21 @@ function Check({ color = '#6d94f5' }: { color?: string }) {
   );
 }
 
-export default function ProgramPage({ program }: { program: Program }) {
+/*
+ * Takes the SLUG, not the Program object, and looks the object up here.
+ *
+ * This is a server/client boundary rule, not a style preference: [slug]/page.tsx
+ * is a server component, and every prop it passes has to be serializable.
+ * `Program.icon` is a Lucide component - a function - so passing the whole
+ * object made the build hang and then fail trying to stringify it. Passing the
+ * slug keeps functions on the client side of the boundary (and shrinks the RSC
+ * payload, since the copy no longer gets serialized into the HTML twice).
+ */
+export default function ProgramPage({ slug }: { slug: string }) {
   const { forceMotion } = useMotionPreference();
+
+  const program = getProgram(slug);
+  if (!program) throw new Error(`Unknown capital-solutions program: ${slug}`);
 
   /* The other five programs, in their canonical order, for the cross-links. */
   const others = PROGRAMS.filter((p) => p.slug !== program.slug);
@@ -200,7 +214,9 @@ export default function ProgramPage({ program }: { program: Program }) {
         </div>
       </section>
 
-      {/* Cross-links to the other five programs, 3 + 2 like the homepage rows */}
+      {/* Cross-links to the other five programs, as a bento grid.
+          Five cards over two rows of three: the fourth spans two columns so the
+          grid fills exactly and doesn't read as a 3+2 with a hole in it. */}
       <section>
         <div className="wrap">
           <Reveal className="section-head reveal">
@@ -208,34 +224,28 @@ export default function ProgramPage({ program }: { program: Program }) {
             <h2>Not sure this is the one?</h2>
             <p>Most clients arrive asking about one program and leave with a different answer. Here&rsquo;s the rest of the list.</p>
           </Reveal>
-          <div className="benefits-grid" style={{ marginBottom: '24px' }}>
-            {others.slice(0, 3).map((other) => (
-              <Reveal
-                as="a"
-                href={`/capital-solutions/${other.slug}`}
-                className="benefit-card reveal"
-                style={{ textDecoration: 'none', display: 'block' }}
-                key={other.slug}
-              >
-                <h3>{other.navTitle}</h3>
-                <p>{other.navDesc}</p>
-              </Reveal>
-            ))}
-          </div>
-          <div className="grid-2">
-            {others.slice(3).map((other) => (
-              <Reveal
-                as="a"
-                href={`/capital-solutions/${other.slug}`}
-                className="benefit-card reveal"
-                style={{ textDecoration: 'none', display: 'block' }}
-                key={other.slug}
-              >
-                <h3>{other.navTitle}</h3>
-                <p>{other.navDesc}</p>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal className="reveal">
+            {/* No explicit grid-rows here on purpose: BentoGrid sets
+                auto-rows-[16rem], and declaring rows would make them `auto`
+                and collapse the cards to text height. Five cards with the
+                fourth spanning two columns already fills exactly two rows. */}
+            <BentoGrid>
+              {others.map((other, i) => (
+                <BentoCard
+                  key={other.slug}
+                  name={other.navTitle}
+                  description={other.navDesc}
+                  href={`/capital-solutions/${other.slug}`}
+                  cta="Explore this program"
+                  Icon={other.icon}
+                  className={i === 3 ? 'md:col-span-2' : undefined}
+                  background={
+                    <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue/10 blur-3xl transition-opacity duration-300 group-hover:opacity-150" />
+                  }
+                />
+              ))}
+            </BentoGrid>
+          </Reveal>
         </div>
       </section>
 

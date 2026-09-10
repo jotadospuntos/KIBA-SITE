@@ -49,8 +49,10 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 }
 
 export default function Page({ params }: { params: { slug: string } }) {
-  const program = getProgram(params.slug);
-  if (!program) notFound();
+  if (!getProgram(params.slug)) notFound();
 
-  return <ProgramPage program={program} />;
+  /* Pass the slug, not the Program - `icon` is a Lucide component and a server
+     component can only hand serializable props to a client one. See the note in
+     ../ProgramPage.tsx. */
+  return <ProgramPage slug={params.slug} />;
 }

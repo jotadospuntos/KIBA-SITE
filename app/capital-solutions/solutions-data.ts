@@ -21,6 +21,9 @@
  * is a one-line change to `heroImage` / `heroImageAlt` below and nothing else.
  */
 
+import type { LucideIcon } from 'lucide-react';
+import { Building2, CalendarClock, Handshake, Landmark, Repeat, Wrench } from 'lucide-react';
+
 export type Program = {
   /* URL is /capital-solutions/<slug>. */
   slug: string;
@@ -28,6 +31,8 @@ export type Program = {
   navTitle: string;
   /* One line under the label in the nav dropdown. */
   navDesc: string;
+  /* Shown on the bento cards that cross-link between programs. */
+  icon: LucideIcon;
   /* Full product name, used in headings and metadata. */
   name: string;
   /* Hero headline. Rendered through SplitText; \n becomes a line break. */
@@ -54,6 +59,7 @@ export const PROGRAMS: Program[] = [
     slug: 'sba-loans',
     navTitle: 'SBA Loans',
     navDesc: 'Longer terms and lower payments, with more process.',
+    icon: Landmark,
     name: 'SBA Loans',
     headline: 'SBA loans, structured\nto actually close.',
     heroSub:
@@ -88,6 +94,7 @@ export const PROGRAMS: Program[] = [
     slug: 'business-acquisition-loans',
     navTitle: 'Business Acquisition Loans',
     navDesc: 'Financing to buy a business, stress-tested first.',
+    icon: Handshake,
     name: 'Business Acquisition Loans',
     headline: 'Financing that holds up\nafter the deal closes.',
     heroSub:
@@ -122,6 +129,7 @@ export const PROGRAMS: Program[] = [
     slug: 'term-loans',
     navTitle: 'Term Loans',
     navDesc: 'A defined purpose and a clear payoff date.',
+    icon: CalendarClock,
     name: 'Term Loans',
     headline: 'A clear purpose,\nand a clear payoff date.',
     heroSub:
@@ -156,6 +164,7 @@ export const PROGRAMS: Program[] = [
     slug: 'equipment-financing',
     navTitle: 'Equipment Financing',
     navDesc: 'For assets that clearly pay for themselves.',
+    icon: Wrench,
     name: 'Equipment Financing',
     headline: 'Equipment that earns\nits place on the books.',
     heroSub:
@@ -190,6 +199,7 @@ export const PROGRAMS: Program[] = [
     slug: 'commercial-real-estate-loans',
     navTitle: 'Commercial & Investment Real Estate',
     navDesc: 'Ownership, weighed against the cash it ties up.',
+    icon: Building2,
     name: 'Commercial & Investment Real Estate Loans',
     headline: 'Own the building\nwithout straining the business.',
     heroSub:
@@ -224,6 +234,7 @@ export const PROGRAMS: Program[] = [
     slug: 'lines-of-credit',
     navTitle: 'Revolving Lines of Credit',
     navDesc: 'Flexibility for timing gaps, not for shortfalls.',
+    icon: Repeat,
     name: 'Revolving Lines of Credit',
     headline: 'Flexibility for timing gaps,\nnot for shortfalls.',
     heroSub:

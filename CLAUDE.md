@@ -62,11 +62,13 @@ an expected-identical check.
 **Known intentional divergences from `/v2`** (keep this list current — an unlisted difference is a
 migration bug):
 
-1. **Testimonial carousel behavior.** `/v2` clamps the carousel to `slides.length - 1`, so on
-   desktop — where all three slides are already visible — the arrows and autoplay scroll the track
-   into empty space every 6s, and every dot jumps to index 0. The homepage clamps to `maxIndex`,
-   hides the inert controls above 860px (`.testimonial-controls.fits-desktop` — the one rule in
-   `home.css` that is not in `v2.html`), and resumes autoplay on mouseleave instead of stopping.
+1. **The testimonial carousel is gone.** `/v2` (and the first port) had a three-slide carousel with
+   arrows, dots and autoplay. The whole site now uses one treatment — the scrolling columns in
+   `components/ui/testimonials-columns-1.tsx` — so the carousel component was deleted. This is the
+   largest single divergence from `/v2`; the two sections are not comparable any more, so don't
+   diff that band. `home.css` still carries the now-dead `.testimonial-controls.fits-desktop`
+   rule (and the rest of the carousel CSS) because that file is kept byte-stable against
+   `v2.html`; it selects nothing.
 2. **Server-rendered detail.** The carousel dots, the stat numbers and both copies of the marquee
    items are in the SSR HTML rather than being created by script after mount. Removes a hydration
    layout shift (and for the marquee, a visible first-frames jump while it scrolled a single copy).
@@ -95,8 +97,8 @@ them (see above), and `noindex` stays until the human decides otherwise.
   the stagger and the grid layout.
 - **Stat counters** → `components/Counter`. SSR renders the final value ("25+"), so the real numbers
   are in the HTML without JS; the count-up is decoration on top.
-- **Testimonial carousel** → `components/TestimonialCarousel`. Real state, quotes in one array, and
-  the three behavior fixes listed above.
+- **Testimonials** → `components/ui/testimonials-columns-1.tsx` (replaced `TestimonialCarousel`,
+  which is deleted). See "Testimonials" below — it's one treatment for the whole repo.
 - **WebGL CTA gradient** → `components/GradientBlob`. Shader source unchanged; what's new is
   teardown (rAF, observer, resize listener, and the GL context via `WEBGL_lose_context`), since the
   vanilla version leaked all four across client-side navigations.
@@ -262,6 +264,62 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
 
 ---
 
+## Testimonials — one treatment, whole repo
+
+Every testimonial block on the site is the scrolling-columns design from
+`components/ui/testimonials-columns-1.tsx`. There is no second style; if you are adding a
+testimonial section anywhere, use `<TestimonialsSection />`.
+
+- **`lib/testimonials.ts` is the single source of truth** for the React routes. The legacy pages
+  can't import it, so each carries the same list in a `TESTIMONIALS` config array — keep them in
+  sync when a quote changes.
+- **There are only FOUR real testimonials.** That drives the layout: `splitIntoColumns` keeps at
+  least two cards per column, so four render as two columns and it becomes three by itself at six.
+  **Do not pad the array to fill the grid.** Inventing client quotes for a financial advisory firm
+  is not a design decision.
+- **Avatars are initials monograms, not photos**, for the same reason — we have no images of these
+  clients, and a stock face beside a real named quote is a fabrication. Add a real `image` to an
+  entry and both implementations will use it.
+- **Phones get one column containing every quote**; the round-robin split starts at `md` / 861px.
+  Hiding the second column below that (which the source block does) would hide half the
+  testimonials on a phone. Both implementations handle this the same way.
+- The attributions were unified on the way in: the homepage used to say "Business Owner" where the
+  legacy pages named the client, and `business-acquisitions.html` had lost a word from Raul's
+  quote. The named versions won.
+
+### Adapting third-party blocks: what gets substituted
+
+Both this and the bento grid came from 21st.dev-style blocks, and both were rewired to what the
+repo already has rather than pulling in a parallel stack. When you integrate the next one, do the
+same:
+
+| Block shipped with | Use instead | Why |
+| --- | --- | --- |
+| `motion/react` | `framer-motion` | Same library, newer name. Installing both ships it twice. |
+| `@radix-ui/react-icons` | `lucide-react` | `components.json` sets `iconLibrary: lucide`. |
+| Radix-Slot `Button` + `asChild` | `components/ui/button.tsx` + `render` | Repo's shadcn style is `base-nova` on `@base-ui/react`. Two Buttons with one name is worse than an adapted import. |
+| Block's own colors / semantic tokens | KIBA `@theme` tokens | `bg-navy-deep`, `text-ink`, `text-slate`, `ring-line`, `bg-blue`. |
+
+Nothing new was installed for either component.
+
+---
+
+## The bento grid (`/capital-solutions/*`)
+
+The "Not sure this is the one?" cross-links on every program page are `BentoCard`s in a
+`BentoGrid`: five cards over two rows of three, with the fourth spanning two columns so the grid
+fills exactly instead of reading as a 3+2 with a hole in it.
+
+- **Don't put `grid-rows-*` on `BentoGrid`.** It sets `auto-rows-[16rem]`, and declaring explicit
+  rows makes them `auto` and collapses the cards to text height. (Shipped that way for one build.)
+- The whole card is the anchor; the block put a small button in the corner and left the rest of the
+  card dead.
+- `Program.icon` is a Lucide component, so **`PROGRAMS` entries must not cross the server→client
+  boundary.** `[slug]/page.tsx` passes the *slug* and `ProgramPage` looks the program up itself —
+  passing the object made the build hang and fail trying to serialize a function.
+
+---
+
 ## Golden rules (read first)
 
 - **Filename = URL.** `public/legacy/partners/rivenway.html` serves at `/partners/rivenway` via
@@ -315,10 +373,13 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
 │   ├── Reveal/ · Counter/        ← scroll reveal, animated stat counters
 │   ├── TestimonialCarousel/ · TrustMarquee/
 │   ├── HeroBlobs/ · GradientBlob/ ← hero cursor parallax, WebGL CTA gradient
-│   └── ui/                       ← shadcn primitives: button.tsx (unused), badge.tsx, card.tsx
-│       └── team-section-block-shadcnui.tsx  ← props-driven team grid (used by /meet-our-team)
+│   └── ui/                       ← shadcn primitives: button.tsx, badge.tsx, card.tsx
+│       ├── team-section-block-shadcnui.tsx  ← props-driven team grid (/meet-our-team)
+│       ├── testimonials-columns-1.tsx       ← THE testimonial treatment, whole site
+│       └── bento-grid.tsx                   ← program cross-links (/capital-solutions/*)
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
+│   ├── testimonials.ts           ← the four real client testimonials (single source)
 │   └── useMotionPreference.ts    ← ?motion=1 override for previewing animations
 └── public/
     ├── img/ · partners/img/ · advisors/img/ · favicons   ← original public paths, unchanged
@@ -391,7 +452,9 @@ nothing else.
 - **Meta Pixel** (Facebook), ID `1653996785650157`, in the `<head>`, firing PageView.
 - **Footer social icons:** LinkedIn (`/company/kingdomimpactbusinessadvisors/`) and Facebook
   (`/kibadvisors`).
-- **Testimonials block** (partner + advisor pages) — three client quotes.
+- **Testimonials block** — now a `TESTIMONIALS` config array plus a small injector script near the
+  bottom of each legacy page (the same config-block convention the rest of those pages use). Edit
+  the array, never the generated markup, and keep it in sync with `lib/testimonials.ts`.
 - **KIBA contact:** phone `251-210-8445`, email `info@kibadvisors.com`.
 
 If you change any shared element, apply the same change to every legacy page and both templates.

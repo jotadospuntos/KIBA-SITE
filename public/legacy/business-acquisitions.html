@@ -320,6 +320,57 @@
   }
   .testimonial-attrib strong{ color:var(--ink); }
 
+  /* ---------- TESTIMONIAL COLUMNS ----------
+     Scrolling columns, matching components/ui/testimonials-columns-1.tsx on the
+     migrated React routes. The cards reuse .testimonial-card / .quote-mark /
+     .quote / .testimonial-attrib above, so only the column layout is new.
+     CONTENT COMES FROM THE TESTIMONIALS CONFIG near the bottom of this file -
+     edit that, not the markup the script generates. */
+  .tcols{
+    display:flex; justify-content:center; gap:24px;
+    max-height:680px; overflow:hidden;
+    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 18%,#000 82%,transparent);
+            mask-image:linear-gradient(to bottom,transparent,#000 18%,#000 82%,transparent);
+  }
+  .tcol{
+    display:flex; flex-direction:column; gap:24px; padding-bottom:24px;
+    flex:0 0 320px; width:320px;
+    animation:tcolScroll 15s linear infinite;
+  }
+  .tcol.tcol-mobile{ animation-duration:30s; }
+  .tcol.tcol-b{ animation-duration:19s; }
+  .tcol .testimonial-card{ border-radius:24px; }
+  /* Phones show one column containing every quote; the split columns start at
+     861px. Hiding a column below that would hide half the testimonials, since
+     the split is round-robin. */
+  .tcols .tcol-desktop{ display:none; }
+  @media (min-width:861px){
+    .tcols .tcol-mobile{ display:none; }
+    .tcols .tcol-desktop{ display:flex; }
+  }
+  @keyframes tcolScroll{ from{ transform:translateY(0); } to{ transform:translateY(-50%); } }
+  /* Reduced motion: no infinite scroll. The duplicate copies that make the loop
+     seamless are hidden and the mask/height cap come off, so every quote is
+     visible and nothing is stuck behind a frozen fade. */
+  @media (prefers-reduced-motion: reduce){
+    .tcol{ animation:none; }
+    .tcol .tdup{ display:none; }
+    .tcols{
+      max-height:none; overflow:visible; flex-wrap:wrap;
+      -webkit-mask-image:none; mask-image:none;
+    }
+  }
+  .tavatar{
+    width:40px; height:40px; border-radius:50%;
+    background:var(--ivory); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Instrument Sans',sans-serif; font-size:13px; font-weight:600;
+    color:var(--navy-soft); flex:0 0 40px;
+  }
+  .tcol .testimonial-attrib{ display:flex; align-items:center; gap:12px; }
+  .tcol .testimonial-attrib .tname{ display:block; font-weight:600; color:var(--ink); }
+  .tcol .testimonial-attrib .trole{ display:block; font-size:13px; color:var(--slate); }
+
   /* ---------- CTA BAND ---------- */
   .cta-band{
     position:relative;
@@ -569,23 +620,7 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
 </section><section class="testimonial-section">
   <div class="wrap">
     <div class="section-head"><div class="eyebrow">What Our Clients Say</div></div>
-    <div class="testimonial-grid-3">
-      <div class="testimonial-card">
-        <div class="quote-mark">&ldquo;</div>
-        <p class="quote">Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout the process. He made an otherwise stressful process easy and successful! Highly recommend his services!</p>
-        <div class="testimonial-attrib"><strong>Nick R.</strong></div>
-      </div>
-      <div class="testimonial-card">
-        <div class="quote-mark">&ldquo;</div>
-        <p class="quote">Michael was excellent in trying to find every possible solution for my funding needs. He stayed connected to the deal at all times to make sure we got to the closing table.</p>
-                <div class="testimonial-attrib"><strong>Richard R.</strong></div>
-      </div>
-      <div class="testimonial-card">
-        <div class="quote-mark">&ldquo;</div>
-        <p class="quote">Michael &amp; Barbara helped us navigate the complexities of SBA loan. They were patient and proficient with their work, made the process extremely easy. I would work with them again.</p>
-        <div class="testimonial-attrib"><strong>Raul G.</strong></div>
-      </div>
-    </div>
+    <div class="tcols" id="tcols"></div>
   </div>
 </section><section class="section-alt">
   <div class="wrap">
@@ -629,4 +664,109 @@ src="https://www.facebook.com/tr?id=1653996785650157&ev=PageView&noscript=1"
   </div>
   <div class="footer-links"><a href="https://kibadvisors.com/privacy-policy/">Privacy Policy</a><a href="https://kibadvisors.com/terms-and-conditions/">Terms &amp; Conditions</a><a href="tel:2512108445">251-210-8445</a></div>
   <div class="footer-copy">&copy; 2026 Kingdom Impact Business Advisors. All rights reserved.</div>
-</div></footer><script src="https://link.msgsndr.com/js/form_embed.js"></script></body></html>
+</div></footer><script src="https://link.msgsndr.com/js/form_embed.js"></script>
+<!-- ============================================================
+     TESTIMONIALS - edit this array, not the generated markup.
+     Same list as lib/testimonials.ts, which feeds the identical
+     scrolling-columns treatment on the migrated React routes. Keep the two in
+     sync. There are only four real testimonials; do not pad the array to fill
+     the layout.
+     ============================================================ -->
+<script>
+  var TESTIMONIALS = [
+      {
+          "quote": "Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout. He made an otherwise stressful process easy and successful! Highly recommend his services!",
+          "name": "Nick R.",
+          "role": "SBA Loan Client"
+      },
+      {
+          "quote": "Michael was excellent in trying to find every possible solution for my funding needs. He stayed connected to the deal at all times to make sure we got to the closing table.",
+          "name": "Richard R.",
+          "role": "Business Funding Client"
+      },
+      {
+          "quote": "Michael & Barbara helped us navigate the complexities of an SBA loan. They were patient and proficient with their work, and made the process extremely easy. I would work with them again.",
+          "name": "Raul G.",
+          "role": "SBA Loan Client"
+      },
+      {
+          "quote": "We continue to work with Michael because of his deep experience in the lending space and his genuine commitment to doing what’s right for each client. He consistently goes above and beyond, giving every file the care and attention it deserves. That level of effort and integrity is why we confidently refer our clients to him whenever the need arises.",
+          "name": "Paul Childers",
+          "role": "RivenWay Business Solutions"
+      }
+  ];
+
+  (function () {
+    var host = document.getElementById('tcols');
+    if (!host || !TESTIMONIALS || !TESTIMONIALS.length) return;
+
+    function initials(name) {
+      return name.split(/\s+/).filter(Boolean).slice(0, 2).map(function (p) {
+        return p.charAt(0).toUpperCase();
+      }).join('');
+    }
+
+    /* `dup` marks the second copy of the stack - the one that only exists to
+       make the -50% loop seamless. It's hidden from screen readers so each
+       quote is announced once, and hidden outright under reduced motion. */
+    function card(t, dup) {
+      var el = document.createElement('div');
+      el.className = 'testimonial-card' + (dup ? ' tdup' : '');
+      if (dup) el.setAttribute('aria-hidden', 'true');
+
+      var mark = document.createElement('div');
+      mark.className = 'quote-mark';
+      mark.setAttribute('aria-hidden', 'true');
+      mark.textContent = '\u201C';
+
+      var q = document.createElement('p');
+      q.className = 'quote';
+      q.textContent = t.quote;
+
+      var attrib = document.createElement('div');
+      attrib.className = 'testimonial-attrib';
+
+      /* Initials monogram, not a stock photo: we have no images of these
+         clients and a stock face beside a real named quote is a fabrication. */
+      var avatar = document.createElement('div');
+      avatar.className = 'tavatar';
+      avatar.setAttribute('aria-hidden', 'true');
+      avatar.textContent = initials(t.name);
+
+      var who = document.createElement('div');
+      var name = document.createElement('strong');
+      name.className = 'tname';
+      name.textContent = t.name;
+      var role = document.createElement('span');
+      role.className = 'trole';
+      role.textContent = t.role;
+      who.appendChild(name);
+      who.appendChild(role);
+
+      attrib.appendChild(avatar);
+      attrib.appendChild(who);
+      el.appendChild(mark);
+      el.appendChild(q);
+      el.appendChild(attrib);
+      return el;
+    }
+
+    function column(items, cls) {
+      var col = document.createElement('div');
+      col.className = 'tcol ' + cls;
+      for (var copy = 0; copy < 2; copy++) {
+        for (var i = 0; i < items.length; i++) col.appendChild(card(items[i], copy === 1));
+      }
+      return col;
+    }
+
+    host.appendChild(column(TESTIMONIALS, 'tcol-mobile'));
+
+    var a = [], b = [];
+    for (var i = 0; i < TESTIMONIALS.length; i++) (i % 2 ? b : a).push(TESTIMONIALS[i]);
+    host.appendChild(column(a, 'tcol-desktop tcol-a'));
+    if (b.length) host.appendChild(column(b, 'tcol-desktop tcol-b'));
+  })();
+</script>
+
+</body></html>

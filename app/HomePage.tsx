@@ -31,7 +31,7 @@ import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import SiteNav from '@/components/SiteNav/SiteNav';
 import Reveal from '@/components/Reveal/Reveal';
 import Counter from '@/components/Counter/Counter';
-import TestimonialCarousel from '@/components/TestimonialCarousel/TestimonialCarousel';
+import { TestimonialsSection } from '@/components/ui/testimonials-columns-1';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import TrustMarquee from '@/components/TrustMarquee/TrustMarquee';
@@ -289,12 +289,11 @@ export default function HomePage() {
             </Reveal>
           </div>
         </div>
-      </section><section className="testimonial-section">
-        <div className="wrap">
-          <Reveal className="section-head reveal"><div className="eyebrow">What Our Clients &amp; Partners Say</div></Reveal>
-          <TestimonialCarousel />
-        </div>
-      </section><section className="cta-band" id="talk">
+      </section><TestimonialsSection
+        className="testimonial-section"
+        eyebrow="What Our Clients & Partners Say"
+        heading="Trusted through every step"
+      /><section className="cta-band" id="talk">
         <GradientBlob />
         <Reveal className="wrap cta-band-inner reveal">
           <h2>Let&rsquo;s talk about your next move</h2>
