@@ -230,16 +230,18 @@ function ServiceCard({
       variants={animate ? cardVariants : staticVariants}
       custom={index}
       className={cn(
-        'relative flex h-[420px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br p-8 ring-1 ring-line',
+        /* 300px, not the block's 450: these cards carry a three-word title and
+           one sentence, and at that height most of the card was empty. */
+        'relative flex h-[300px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br p-7 ring-1 ring-line',
         '[box-shadow:0_30px_60px_-40px_rgba(2,0,98,0.24)]',
         service.gradient
       )}
     >
       <div className="z-10 flex h-full flex-col items-start text-left">
-        <span className="mb-8 font-mono text-[12px] tracking-[0.14em] text-slate/70">
+        <span className="mb-5 font-mono text-[12px] tracking-[0.14em] text-slate/70">
           ( {service.number} )
         </span>
-        <Icon className="mb-auto h-11 w-11 text-blue" strokeWidth={1.5} aria-hidden="true" />
+        <Icon className="mb-auto h-10 w-10 text-blue" strokeWidth={1.5} aria-hidden="true" />
       </div>
       <div className="z-10">
         <h3 className="mb-2! font-heading text-[14.5px] font-semibold uppercase tracking-[0.1em] text-navy-deep">
