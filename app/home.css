@@ -19,11 +19,11 @@
     --line:#e3e3ee;
     --white:#ffffff;
     /* Was #f8f4ee, a warm beige - the only warm tone in an otherwise navy/blue
-       palette, and it fought every cool-tinted card placed on it. Now a soft
-       cool blue-grey. THE NAME IS HISTORICAL: the variable and the
+       palette, and it fought every cool-tinted card placed on it. Now a light
+       neutral cool grey. THE NAME IS HISTORICAL: the variable and the
        .solution-card.is-cream class keep their names so the markup still
        diffs against v2.html, but the colour is not cream any more. */
-    --cream:#e9f0fa;
+    --cream:#f2f4f7;
     --lime:#c3ff4d;
     --radius:16px;
     --radius-sm:12px;
