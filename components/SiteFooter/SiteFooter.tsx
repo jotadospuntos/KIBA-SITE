@@ -1,4 +1,5 @@
 import Reveal from '@/components/Reveal/Reveal';
+import { PROGRAMS } from '@/app/capital-solutions/solutions-data';
 
 /*
  * Shared site footer (brand column + social + link columns).
@@ -38,19 +39,29 @@ export default function SiteFooter() {
           <p className="footer-copy">&copy; 2026 Kingdom Impact Business Advisors. All rights reserved.</p>
         </Reveal>
 
+        {/* Driven off PROGRAMS, like the nav dropdown, so the footer can't end up
+            listing a different set of programs than the menu does. */}
         <Reveal className="footer-col reveal">
-          <h3>Solutions</h3>
+          <h3>Capital Solutions</h3>
           <ul>
-            <li><a href="/business-acquisitions">Business Acquisitions</a></li>
-            <li><a href="/book-rr">Book a Consultation</a></li>
-            <li><a href="/referral-partners">Referral Partners</a></li>
+            {PROGRAMS.map((program) => (
+              <li key={program.slug}>
+                <a href={`/capital-solutions/${program.slug}`}>{program.navTitle}</a>
+              </li>
+            ))}
           </ul>
         </Reveal>
 
         <Reveal className="footer-col reveal">
           <h3>Company</h3>
           <ul>
-            <li><a href="https://kibadvisors.com">About</a></li>
+            {/* About and Team point at this subdomain now - both pages live here
+                (app/about-us, app/meet-our-team) rather than on WordPress. The
+                policy links stay off-site; those documents only exist there. */}
+            <li><a href="/about-us">About</a></li>
+            <li><a href="/meet-our-team">Meet the Team</a></li>
+            <li><a href="/referral-partners">Referral Partners</a></li>
+            <li><a href="/book-rr">Book a Consultation</a></li>
             <li><a href="#talk">Contact</a></li>
             <li><a href="https://kibadvisors.com/privacy-policy/">Privacy Policy</a></li>
             <li><a href="https://kibadvisors.com/terms-and-conditions/">Terms &amp; Conditions</a></li>

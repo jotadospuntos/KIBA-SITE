@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { PROGRAMS } from '@/app/capital-solutions/solutions-data';
+
 /*
- * Shared site nav: sticky bar, desktop "Solutions" dropdown, mobile sheet with
+ * Shared site nav: sticky bar, desktop "Capital Solutions" dropdown, mobile sheet with
  * accordion. Reused by every migrated route, so the markup lives here once
  * rather than being copy-pasted the way the legacy public/legacy/*.html pages
  * copy their headers (see CLAUDE.md "Golden rules").
@@ -29,19 +31,30 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * Re-verify all of the above by keyboard if you touch this component.
  */
 
-/* Solutions entries, rendered twice: the desktop dropdown and the mobile
-   accordion. One list so the two can't drift apart. */
+/* Capital Solutions entries, rendered twice: the desktop dropdown and the
+   mobile accordion. One list so the two can't drift apart.
+
+   These are derived from PROGRAMS in app/capital-solutions/solutions-data.ts,
+   so adding a seventh program adds a nav entry automatically and the two can't
+   disagree about what exists. The hub link is prepended by hand because it
+   isn't a program.
+
+   NOTE: the dropdown used to hold '/business-acquisitions' (a legacy campaign
+   landing page with its own GHL form, still live and untouched) and '/book-rr'.
+   Business acquisition financing is now a program page under here; the legacy
+   page is still reachable at its own URL and is still where its ad traffic
+   lands. Retiring or merging it is a separate, deliberate decision. */
 const SOLUTIONS = [
   {
-    href: '/business-acquisitions',
-    title: 'Business Acquisitions',
-    desc: 'Financing to acquire an existing business.'
+    href: '/capital-solutions',
+    title: 'All Capital Solutions',
+    desc: 'Start here if you’re not sure which one fits.'
   },
-  {
-    href: '/book-rr',
-    title: 'Book a Consultation',
-    desc: 'Schedule time with an advisor to map out your options.'
-  }
+  ...PROGRAMS.map((program) => ({
+    href: `/capital-solutions/${program.slug}`,
+    title: program.navTitle,
+    desc: program.navDesc
+  }))
 ];
 
 /* Top-level links, likewise rendered in both the desktop bar and the sheet.
@@ -88,7 +101,7 @@ export default function SiteNav() {
     return () => document.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* ---------- desktop Solutions dropdown ---------- */
+  /* ---------- desktop Capital Solutions dropdown ---------- */
   const closeSolutions = useCallback((restoreFocus: boolean) => {
     setSolutionsOpen(false);
     if (restoreFocus) solutionsTriggerRef.current?.focus();
@@ -113,7 +126,7 @@ export default function SiteNav() {
     };
     const onDocKeyDown = (e: KeyboardEvent) => {
       /* Guarded on solutionsOpen, as the vanilla version was: an unguarded
-         Escape handler would yank focus to the Solutions trigger from anywhere
+         Escape handler would yank focus to the Capital Solutions trigger from anywhere
          on the page - including while the mobile sheet is closing, which has
          its own focus restore. */
       if (e.key === 'Escape' && solutionsOpen) closeSolutions(true);
@@ -221,7 +234,7 @@ export default function SiteNav() {
             setSolutionsOpen(true);
             focusSolutionsLink(e.key === 'ArrowDown' ? 0 : -1);
           }}
-        >Solutions<Caret /></button>
+        >Capital Solutions<Caret /></button>
         <div
           className="nav-dropdown"
           id="solutionsPanel"
@@ -273,7 +286,7 @@ export default function SiteNav() {
           aria-expanded={mobileSolutionsOpen}
           aria-controls="mobileSolutionsPanel"
           onClick={() => setMobileSolutionsOpen((open) => !open)}
-        >Solutions<Caret /></button>
+        >Capital Solutions<Caret /></button>
         <div className="mobile-accordion-panel" id="mobileSolutionsPanel" hidden={!mobileSolutionsOpen}>
           {SOLUTIONS.map((item) => (
             <a href={item.href} key={item.href} onClick={onSheetLinkClick}><span className="nav-dropdown-title">{item.title}</span><span className="nav-dropdown-desc">{item.desc}</span></a>

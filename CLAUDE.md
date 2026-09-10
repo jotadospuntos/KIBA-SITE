@@ -223,6 +223,45 @@ blanket-`!` a component.
 
 ---
 
+## `/capital-solutions` + the six program pages (shipped)
+
+The WordPress site puts all six financing programs on one page. This site gives each program its
+own page, with a hub at `/capital-solutions` that the nav dropdown's first item points at.
+
+```
+/capital-solutions                                    hub
+/capital-solutions/sba-loans
+/capital-solutions/business-acquisition-loans
+/capital-solutions/term-loans
+/capital-solutions/equipment-financing
+/capital-solutions/commercial-real-estate-loans
+/capital-solutions/lines-of-credit
+```
+
+- **One route, six pages.** `[slug]/page.tsx` + `ProgramPage.tsx` render all six from `PROGRAMS`
+  in `solutions-data.ts`; `generateStaticParams` still emits six static pages, and
+  `dynamicParams = false` makes an unknown slug 404. **Adding a seventh program is one entry in
+  `PROGRAMS`** — the page, the nav dropdown and the footer column all follow from it. Do not
+  create a seventh route folder.
+- **`SiteNav` and `SiteFooter` both import `PROGRAMS`** so the menu, the footer and the pages
+  can't drift apart. The nav dropdown is titled **"Capital Solutions"** (was "Solutions").
+- **Copy provenance, marked in the file:** every `summary`, `fit` bullet and `caution` line is
+  **verbatim** from https://kibadvisors.com/capital-solutions/ — those are KIBA's actual position
+  on each product. Headlines, hero subs, `expand` and `usedFor` were written for this layout.
+- **No numbers, deliberately.** The source quotes no rates, terms, amounts or qualification
+  thresholds and none were invented. Anything of that kind is a lending claim and has to come from
+  the human — don't let a future copy pass add "typical terms" tables.
+- **Hero images are placeholders** pointing at existing `public/img/hero/` photos while real stock
+  is gathered. Swapping one is a one-line `heroImage` / `heroImageAlt` change in
+  `solutions-data.ts`. All but `owner-cafe-laptop.webp` are 800x533 and upscale in the hero panel;
+  replacements want ~2600x2000.
+- **`/business-acquisitions` (legacy) still exists and is untouched.** It's a campaign landing page
+  with its own GHL form, and it's where that ad traffic lands. It came out of the nav dropdown,
+  which now points at the program page instead. Merging or retiring it is a separate, deliberate
+  decision — don't do it as cleanup.
+
+---
+
 ## Golden rules (read first)
 
 - **Filename = URL.** `public/legacy/partners/rivenway.html` serves at `/partners/rivenway` via
@@ -263,7 +302,12 @@ blanket-`!` a component.
 │   ├── HomePage.tsx              ← the homepage itself (client component)
 │   ├── home.css                  ← v2.html's <style> block, minus the glow + one divergence
 │   ├── meet-our-team/            ← "/meet-our-team": page.tsx + MeetOurTeamPage.tsx + team-data.ts
-│   └── about-us/                 ← "/about-us": page.tsx + AboutUsPage.tsx + about-content.ts
+│   ├── about-us/                 ← "/about-us": page.tsx + AboutUsPage.tsx + about-content.ts
+│   └── capital-solutions/        ← hub + the six program pages
+│       ├── solutions-data.ts     ←   ALL the copy; nav + footer read PROGRAMS from here
+│       ├── ProgramPage.tsx       ←   one shared layout for all six programs
+│       ├── CapitalSolutionsPage.tsx / page.tsx   ← "/capital-solutions" hub
+│       └── [slug]/page.tsx       ←   "/capital-solutions/<program>" (SSG, 6 static pages)
 ├── components/
 │   ├── SplitText/                ← hero headline
 │   ├── HeroReveal/               ← hero image panel
