@@ -43,8 +43,7 @@ import {
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
 /* Card tints for the "may make sense if" carousel, by position. Cool tints
-   only - the section sits on .section-alt's warm cream, and mixing a warm card
-   into that reads as a mistake rather than variety. */
+   only, matching .section-alt's soft blue-grey band underneath them. */
 const FIT_GRADIENTS = [
   'from-[#eef2f8] to-white',
   'from-[#dfe9fd] to-white',

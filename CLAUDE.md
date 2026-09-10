@@ -73,7 +73,10 @@ migration bug):
    items are in the SSR HTML rather than being created by script after mount. Removes a hydration
    layout shift (and for the marquee, a visible first-frames jump while it scrolled a single copy).
    Visually identical once hydrated.
-3. **Dead data attributes dropped.** `data-count-to`/`data-prefix`/`data-suffix` on the stats and
+3. **`--cream` has a different value.** `home.css` says `#e9f0fa`; `v2.html` still says the
+   original warm `#f8f4ee`. So the `.section-alt` bands, the trust marquee and the two tinted
+   solution cards read blue-grey on the live site and beige on `/v2`. See "Design system".
+4. **Dead data attributes dropped.** `data-count-to`/`data-prefix`/`data-suffix` on the stats and
    `data-depth` on the hero blobs existed only so the vanilla `querySelectorAll` could read config
    off the DOM. That config is props now. No CSS selected on them.
 
@@ -579,6 +582,11 @@ Tokens live in **`app/globals.css`** for the `app/` side and are duplicated in e
   Fonts, so loaded via a `<link>` in `app/layout.tsx`, not `next/font/google`).
 - **Colors (CSS vars):** `--navy-deep #020062`, `--navy-soft #0025ae`, `--blue #2563eb`,
   `--blue-soft #6d94f5`, plus ivory/paper/cream/ink/slate/line neutrals.
+- **`--cream` is not cream.** It was `#f8f4ee`, a warm beige and the only warm tone in an otherwise
+  navy/blue palette — it fought every cool-tinted card placed on it. It is now `#e9f0fa`, a soft
+  cool blue-grey. The variable name and the `.solution-card.is-cream` class keep their old names on
+  purpose, so the markup still diffs against `v2.html`; only the value changed. It drives four
+  things: the `.section-alt` bands, the homepage trust marquee, and two homepage solution cards.
 - **Look:** dark navy hero, white "card" surfaces with a blue accent, rounded corners, soft
   shadows. `--radius-sm 12px` / `--radius-md 16px`; `--shadow-soft` for elevated cards.
 - **shadcn** is configured (`components.json`, style `base-nova`, `cssVariables: true`,
