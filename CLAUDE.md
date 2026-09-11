@@ -354,6 +354,31 @@ fourth reachable via the arrows, arrow keys or a drag.
 
 ---
 
+## The "straight talk" split (`/capital-solutions/*`) — PARTIAL ROLLOUT
+
+The navy band used to be one section carrying both the caution ("When this isn't the right tool")
+and the whole decision framework. It is being split in two:
+
+1. **Navy** — the eyebrow, the heading, and the program's `caution`, which now has its own
+   framer-motion fade (slower and a beat behind the heading, since it's the line the section
+   exists for) instead of riding the shared `.reveal` transition.
+2. **Light** — `components/ui/stats-2.tsx`: three boxes for the angles we work through, then the
+   `DECISION_LEAD` / `DECISION_PHILOSOPHY` copy and a CTA.
+
+**`SPLIT_STRAIGHT_TALK` in `ProgramPage.tsx` currently holds `sba-loans` only.** The other five
+programs still render the old combined navy section, which is the `!splitStraightTalk` branch in
+the same file. To roll out: add the slugs (or replace the Set with `true`) and delete that branch
+plus the now-unused `DECISION_FACTORS`.
+
+- `DECISION_ANGLES` in `solutions-data.ts` condenses `DECISION_FACTORS`' four angles into three for
+  the three-box layout — the third box merges "Timing and future plans" with "How much flexibility
+  you need". The first two labels stay verbatim.
+- **The big slot in each box is a numeral, not a statistic.** The source block used "82%" / "99.9%";
+  we have no measured figures and won't invent them for a lending firm. Same reason its five-star
+  "Google reviews" footer was cut. Pass real numbers the day there are real numbers.
+
+---
+
 ## The bento grid (`/capital-solutions/*`)
 
 The "Not sure this is the one?" cross-links on every program page are `BentoCard`s in a
@@ -427,7 +452,8 @@ fills exactly instead of reading as a 3+2 with a hole in it.
 │       ├── team-section-block-shadcnui.tsx  ← props-driven team grid (/meet-our-team)
 │       ├── testimonial-v2.tsx               ← THE testimonial treatment, whole site
 │       ├── bento-grid.tsx                   ← program cross-links (/capital-solutions/*)
-│       └── services-card.tsx                ← Embla carousel, "may make sense if…" cards
+│       ├── services-card.tsx                ← Embla carousel, "may make sense if…" cards
+│       └── stats-2.tsx                      ← three-box grid + CTA, "how we decide"
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
 │   ├── testimonials.ts           ← the four real client testimonials (single source)
@@ -566,6 +592,24 @@ await page.evaluate(() => getComputedStyle(document.querySelector('.hero-sub')).
 
 Then sample opacity a few hundred ms apart to confirm the reveal is actually mid-flight rather
 than snapping to its end state.
+
+**Two framer-motion traps, both found by measuring rather than looking:**
+
+1. **Never pair `initial={false}` with `whileInView`.** `initial={animate ? {...} : false}` looks
+   like "no entrance animation when motion is off", but it actually leaves the element at opacity 0
+   until it scrolls into view — i.e. content hidden from the very visitors who asked for less
+   motion. Give the non-animating branch an explicit visible state and a zero duration:
+   `initial={animate ? {opacity:0,y:20} : {opacity:1,y:0}}` plus
+   `transition={animate ? {...} : {duration:0}}`. This shipped in three components before it was
+   caught.
+
+2. **`forceMotion` resolves AFTER first render**, because `useMotionPreference` sets it in an
+   effect. framer's `initial` is only read at mount, so on a machine reporting reduce, `?motion=1`
+   cannot demonstrate an `initial`-based entrance animation — the first render already committed to
+   the non-animating branch. This does not affect real visitors (a normal machine has
+   `prefersReduced === false` on the first render, so the flag never flips). It does mean **the
+   `?motion=1` recipe above can't verify this kind of animation** — check those on a browser with
+   no reduce emulation instead.
 
 ---
 

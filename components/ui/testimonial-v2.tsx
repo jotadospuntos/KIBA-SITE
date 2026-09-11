@@ -198,14 +198,17 @@ export function TestimonialsSection({
       className={`relative overflow-hidden py-24! ${className}`}
     >
       <motion.div
-        initial={animate ? { opacity: 0, y: 50, rotate: -2 } : false}
+        /* Explicit visible initial when motion is off, not `initial={false}`:
+           with whileInView that would leave the whole section at opacity 0
+           until it scrolls into view. */
+        initial={animate ? { opacity: 0, y: 50, rotate: -2 } : { opacity: 1, y: 0, rotate: 0 }}
         whileInView={{ opacity: 1, y: 0, rotate: 0 }}
         viewport={{ once: true, amount: 0.15 }}
-        transition={{
-          duration: 1.2,
-          ease: [0.16, 1, 0.3, 1] as const,
-          opacity: { duration: 0.8 }
-        }}
+        transition={
+          animate
+            ? { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const, opacity: { duration: 0.8 } }
+            : { duration: 0 }
+        }
         className="wrap relative z-10"
       >
         <div className="mx-auto mb-14 flex max-w-[560px] flex-col items-center justify-center">

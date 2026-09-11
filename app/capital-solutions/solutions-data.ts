@@ -300,6 +300,32 @@ export const DECISION_FACTORS = [
   'How much flexibility you need'
 ];
 
+/* The same four angles as DECISION_FACTORS, condensed into three for the
+   three-box layout in components/ui/stats-2.tsx. The first two `label`s are
+   verbatim from the source page; the third merges its "Timing and future plans"
+   and "How much flexibility you need" into one box. The bodies are ours.
+
+   `value` is a sequence numeral, NOT a statistic. The block this renders in was
+   built for percentages; we have no measured figures for any of this and won't
+   invent them. */
+export const DECISION_ANGLES = [
+  {
+    label: 'Cash flow and existing obligations',
+    value: '01',
+    body: 'Whether the business can carry a new payment on an ordinary month — not on its best one.'
+  },
+  {
+    label: 'Risk and downside scenarios',
+    value: '02',
+    body: 'What this looks like in a slow quarter, and what happens if the plan doesn’t land.'
+  },
+  {
+    label: 'Timing, plans and flexibility',
+    value: '03',
+    body: 'What you’ll need room for next, and how much of that room this decision uses up.'
+  }
+];
+
 export const DECISION_LEAD = 'We don’t match businesses to loans. We match decisions to reality.';
 
 export const DECISION_PHILOSOPHY =

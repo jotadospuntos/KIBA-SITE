@@ -20,6 +20,7 @@
  */
 
 import { Fragment } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import '../home.css';
 import SiteNav from '@/components/SiteNav/SiteNav';
@@ -30,10 +31,12 @@ import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
 import { ServiceCarousel } from '@/components/ui/services-card';
+import { Stats2 } from '@/components/ui/stats-2';
 import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import {
   PROGRAMS,
+  DECISION_ANGLES,
   DECISION_FACTORS,
   DECISION_LEAD,
   DECISION_PHILOSOPHY,
@@ -41,6 +44,14 @@ import {
 } from './solutions-data';
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
+
+/* ROLLOUT FLAG. The "straight talk" band used to be one navy section carrying
+   both the caution and the whole decision framework. It's being split in two -
+   a navy section for the caution, then a light Stats2 section for the decision
+   angles - and the split is live on SBA loans only while it's reviewed.
+   To roll it out: add the other slugs, or replace the Set with `true` and
+   delete the legacy branch in DecisionFramework below. */
+const SPLIT_STRAIGHT_TALK = new Set(['sba-loans']);
 
 /* Card tints for the "may make sense if" carousel, by position. Cool tints
    only, matching .section-alt's soft blue-grey band underneath them. */
@@ -72,6 +83,13 @@ export default function ProgramPage({ slug }: { slug: string }) {
 
   const program = getProgram(slug);
   if (!program) throw new Error(`Unknown capital-solutions program: ${slug}`);
+
+  const splitStraightTalk = SPLIT_STRAIGHT_TALK.has(program.slug);
+
+  /* The caution's own fade honours reduced motion the same way everything else
+     here does - framer-motion's hook plus the repo's ?motion=1 override. */
+  const prefersReduced = useReducedMotion();
+  const animateCaution = !prefersReduced || forceMotion;
 
   /* The other five programs, in their canonical order, for the cross-links. */
   const others = PROGRAMS.filter((p) => p.slug !== program.slug);
@@ -175,8 +193,8 @@ export default function ProgramPage({ slug }: { slug: string }) {
         </div>
       </section>
 
-      {/* Straight talk: when it isn't the right tool, and how we decide.
-          Navy, so it breaks up the light sections either side of it. */}
+      {/* Straight talk. Two sections when split: the caution on navy, then the
+          decision angles on a light Stats2 band. See SPLIT_STRAIGHT_TALK. */}
       <section className="relative overflow-hidden bg-navy-deep! py-24!">
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
           <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-blue/40 blur-[180px]" />
@@ -190,44 +208,76 @@ export default function ProgramPage({ slug }: { slug: string }) {
             </h2>
           </Reveal>
 
-          <Reveal
-            className="reveal mx-auto mt-10 flex max-w-[760px] items-start gap-5 rounded-[18px] bg-white/[0.06] p-8 ring-1 ring-white/15 sm:p-10"
-            style={{ transitionDelay: '0.08s' }}
+          {/* The downside itself gets its own fade rather than riding the shared
+              .reveal transition - it's the line the section exists for, so it
+              arrives a beat after the heading and a little more slowly. */}
+          <motion.div
+            /* Explicit visible initial + zero duration when motion is off, NOT
+               `initial={false}`: with whileInView that leaves the element at
+               opacity 0 until it scrolls into view, which for a reduced-motion
+               visitor is just hidden content. */
+            initial={animateCaution ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={
+              animateCaution
+                ? { duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }
+                : { duration: 0 }
+            }
+            className="mx-auto mt-10 flex max-w-[760px] items-start gap-5 rounded-[18px] bg-white/[0.06] p-8 ring-1 ring-white/15 sm:p-10"
           >
             <svg className="mt-1 h-7 w-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg>
             <p className="m-0 text-[17px] leading-relaxed text-white">{program.caution}</p>
-          </Reveal>
+          </motion.div>
 
-          <Reveal className="reveal mt-16 text-center" style={{ transitionDelay: '0.12s' }}>
-            <h3 className="mb-4! font-serif text-[clamp(21px,2.6vw,28px)] font-normal leading-snug text-white">
-              {DECISION_LEAD}
-            </h3>
-            <p className="mx-auto max-w-xl text-[15.5px] leading-relaxed text-white/70">
-              Whichever program you arrive asking about, these are the four things that actually
-              decide the recommendation.
-            </p>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {DECISION_FACTORS.map((factor, i) => (
-              <Reveal
-                className="reveal rounded-[14px] bg-white/[0.06] px-6 py-7 text-center ring-1 ring-white/15"
-                style={{ transitionDelay: `${i * 0.08}s` }}
-                key={factor}
-              >
-                <svg className="mx-auto mb-3 h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" /></svg>
-                <div className="font-heading text-[15.5px] font-semibold text-white">{factor}</div>
+          {/* Legacy layout: the decision framework still lives inside this navy
+              band on the programs the split hasn't reached yet. */}
+          {!splitStraightTalk ? (
+            <>
+              <Reveal className="reveal mt-16 text-center" style={{ transitionDelay: '0.12s' }}>
+                <h3 className="mb-4! font-serif text-[clamp(21px,2.6vw,28px)] font-normal leading-snug text-white">
+                  {DECISION_LEAD}
+                </h3>
+                <p className="mx-auto max-w-xl text-[15.5px] leading-relaxed text-white/70">
+                  Whichever program you arrive asking about, these are the four things that actually
+                  decide the recommendation.
+                </p>
               </Reveal>
-            ))}
-          </div>
 
-          <Reveal className="reveal mt-12 text-center" style={{ transitionDelay: '0.1s' }}>
-            <p className="mx-auto max-w-2xl text-[16.5px] leading-relaxed text-white/80">
-              {DECISION_PHILOSOPHY}
-            </p>
-          </Reveal>
+              <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {DECISION_FACTORS.map((factor, i) => (
+                  <Reveal
+                    className="reveal rounded-[14px] bg-white/[0.06] px-6 py-7 text-center ring-1 ring-white/15"
+                    style={{ transitionDelay: `${i * 0.08}s` }}
+                    key={factor}
+                  >
+                    <svg className="mx-auto mb-3 h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" /></svg>
+                    <div className="font-heading text-[15.5px] font-semibold text-white">{factor}</div>
+                  </Reveal>
+                ))}
+              </div>
+
+              <Reveal className="reveal mt-12 text-center" style={{ transitionDelay: '0.1s' }}>
+                <p className="mx-auto max-w-2xl text-[16.5px] leading-relaxed text-white/80">
+                  {DECISION_PHILOSOPHY}
+                </p>
+              </Reveal>
+            </>
+          ) : null}
         </div>
       </section>
+
+      {/* Section two: the angles we work through before recommending anything. */}
+      {splitStraightTalk ? (
+        <Stats2
+          boxes={DECISION_ANGLES}
+          heading={DECISION_LEAD}
+          body={DECISION_PHILOSOPHY}
+          ctaLabel="Book a Consultation"
+          ctaHref="/book-rr"
+          ctaNote="No pressure, no obligation."
+        />
+      ) : null}
 
       {/* Testimonials. Every page on this site carries this section - see
           CLAUDE.md "Testimonials". Content is lib/testimonials.ts; only the
