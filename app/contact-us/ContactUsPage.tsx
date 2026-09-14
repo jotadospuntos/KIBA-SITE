@@ -9,12 +9,14 @@
  * OFFICE HOURS (Mon–Fri, 8:30 AM – 5:00 PM) appeared nowhere else in this repo
  * before this page.
  *
- * The booking calendar is the same GoHighLevel embed the homepage uses, so
- * "contact" and "book" are one page rather than a page that points at another
- * page. GHL iframes don't render in sandboxes — verify on a deploy.
+ * The booking calendar is the SHARED round robin (the one /book-rr uses), not
+ * any single advisor's — a generic Contact page should reach whoever is
+ * available. Contact and booking are therefore one page rather than a page that
+ * points at another page. GHL iframes don't render in sandboxes; verify on a
+ * deploy.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import '../home.css';
 import SiteNav from '@/components/SiteNav/SiteNav';
@@ -26,15 +28,15 @@ import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { FaqAccordion } from '@/components/ui/faq-accordion';
 import { useMotionPreference } from '@/lib/useMotionPreference';
+import { ROUND_ROBIN_CALENDAR, loadGhlEmbedScript } from '@/lib/ghl';
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
 const HERO_IMAGE = '/img/hero/advisor-on-call.webp';
 const HERO_IMAGE_ALT = 'A KIBA advisor taking a client call';
 
-/* Same booking calendar as the homepage's #talk band. */
-const GHL_CALENDAR = 'https://api.leadconnectorhq.com/widget/booking/hNVlyN1rtNcxpWkSshP8';
-const GHL_EMBED_SRC = 'https://link.msgsndr.com/js/form_embed.js';
+/* The SHARED round-robin calendar, the same one /book-rr uses — not any single
+   advisor's. A generic Contact page should reach whoever is available. */
 
 const CONTACTS = [
   {
@@ -66,19 +68,7 @@ const CONTACTS = [
 export default function ContactUsPage() {
   const { forceMotion } = useMotionPreference();
 
-  /* Loads the GHL resizer once; without it the calendar iframe renders at the
-     wrong height. Guarded against StrictMode's double-invoke in dev. */
-  const inited = useRef(false);
-  useEffect(() => {
-    if (inited.current) return;
-    inited.current = true;
-    if (document.querySelector(`script[data-src="${GHL_EMBED_SRC}"]`)) return;
-    const el = document.createElement('script');
-    el.src = GHL_EMBED_SRC;
-    el.async = true;
-    el.dataset.src = GHL_EMBED_SRC;
-    document.body.appendChild(el);
-  }, []);
+  useEffect(() => { loadGhlEmbedScript(); }, []);
 
   return (
     <>
@@ -157,7 +147,7 @@ export default function ContactUsPage() {
           </Reveal>
           <Reveal className="reveal mx-auto max-w-[900px] overflow-hidden rounded-[16px] bg-white p-3 ring-1 ring-line sm:p-5">
             <iframe
-              src={GHL_CALENDAR}
+              src={ROUND_ROBIN_CALENDAR}
               scrolling="no"
               title="Schedule a conversation with KIBA"
               className="h-[720px] w-full rounded-[12px] border-0"

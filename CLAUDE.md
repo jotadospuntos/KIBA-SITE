@@ -540,7 +540,8 @@ swapping one silently routes leads to the wrong person. `lib/ghl.ts` holds the s
 | `/book-rr`, `/thank-you` | `ROUND_ROBIN_CALENDAR` (shared advisor calendar) |
 | `/advisors/<slug>` | that advisor's `schedulerUrl` — three different calendars |
 | `/partners/<slug>` | that partner's `ghlFormId` — two different forms |
-| `/`, `/contact-us`, `/referral-partners`, `/business-acquisitions` | Michael's personal calendar |
+| `/contact-us` | `ROUND_ROBIN_CALENDAR` — a generic contact page should reach whoever is free |
+| `/`, `/referral-partners`, `/business-acquisitions` | Michael's personal calendar |
 
 **Two URLs are configured inside GoHighLevel, not here:** `/thank-you` (every form's On Submit
 redirect) and `/ty-cal` (the calendar's post-booking redirect). Nothing in this repo links to
@@ -564,9 +565,15 @@ These used to be duplicated across eleven HTML files and drifted. They are now s
 | "What to expect" cards, trust stats | `lib/what-to-expect.ts` |
 | Design tokens | `app/globals.css` (`@theme`) + `app/home.css` |
 
-**KIBA contact:** phone `251-210-8445`, email `info@kibadvisors.com`. **Meta Pixel** (ID
-`1653996785650157`) was in each legacy page's `<head>`; it is **not** currently in the React app —
-if it's still wanted, it belongs in `app/layout.tsx` once, not per page.
+**KIBA contact:** phone `251-210-8445`, email `info@kibadvisors.com`.
+
+**Meta Pixel** (ID `1653996785650157`) is in `app/layout.tsx`, once, so it covers every page. It is
+a **plain inline `<script>`, deliberately not `next/script`** — with `strategy` the tag never
+reached the DOM and only the `<noscript>` fallback fired, which is exactly backwards. A single
+`PageView` is correct because every internal link here is a real `<a href>`, so each navigation is
+a full document load; **if anything moves to client-side routing, this needs a route-change
+listener** or those views stop counting. Verified: `window.fbq` is a function and exactly one
+`facebook.com/tr` request fires per page.
 
 ---
 
