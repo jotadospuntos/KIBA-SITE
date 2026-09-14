@@ -20,6 +20,7 @@ Tick them off as you go.
 - [ ] https://go.kibadvisors.com/meet-our-team
 - [ ] https://go.kibadvisors.com/contact-us
 - [ ] https://go.kibadvisors.com/blog
+- [ ] https://go.kibadvisors.com/privacy-policy
 
 **Capital Solutions** — the hub, plus one page per program (these were one page on the old site)
 - [ ] /capital-solutions
@@ -83,7 +84,7 @@ checking before you mark it.
 
 ---
 
-## 3. Five things that need your decision
+## 3. Six things that need your decision
 
 These are flagged deliberately. We did not want to guess.
 
@@ -93,7 +94,10 @@ These are flagged deliberately. We did not want to guess.
    on kibadvisors.com anywhere. Is it correct and approved?
 3. **"24–72 hours"** for guidance appears on several pages and on your current site. Still true?
 4. **"A real person answers. No call centre, no ticket queue."** on Contact — we wrote it. True?
-5. **Barbara's title.** The site says *Director of Client Success*, but her bio says *Client
+5. **The SMS opt-out keyword in the Privacy Policy** says *"replying OUT to any message"*. We
+   reproduced it exactly as supplied, but the industry-standard keyword carriers expect is **STOP**
+   — worth confirming with whoever wrote it that OUT is intentional and that STOP is also honoured.
+6. **Barbara's title.** The site says *Director of Client Success*, but her bio says *Client
    Success Manager*. Both are on your current site; we kept both rather than picking. Which is
    right?
 
@@ -110,7 +114,8 @@ These are flagged deliberately. We did not want to guess.
   stock faces next to real named quotes would be dishonest.
 - **No dollar amounts, rates, terms or qualification thresholds appear anywhere.** Your current
   site doesn't quote any, and we did not invent them. If you want them, send the real numbers.
-- **Privacy Policy and Terms still link to kibadvisors.com.** We didn't want to retype legal text.
+- **Terms & Conditions still links to kibadvisors.com** — we don't have its text yet. The Privacy
+  Policy is now a page on this site, reproduced word for word from the copy you supplied.
 - Pages don't appear in Google. That's the `noindex` setting, on purpose for now.
 
 ---

@@ -67,7 +67,9 @@ export default function SiteFooter() {
             <li><a href="/referral-partners">Referral Partners</a></li>
             <li><a href="/book-rr">Book a Consultation</a></li>
             <li><a href="/contact-us">Contact</a></li>
-            <li><a href="https://kibadvisors.com/privacy-policy/">Privacy Policy</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            {/* Terms still points at WordPress: we don't have the authoritative
+                text for it yet. Swap to /terms-and-conditions once we do. */}
             <li><a href="https://kibadvisors.com/terms-and-conditions/">Terms &amp; Conditions</a></li>
           </ul>
         </Reveal>

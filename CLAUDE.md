@@ -266,9 +266,14 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
 
 ## Testimonials — one treatment, on EVERY page
 
-**Every page in this repo carries a testimonial section.** Not "most" — all of them, including the
-`/thank-you` and `/ty-cal` confirmation pages. If you add a page, it gets one; that is a standing
-requirement, like the animations.
+**Every page in this repo carries a testimonial section** — with one exception, below. That
+includes the `/thank-you` and `/ty-cal` confirmation pages. If you add a page, it gets one; that is
+a standing requirement, like the animations.
+
+**The exception is legal pages** (`components/LegalPage`). A scrolling wall of client praise in the
+middle of a privacy policy undercuts the document and reads as a marketing insert on something
+people come to for compliance information. Legal pages keep the CTA band — and specifically its
+`id="talk"`, or the nav's "Let's Talk" button is dead there — but not the testimonials.
 
 The design is `components/ui/testimonial-v2.tsx` (v2: semantic list/blockquote/cite markup, cards
 that lift on hover *and* keyboard focus, a pill badge above the heading, a section entrance
@@ -429,6 +434,27 @@ Facebook, Instagram and LinkedIn, and this footer only had two.
 
 ---
 
+## Legal pages
+
+`components/LegalPage/LegalPage.tsx` renders a `LegalDoc`; the text lives in one verbatim data file
+per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.ts`).
+
+- **THE TEXT IS SUPPLIED BY THE BUSINESS AND IS VERBATIM.** No tightening, no house style, no
+  punctuation "fixes". If it changes, the business supplies new text and the file is replaced
+  wholesale with `updated` bumped. Only the structure — headings, paragraphs, lists, the definition
+  list — was added to render it. Verified by diffing the rendered page against the source: 97
+  lines, zero differences.
+- **The WordPress copy at kibadvisors.com/privacy-policy/ is now a SECOND copy** and can drift.
+  Update both, or decide which is authoritative.
+- **Terms & Conditions is not built.** The footer still links to WordPress for it, deliberately —
+  we don't have the authoritative text. When it arrives it's a new content file plus a three-line
+  `page.tsx`; the layout already exists.
+- Legal pages skip the testimonial section (see "Testimonials") and use a compact hero, because the
+  revision date is what a reader is actually looking for. Section headings get stable slug ids and
+  a contents list, so support can link straight to a clause.
+
+---
+
 ## Golden rules (read first)
 
 - **Filename = URL.** `public/legacy/partners/rivenway.html` serves at `/partners/rivenway` via
@@ -474,6 +500,7 @@ Facebook, Instagram and LinkedIn, and this footer only had two.
 │   ├── contact-us/               ← "/contact-us"
 │   ├── advisors/                 ← "/advisors/<slug>" (advisors-data.ts, 3 pages)
 │   ├── partners/                 ← "/partners/<slug>" (partners-data.ts, 2 pages)
+│   ├── privacy-policy/           ← "/privacy-policy" (verbatim legal text in privacy-content.ts)
 │   ├── book-rr/ · thank-you/ · ty-cal/          ← booking + the two GHL redirect targets
 │   ├── referral-partners/ · business-acquisitions/  ← recruitment + campaign landing
 │   └── capital-solutions/        ← hub + the six program pages
@@ -485,6 +512,7 @@ Facebook, Instagram and LinkedIn, and this footer only had two.
 │   ├── SplitText/                ← hero headline
 │   ├── HeroReveal/               ← hero image panel
 │   ├── SiteNav/ · SiteFooter/    ← shared nav + footer (use these on new routes)
+│   ├── LegalPage/                ← shared layout for Privacy / Terms
 │   ├── Reveal/ · Counter/        ← scroll reveal, animated stat counters
 │   ├── TestimonialCarousel/ · TrustMarquee/
 │   ├── HeroBlobs/ · GradientBlob/ ← hero cursor parallax, WebGL CTA gradient
