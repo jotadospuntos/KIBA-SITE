@@ -7,34 +7,29 @@ WordPress site, not this repo): https://kibadvisors.com.
 
 ---
 
-## ⚠️ Mid-migration: this repo is a Next.js app
+## The migration is DONE — every page is a real route
 
-The site is being migrated from plain static HTML to Next.js (App Router), **incrementally, one
-page at a time**, so production never breaks mid-migration. Read this before touching routing or
-adding pages.
+This repo was static HTML, then a Next.js app with a `rewrites()` bridge serving the unmigrated
+pages from `public/legacy/`. **That bridge is gone.** Every page is now an `app/` route.
 
-- **There is a real build step.** `package.json` + `next.config.js` + the `app/` directory make
-  this a Next.js 14 (App Router) project. Run `npm install && npm run build` before pushing.
-- **Unmigrated pages are still the original static HTML**, now living under `public/legacy/...`
-  and served at their *original* clean URLs via `rewrites()` in `next.config.js` — the browser
-  URL never changes, only where the file physically lives. Everything under "The config-driven
-  template pattern" below still applies **verbatim** to any page under `public/legacy/`: edit the
-  config block, don't hand-edit the wired-up markup, keep it a self-contained file, etc.
-- **Images/favicons did NOT move.** `public/img/...`, `public/partners/img/...`,
-  `public/advisors/img/...`, and the root favicons stay at their exact original public paths — no
-  rewrite needed, since several pages reference these via absolute
-  `https://go.kibadvisors.com/...` URLs in `og:image` tags.
-- **`vercel.json` is gone.** Its clean-URLs behavior and `redirects` were ported into
-  `next.config.js` (`rewrites()` + `redirects()`). Add new redirects/rewrites there, not in a
-  `vercel.json`.
-- **To migrate a page for real:** build it as `app/<route>/page.tsx`, verify it on a Vercel
-  preview deploy, then delete that page's `rewrites()` entry and its file under `public/legacy/`.
-  No rush — an unmigrated page under the rewrite bridge is never broken or blocking anything else.
-- **Root `/` is a real page now.** It used to redirect to `https://kibadvisors.com` (there was no
-  homepage in this repo); the promoted redesign lives there instead. `kibadvisors.com` is untouched
-  by that — still a separate WordPress property. See "Homepage" below.
+- **`public/legacy/` contains exactly one file: `v2.html`**, the frozen homepage-redesign reference
+  served at `/v2`. It is deliberately kept (see below) and is the only `rewrites()` entry left.
+- **There is a real build step.** Run `npm install && npm run build` before pushing.
+- **`vercel.json` is gone.** Redirects and the one remaining rewrite live in `next.config.js`.
+- **Images/favicons never moved.** `public/img/...`, `public/partners/img/...`,
+  `public/advisors/img/...` and the root favicons keep their original public paths, because several
+  `og:image` tags reference them as absolute `https://go.kibadvisors.com/...` URLs.
 
----
+### What this means for you
+
+The old "edit the config block, keep the file self-contained, apply global changes to every legacy
+page AND both templates" workflow **no longer exists**. Those templates are deleted. Nav, footer,
+testimonials, motion and the design tokens now live in exactly one place each, so a global change
+is a single edit. If you find advice in an old commit about copying markup between HTML files, it
+is describing a repo that no longer exists.
+
+**URLs did not change.** Every migrated page kept its exact path, because ad traffic, GoHighLevel
+redirects and partner links all point at them.
 
 ## Homepage: `/` (shipped) and `/v2` (visual reference)
 
@@ -281,22 +276,18 @@ animation). There is no second style — use `<TestimonialsSection />`, overridi
 and `intro` per page.
 
 Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-solutions`, all six
-`/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, and every legacy page except
-`v2.html` (frozen reference — leave it alone).
+`/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, `/book-rr`, `/thank-you`,
+`/ty-cal`, `/referral-partners`, `/business-acquisitions`, all three `/advisors/*` and both
+`/partners/*`. In other words every route. `v2.html` is the only page without one, deliberately.
 
-**Two element selectors will bite you here.** `home.css` and every legacy page style the SITE
-footer and sections with bare element rules, and unlayered CSS beats Tailwind's layered utilities:
+**One element selector will bite you here.** `home.css` styles the SITE footer with a bare element
+rule, and unlayered CSS beats Tailwind's layered utilities:
+`footer{ background:var(--navy-soft); padding:64px 0 40px }` — the testimonial card's own
+`<footer>` renders as a **navy block** unless it opts out
+(`bg-transparent! px-0! pb-0! pt-5!`). This shipped broken once.
 
-- `footer{ background:var(--navy-soft); padding:64px 0 40px }` — the card's own `<footer>` renders
-  as a **navy block** unless it opts out (`bg-transparent! px-0! pb-0! pt-5!`, or the `.tcard footer`
-  rule on the legacy side). This shipped broken once.
-- The legacy pages don't share a body font (`thank-you.html` sets Instrument Serif on `<body>`), so
-  anything in the section that inherits its family renders differently page to page. Families are
-  set explicitly on `.tsec-head p` and `.trole` for that reason — don't remove them.
-
-- **`lib/testimonials.ts` is the single source of truth** for the React routes. The legacy pages
-  can't import it, so each carries the same list in a `TESTIMONIALS` config array — keep them in
-  sync when a quote changes.
+- **`lib/testimonials.ts` is the single source of truth.** It used to be duplicated into every
+  legacy HTML file; since the migration there is one copy.
 - **There are only FOUR real testimonials.** That drives the layout: `splitIntoColumns` keeps at
   least two cards per column, so four render as two columns and it becomes three by itself at six.
   **Do not pad the array to fill the grid.** Inventing client quotes for a financial advisory firm
@@ -481,6 +472,10 @@ Facebook, Instagram and LinkedIn, and this footer only had two.
 │   ├── about-us/                 ← "/about-us": page.tsx + AboutUsPage.tsx + about-content.ts
 │   ├── blog/                     ← "/blog" index + "/blog/<slug>" (posts.ts holds the articles)
 │   ├── contact-us/               ← "/contact-us"
+│   ├── advisors/                 ← "/advisors/<slug>" (advisors-data.ts, 3 pages)
+│   ├── partners/                 ← "/partners/<slug>" (partners-data.ts, 2 pages)
+│   ├── book-rr/ · thank-you/ · ty-cal/          ← booking + the two GHL redirect targets
+│   ├── referral-partners/ · business-acquisitions/  ← recruitment + campaign landing
 │   └── capital-solutions/        ← hub + the six program pages
 │       ├── solutions-data.ts     ←   ALL the copy; nav + footer read PROGRAMS from here
 │       ├── ProgramPage.tsx       ←   one shared layout for all six programs
@@ -504,86 +499,74 @@ Facebook, Instagram and LinkedIn, and this footer only had two.
 │   ├── utils.ts                  ← cn() helper
 │   ├── testimonials.ts           ← the four real client testimonials (single source)
 │   ├── faq.ts                    ← the five homepage FAQ answers (verbatim from WordPress)
+│   ├── what-to-expect.ts         ← the six "what to expect" cards + the trust stat row
+│   ├── ghl.ts                    ← GoHighLevel embed IDs + the resize-script loader
 │   └── useMotionPreference.ts    ← ?motion=1 override for previewing animations
 └── public/
     ├── img/ · partners/img/ · advisors/img/ · favicons   ← original public paths, unchanged
-    └── legacy/                   ← unmigrated pages, served via next.config.js rewrites()
-        ├── v2.html               → /v2   (noindex homepage-redesign reference; see above)
-        ├── referral-partners.html
-        ├── business-acquisitions.html
-        ├── book-rr.html
-        ├── thank-you.html        (shared confirmation + booking calendar)
-        ├── ty-cal.html
-        ├── partners/
-        │   ├── _template.html    ← copy this to add a referral partner
-        │   ├── rivenway.html      → /partners/rivenway
-        │   └── integ-funding.html → /partners/integ-funding
-        └── advisors/
-            ├── _template.html    ← copy this to add an advisor booking page
-            ├── michael-sylkatis.html → /advisors/michael-sylkatis
-            ├── barbara-sylkatis.html → /advisors/barbara-sylkatis
-            └── ariel-austria.html    → /advisors/ariel-austria
+    └── legacy/                   ← ONE file left; the migration is otherwise complete
+        └── v2.html               → /v2   (noindex homepage-redesign reference; see above)
 ```
 
 ---
 
-## The config-driven template pattern (legacy pages)
+## Adding a partner or an advisor
 
-Each legacy partner/advisor page has a clearly-commented config object near the top of `<body>`,
-and a script lower down that wires it into the DOM. To create or edit one, change the config —
-nothing else.
+Both are data entries now, not copied files. The `_template.html` files are deleted.
 
-**Partner pages** (`PARTNER`):
-- `name` — partner's full name (hero badge: "Recommended by …")
-- `shortName` — used in the hero sentence
-- `ghlFormId` — that partner's GoHighLevel form ID (from `/widget/form/<ID>`)
-- `ghlFormName` — form title for the iframe
-- `PARTNER_LOGO` — hosted image URL OR base64 data URI. Empty `""` hides the co-brand badge.
+**A new advisor** — add an entry to `ADVISORS` in `app/advisors/advisors-data.ts`:
+`slug`, `name`, `title`, `tagline`, `bio`, `photo`, and **that advisor's own `schedulerUrl`**. Drop
+a square, face-centered headshot in `public/advisors/img/`. The route, metadata and static page all
+follow. Consider whether they also belong in `app/meet-our-team/team-data.ts`.
 
-**Advisor pages** (`ADVISOR`):
-- `name` — advisor's name
-- `title` — role (short; shown in the profile card)
-- `tagline` — one-line description under the title (empty `""` hides it)
-- `bio` — a sentence or two, shown as the hero subhead
-- `photo` — hosted image URL OR base64 data URI. Empty `""` = placeholder avatar.
-- `schedulerUrl` — GoHighLevel calendar embed URL (or Calendly). Empty `""` = placeholder box.
+**A new referral partner** — add an entry to `PARTNERS` in `app/partners/partners-data.ts`:
+`slug`, `name`, `shortName`, `logo`, `ogImage`, **that partner's own `ghlFormId`** and
+`ghlFormName`. Then set that GHL form's **On Submit → Redirect** to
+`https://go.kibadvisors.com/thank-you`.
 
-> Note: this inline-config pattern is a property of the *legacy* pages. When these pages are
-> eventually migrated to real `app/` routes, replace it with a proper props/data pattern (or CMS)
-> rather than porting the config-block hack.
+> **`logo` and `ogImage` are different images.** `public/partners/img/<slug>.png` is the 1200x630
+> share card; the co-brand badge logo is `<slug>-logo.png`. Using the share card as the badge
+> renders a squashed banner — that regression happened once during the migration.
 
 ---
 
-## Adding a new partner or advisor (legacy pattern)
+## GoHighLevel: which embed goes where
 
-1. Copy the matching `_template.html` to `<name>.html` in the correct `public/legacy/` folder
-   (e.g. `public/legacy/partners/acme.html` → `/partners/acme`), and add its `rewrites()` entry
-   in `next.config.js`.
-2. Edit **only** the config block: name, logo/photo, GHL form or calendar ID, etc.
-3. Images: embed as **base64 data URIs** to keep the page self-contained (no broken links).
-   Resize/optimize first. Advisor photos must be **cropped square and face-centered**, since the
-   avatar is a small circle.
-4. Commit + push → Vercel deploys automatically.
-5. For partner pages, set the GHL form's **On Submit → Redirect** to
-   `https://go.kibadvisors.com/thank-you`.
+Every calendar and form ID is a *different* destination in GHL. They are not interchangeable, and
+swapping one silently routes leads to the wrong person. `lib/ghl.ts` holds the shared ones.
+
+| Page | Embed |
+| --- | --- |
+| `/book-rr`, `/thank-you` | `ROUND_ROBIN_CALENDAR` (shared advisor calendar) |
+| `/advisors/<slug>` | that advisor's `schedulerUrl` — three different calendars |
+| `/partners/<slug>` | that partner's `ghlFormId` — two different forms |
+| `/`, `/contact-us`, `/referral-partners`, `/business-acquisitions` | Michael's personal calendar |
+
+**Two URLs are configured inside GoHighLevel, not here:** `/thank-you` (every form's On Submit
+redirect) and `/ty-cal` (the calendar's post-booking redirect). Nothing in this repo links to
+either, so renaming those paths would break the funnel silently.
+
+Embeds need `form_embed.js` — use `loadGhlEmbedScript()` from `lib/ghl.ts`. They do **not** render
+on `file://` or in sandboxes; verify on a deploy.
 
 ---
 
-## Shared elements (keep in sync across ALL legacy pages + BOTH templates)
+## Shared elements — one copy each, finally
 
-- **Header:** KIBA logo + "Kingdom Impact Business Advisors". Header and footer logos link to
-  https://kibadvisors.com. The business name hides under ~600px width.
-- **Meta Pixel** (Facebook), ID `1653996785650157`, in the `<head>`, firing PageView.
-- **Footer social icons:** LinkedIn (`/company/kingdomimpactbusinessadvisors/`) and Facebook
-  (`/kibadvisors`).
-- **Testimonials block** — now a `TESTIMONIALS` config array plus a small injector script near the
-  bottom of each legacy page (the same config-block convention the rest of those pages use). Edit
-  the array, never the generated markup, and keep it in sync with `lib/testimonials.ts`.
-- **KIBA contact:** phone `251-210-8445`, email `info@kibadvisors.com`.
+These used to be duplicated across eleven HTML files and drifted. They are now single components:
 
-If you change any shared element, apply the same change to every legacy page and both templates.
-(For the migrated `app/` side, the fix is the opposite: extract the nav/footer into shared React
-components so there's only one copy — do this before migrating a second real page.)
+| Element | Where it lives |
+| --- | --- |
+| Nav | `components/SiteNav` |
+| Footer (incl. LinkedIn / Instagram / Facebook) | `components/SiteFooter` |
+| Testimonials | `components/ui/testimonial-v2.tsx` + `lib/testimonials.ts` |
+| FAQ | `components/ui/faq-accordion.tsx` + `lib/faq.ts` |
+| "What to expect" cards, trust stats | `lib/what-to-expect.ts` |
+| Design tokens | `app/globals.css` (`@theme`) + `app/home.css` |
+
+**KIBA contact:** phone `251-210-8445`, email `info@kibadvisors.com`. **Meta Pixel** (ID
+`1653996785650157`) was in each legacy page's `<head>`; it is **not** currently in the React app —
+if it's still wanted, it belongs in `app/layout.tsx` once, not per page.
 
 ---
 

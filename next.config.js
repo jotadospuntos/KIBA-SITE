@@ -16,11 +16,6 @@ const nextConfig = {
       // from anywhere. Deleting it is a deliberate, separate decision; until
       // then it must not be "cleaned up".
       { source: '/v2', destination: '/legacy/v2.html' },
-      { source: '/referral-partners', destination: '/legacy/referral-partners.html' },
-      { source: '/business-acquisitions', destination: '/legacy/business-acquisitions.html' },
-      { source: '/book-rr', destination: '/legacy/book-rr.html' },
-      { source: '/thank-you', destination: '/legacy/thank-you.html' },
-      { source: '/ty-cal', destination: '/legacy/ty-cal.html' },
     ];
   },
 
