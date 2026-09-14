@@ -21,11 +21,6 @@ const nextConfig = {
       { source: '/book-rr', destination: '/legacy/book-rr.html' },
       { source: '/thank-you', destination: '/legacy/thank-you.html' },
       { source: '/ty-cal', destination: '/legacy/ty-cal.html' },
-      { source: '/partners/rivenway', destination: '/legacy/partners/rivenway.html' },
-      { source: '/partners/integ-funding', destination: '/legacy/partners/integ-funding.html' },
-      { source: '/advisors/ariel-austria', destination: '/legacy/advisors/ariel-austria.html' },
-      { source: '/advisors/barbara-sylkatis', destination: '/legacy/advisors/barbara-sylkatis.html' },
-      { source: '/advisors/michael-sylkatis', destination: '/legacy/advisors/michael-sylkatis.html' },
     ];
   },
 
