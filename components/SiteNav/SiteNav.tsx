@@ -66,7 +66,11 @@ const NAV_LINKS = [
   { href: '/about-us', label: 'About' },
   { href: '/meet-our-team', label: 'Team' },
   { href: '/referral-partners', label: 'Partners' },
-  { href: '#talk', label: 'Contact' }
+  { href: '/blog', label: 'Blog' },
+  /* Was '#talk'. There's a real Contact page now (app/contact-us), which is
+     what kibadvisors.com links to as well; the on-page #talk anchor is still
+     what the "Let's Talk" button targets. */
+  { href: '/contact-us', label: 'Contact' }
 ];
 
 const PHONE_HREF = 'tel:2512108445';

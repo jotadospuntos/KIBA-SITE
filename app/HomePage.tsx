@@ -32,6 +32,7 @@ import SiteNav from '@/components/SiteNav/SiteNav';
 import Reveal from '@/components/Reveal/Reveal';
 import Counter from '@/components/Counter/Counter';
 import { TestimonialsSection } from '@/components/ui/testimonial-v2';
+import { FaqAccordion } from '@/components/ui/faq-accordion';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import TrustMarquee from '@/components/TrustMarquee/TrustMarquee';
@@ -292,7 +293,9 @@ export default function HomePage() {
       </section><TestimonialsSection
         badge="What Our Clients & Partners Say"
         heading="Trusted through every step"
-      /><section className="cta-band" id="talk">
+      /><FaqAccordion />
+
+      <section className="cta-band" id="talk">
         <GradientBlob />
         <Reveal className="wrap cta-band-inner reveal">
           <h2>Let&rsquo;s talk about your next move</h2>

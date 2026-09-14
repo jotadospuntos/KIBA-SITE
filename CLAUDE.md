@@ -281,7 +281,8 @@ animation). There is no second style — use `<TestimonialsSection />`, overridi
 and `intro` per page.
 
 Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-solutions`, all six
-`/capital-solutions/*`, and every legacy page except `v2.html` (frozen reference — leave it alone).
+`/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, and every legacy page except
+`v2.html` (frozen reference — leave it alone).
 
 **Two element selectors will bite you here.** `home.css` and every legacy page style the SITE
 footer and sections with bare element rules, and unlayered CSS beats Tailwind's layered utilities:
@@ -395,6 +396,48 @@ fills exactly instead of reading as a 3+2 with a hole in it.
 
 ---
 
+## `/blog` and `/contact-us` (shipped) — closing the gap against WordPress
+
+These two existed on kibadvisors.com and had no equivalent here. Both are built the same way as
+every other route: shared nav/footer/Reveal, the homepage hero, a testimonial section.
+
+**`/blog`** — index plus `[slug]` for the three published articles. **The body text is verbatim**
+from the WordPress posts; `app/blog/posts.ts` holds them as a `Block` union (`p` / `lead` / `h2` /
+`h3` / `ul`) rather than raw HTML, so typography lives in `PostPage.tsx` and the content stays
+portable. **Slugs match the WordPress URLs exactly**, including the third one
+(`why-you-need-business-credit-and-how-to-build-it`) whose slug doesn't match its title.
+
+- The article hero is deliberately **not** the two-column image hero — a post needs its title,
+  byline and date above the fold, and the photo panel would push all of it down for nothing.
+- *Why a TS file and not MDX or a CMS:* three short posts, and adding an MDX pipeline is a
+  build-tooling decision that shouldn't be made in passing. Revisit when editing TypeScript
+  becomes the bottleneck; the structured blocks make that a data migration, not a rewrite.
+
+**`/contact-us`** — the repo previously had only a `#talk` anchor. Copy is verbatim from the
+WordPress contact page, including the **office hours (Mon–Fri, 8:30 AM – 5:00 PM)**, which appeared
+nowhere in this repo before. It embeds the same GoHighLevel calendar as the homepage, so contact
+and booking are one page; that needs `form_embed.js`, which the page loads itself.
+
+**Nav and footer changed with them:** "Blog" is a new top-level nav item, "Contact" now points at
+`/contact-us` instead of `#talk` (the `#talk` anchor is still what "Let's Talk" targets), the
+footer gained a Blog link, and **Instagram was added to the footer socials** — the live site lists
+Facebook, Instagram and LinkedIn, and this footer only had two.
+
+### Still open against the live site
+
+- **Privacy Policy and Terms are deliberately NOT ported.** They still link to WordPress. Legal
+  text transcribed by an agent from a scraped page is a liability, not a feature — if these should
+  live here, paste the authoritative text.
+- **The homepage stats don't match and one of them is unverified.** Live shows
+  `50+ States · $100M+ Capital · 24–72h Avg Guidance Time · 25+ Years`. This repo shows
+  `25+ Years · 500+ Deals Funded · $100M+ · 50+ States`. "500+ Deals Funded" appears only here and
+  "24–72h" only there. These are marketing claims — don't reconcile them without the human.
+- **"Client Portal"** is a nav item on the live site with no equivalent here.
+- **The legacy-design gap.** The ten `public/legacy/` pages still have no nav bar, the old
+  single-row footer and no scroll motion.
+
+---
+
 ## Golden rules (read first)
 
 - **Filename = URL.** `public/legacy/partners/rivenway.html` serves at `/partners/rivenway` via
@@ -436,6 +479,8 @@ fills exactly instead of reading as a 3+2 with a hole in it.
 │   ├── home.css                  ← v2.html's <style> block, minus the glow + one divergence
 │   ├── meet-our-team/            ← "/meet-our-team": page.tsx + MeetOurTeamPage.tsx + team-data.ts
 │   ├── about-us/                 ← "/about-us": page.tsx + AboutUsPage.tsx + about-content.ts
+│   ├── blog/                     ← "/blog" index + "/blog/<slug>" (posts.ts holds the articles)
+│   ├── contact-us/               ← "/contact-us"
 │   └── capital-solutions/        ← hub + the six program pages
 │       ├── solutions-data.ts     ←   ALL the copy; nav + footer read PROGRAMS from here
 │       ├── ProgramPage.tsx       ←   one shared layout for all six programs
@@ -453,10 +498,12 @@ fills exactly instead of reading as a 3+2 with a hole in it.
 │       ├── testimonial-v2.tsx               ← THE testimonial treatment, whole site
 │       ├── bento-grid.tsx                   ← program cross-links (/capital-solutions/*)
 │       ├── services-card.tsx                ← Embla carousel, "may make sense if…" cards
-│       └── stats-2.tsx                      ← three-box grid + CTA, "how we decide"
+│       ├── stats-2.tsx                      ← three-box grid + CTA, "how we decide"
+│       └── faq-accordion.tsx                ← FAQ disclosure list (homepage + /contact-us)
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
 │   ├── testimonials.ts           ← the four real client testimonials (single source)
+│   ├── faq.ts                    ← the five homepage FAQ answers (verbatim from WordPress)
 │   └── useMotionPreference.ts    ← ?motion=1 override for previewing animations
 └── public/
     ├── img/ · partners/img/ · advisors/img/ · favicons   ← original public paths, unchanged
