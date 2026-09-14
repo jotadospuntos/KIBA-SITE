@@ -111,7 +111,6 @@ These are flagged deliberately. We did not want to guess.
 - **No dollar amounts, rates, terms or qualification thresholds appear anywhere.** Your current
   site doesn't quote any, and we did not invent them. If you want them, send the real numbers.
 - **Privacy Policy and Terms still link to kibadvisors.com.** We didn't want to retype legal text.
-- **There's no "Client Portal" link yet** — we don't know where it should point.
 - Pages don't appear in Google. That's the `noindex` setting, on purpose for now.
 
 ---
@@ -129,3 +128,6 @@ Two things worth calling out if you spot them, because they're easy to miss:
 - A **phone number or email** that's wrong anywhere (should be 251-210-8445 /
   info@kibadvisors.com)
 - A **button that goes somewhere unexpected**, especially the "Book a Consultation" buttons
+- The **Client Portal** button (top right, and in the phone menu) — it opens
+  portal.kibadvisors.com/client in a new tab. Worth one click to confirm that's the right
+  destination.

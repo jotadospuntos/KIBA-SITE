@@ -565,6 +565,13 @@ These used to be duplicated across eleven HTML files and drifted. They are now s
 | "What to expect" cards, trust stats | `lib/what-to-expect.ts` |
 | Design tokens | `app/globals.css` (`@theme`) + `app/home.css` |
 
+**Nav right-hand cluster:** phone → **Client Portal** (ghost button,
+`https://portal.kibadvisors.com/client`, new tab — a separate app for existing clients) → **Let's
+Talk** (primary CTA). The portal button is desktop-only (`min-[960px]`) because the mobile sheet
+carries it, and **the phone number hides between 960 and 1099px** so all four fit on one row —
+with everything shown the bar wrapped to two rows at 960 and 1024. If you add anything else here,
+re-measure `.nav-inner`'s height across 960/1024/1100/1440; it should stay 78px.
+
 **KIBA contact:** phone `251-210-8445`, email `info@kibadvisors.com`.
 
 **Meta Pixel** (ID `1653996785650157`) is in `app/layout.tsx`, once, so it covers every page. It is

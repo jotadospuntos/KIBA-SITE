@@ -76,6 +76,13 @@ const NAV_LINKS = [
 const PHONE_HREF = 'tel:2512108445';
 const PHONE_LABEL = '251-210-8445';
 
+/* Existing-client login. A separate application on its own subdomain, so it
+   opens in a new tab and is styled as a secondary (ghost) button — it's a
+   different job from "Let's Talk", which is the prospect CTA. The live
+   WordPress nav has the same item. */
+const PORTAL_HREF = 'https://portal.kibadvisors.com/client';
+const PORTAL_LABEL = 'Client Portal';
+
 const SCROLLED_AT = 24;        // px of scroll before the bar shrinks
 const DESKTOP_NAV_WIDTH = 960; // viewport width at which the sheet is force-closed
 
@@ -264,7 +271,26 @@ export default function SiteNav() {
       ))}
     </div>
     <div className="nav-right">
-      <a className="nav-phone" href={PHONE_HREF}>{PHONE_LABEL}</a>
+      {/* The phone number steps aside between 960 and 1099px so the portal
+          button fits on one row. Measured: with all four items the bar wrapped
+          to 100px tall at 960 and 1024. The number is still in every CTA band
+          and the footer, and back in the nav from 1100px up. */}
+      <a
+        className="nav-phone min-[960px]:max-[1099px]:hidden!"
+        href={PHONE_HREF}
+      >{PHONE_LABEL}</a>
+      {/* Desktop only: below 960px the mobile sheet carries this, and keeping it
+          in the top bar wrapped the nav on phones. */}
+      <a
+        className="btn btn-ghost nav-portal hidden! min-[960px]:inline-flex!"
+        href={PORTAL_HREF}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ padding: '10px 18px', fontSize: '14.5px' }}
+      >
+        {PORTAL_LABEL}
+        <span className="sr-only"> (opens in a new tab)</span>
+      </a>
       <a className="btn btn-primary" href="#talk" style={{ padding: '11px 22px', fontSize: '14.5px' }}>Let&rsquo;s Talk</a>
       <button
         className={mobileOpen ? 'nav-toggle is-open' : 'nav-toggle'}
@@ -300,6 +326,16 @@ export default function SiteNav() {
           <a className="mobile-menu-link" href={link.href} key={link.href} onClick={onSheetLinkClick}>{link.label}</a>
         ))}
         <div className="mobile-menu-ctas">
+          <a
+            className="btn btn-ghost"
+            href={PORTAL_HREF}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onSheetLinkClick}
+          >
+            {PORTAL_LABEL}
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
           <a className="btn btn-ghost" href={PHONE_HREF} onClick={onSheetLinkClick}>{PHONE_LABEL}</a>
           <a className="btn btn-primary" href="#talk" onClick={onSheetLinkClick}>Let&rsquo;s Talk</a>
         </div>
