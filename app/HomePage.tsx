@@ -57,9 +57,18 @@ const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ss
  * from 0.64 (portrait, at 1280px) through 1.00 (square, at 1920px) to 1.36
  * (landscape, at 2560px). 2600x2000 is the compromise: mildly landscape, and
  * still downscaling at 2x DPR on a 2560px-wide viewport (which needs 2398x1760).
- * Replacing this photo means re-cutting at roughly these dimensions. */
-const HERO_IMAGE = '/img/hero/owner-cafe-laptop.webp';
-const HERO_IMAGE_ALT = 'A small business owner working on a laptop at her counter';
+ * Replacing this photo means re-cutting at roughly these dimensions.
+ *
+ * ONE MORE CONSTRAINT, learned cutting this one: because the panel goes portrait
+ * at narrow desktop widths, center-cover shows only the middle ~48% of the image
+ * there. The subject has to sit near the middle of the FRAME or they get cropped
+ * out entirely. This photo's worker is at 40% across, which stays inside the
+ * visible band at 1280, 1440, 1920 and 2560. Check that before swapping a photo,
+ * not just the pixel dimensions.
+ */
+const HERO_IMAGE = '/img/hero/industrial-operator.webp';
+const HERO_IMAGE_ALT =
+  'A plant operator reviewing figures on a tablet on the factory floor';
 
 /* Only the GoHighLevel iframe resizer is loaded at runtime now. GSAP used to be
    fetched from a CDN here too; it's a bundled npm dependency since the headline

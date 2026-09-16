@@ -154,10 +154,17 @@ example of how a new route should be assembled.
   split-text headline, the cursor-parallax blobs and the angled clip-path image panel. Don't change
   `.hero`'s padding to resize it — `.hero-inner > .hero-visual`'s `-76px/-96px` margins are tuned to
   that exact padding, and the panel is what gives the hero its height anyway.
-- **The hero photo is `owner-cafe-laptop.webp`, shared with the homepage.** It's the only image in
-  `public/img/hero/` cut for this panel (2600x2000); the rest are 800px wide and visibly soft when
-  stretched to it. Swap in a real photo of the team when there is one, cut to roughly those
-  dimensions.
+- **The hero photo is `owner-cafe-laptop.webp`.** It was shared with the homepage until that got
+  its own photo (`industrial-operator.webp`); `/capital-solutions` still shares it. It's cut for
+  this panel (2600x2000), unlike the 800px-wide stock in `public/img/hero/`, which is visibly soft
+  when stretched to it. Swap in a real photo of the team when there is one.
+
+> **Cutting a new hero photo — two constraints, not one.** 2600x2000 is the size. The second one is
+> placement: the panel goes portrait at narrow desktop widths, so `background-size:cover` shows
+> only the middle ~48% of the image at 1280px. **The subject has to sit near the middle of the
+> frame** or they are cropped out entirely there. `industrial-operator.webp` was cut from a
+> 4200x2794 original specifically to put its subject at 40% across; verified in a browser at 1280,
+> 1440, 1920, 2560 and 390.
 - **The "Clarity first…" band is light here, navy on the homepage.** Deliberate: on this page it
   sits between the navy team section and the navy CTA band, and reusing home.css's `.band` would
   make the three read as one unbroken block. It's built with Tailwind rather than by editing
