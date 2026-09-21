@@ -154,10 +154,11 @@ example of how a new route should be assembled.
   split-text headline, the cursor-parallax blobs and the angled clip-path image panel. Don't change
   `.hero`'s padding to resize it — `.hero-inner > .hero-visual`'s `-76px/-96px` margins are tuned to
   that exact padding, and the panel is what gives the hero its height anyway.
-- **The hero photo is `owner-cafe-laptop.webp`.** It was shared with the homepage until that got
-  its own photo (`industrial-operator.webp`); `/capital-solutions` still shares it. It's cut for
-  this panel (2600x2000), unlike the 800px-wide stock in `public/img/hero/`, which is visibly soft
-  when stretched to it. Swap in a real photo of the team when there is one.
+- **The hero photo is `owner-cafe-laptop.webp`.** It was shared with the homepage and with
+  `/capital-solutions` until each got its own supplied photo (`industrial-operator.webp` and
+  `advisor-client-review.webp`), so this page is now the only user of it. It's cut for this panel
+  (2600x2000), unlike the 800px-wide stock in `public/img/hero/`, which is visibly soft when
+  stretched to it. Swap in a real photo of the team when there is one.
 
 > **Cutting a new hero photo — two constraints, not one.** 2600x2000 is the size. The second one is
 > placement: the panel goes portrait at narrow desktop widths, so `background-size:cover` shows
@@ -260,10 +261,13 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
 - **No numbers, deliberately.** The source quotes no rates, terms, amounts or qualification
   thresholds and none were invented. Anything of that kind is a lending claim and has to come from
   the human — don't let a future copy pass add "typical terms" tables.
-- **Hero images are placeholders** pointing at existing `public/img/hero/` photos while real stock
-  is gathered. Swapping one is a one-line `heroImage` / `heroImageAlt` change in
-  `solutions-data.ts`. All but `owner-cafe-laptop.webp` are 800x533 and upscale in the hero panel;
-  replacements want ~2600x2000.
+- **Real photos so far: the hub and `lines-of-credit`.** `advisor-client-review.webp` and
+  `garment-factory-operator.webp` were supplied by the business and cut to 2600x2000 for this
+  panel. **The other five programs are still placeholders** pointing at existing
+  `public/img/hero/` photos while real stock is gathered; those are 800x533 and upscale visibly.
+  Swapping one is a one-line `heroImage` / `heroImageAlt` change in `solutions-data.ts`.
+  Replacements want ~2600x2000 *and* their subject near the middle of the frame — see the callout
+  under `/meet-our-team`, which is the constraint that is easy to miss.
 - **`/business-acquisitions` (legacy) still exists and is untouched.** It's a campaign landing page
   with its own GHL form, and it's where that ad traffic lands. It came out of the nav dropdown,
   which now points at the program page instead. Merging or retiring it is a separate, deliberate

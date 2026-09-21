@@ -15,11 +15,13 @@
  * qualification thresholds, and none are invented here. Anything of that kind
  * is a lending claim that has to come from the human, not from a copy pass.
  *
- * HERO IMAGES ARE PLACEHOLDERS. Every program points at an existing photo in
- * public/img/hero/ so the pages render; real stock is being gathered. All of
- * them except owner-cafe-laptop.webp are 800x533 and upscale in the hero panel
- * (see CLAUDE.md) - the replacements want to be roughly 2600x2000. Swapping one
- * is a one-line change to `heroImage` / `heroImageAlt` below and nothing else.
+ * MOST HERO IMAGES ARE STILL PLACEHOLDERS. Five of the six programs point at
+ * an existing 800x533 photo in public/img/hero/ so the pages render; those
+ * upscale in the hero panel and real stock is being gathered. The exception is
+ * lines-of-credit, which has the real supplied photo cut to 2600x2000.
+ * Replacements want to be roughly that size AND to have their subject near the
+ * middle of the frame (see CLAUDE.md). Swapping one is a one-line change to
+ * `heroImage` / `heroImageAlt` below and nothing else.
  */
 
 import type { LucideIcon } from 'lucide-react';
@@ -263,8 +265,10 @@ export const PROGRAMS: Program[] = [
       'You only pay for what you actually draw.',
       'We will say so if a line is treating a symptom.'
     ],
-    heroImage: '/img/hero/advisor-on-call.webp',
-    heroImageAlt: 'An advisor on a call with a client',
+    /* Real photo, supplied by the business, cut to 2600x2000 - not a
+       placeholder like the other five. */
+    heroImage: '/img/hero/garment-factory-operator.webp',
+    heroImageAlt: 'A machinist at work on the floor of a garment factory',
     summary:
       "Lines of credit can provide flexibility, but they're often misunderstood. Used wisely, they help smooth timing gaps. Used incorrectly, they can hide deeper cash flow issues.",
     expand:

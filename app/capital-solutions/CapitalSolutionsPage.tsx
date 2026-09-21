@@ -34,10 +34,13 @@ import {
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
-/* Placeholder, like the program heroes — but this one is the 2600x2000 cut, so
-   it's the only hero on the site that isn't upscaling. See solutions-data.ts. */
-const HERO_IMAGE = '/img/hero/owner-cafe-laptop.webp';
-const HERO_IMAGE_ALT = 'A business owner working through her options';
+/* A real photo, supplied by the business and cut to 2600x2000 for this panel
+   (not a placeholder). Its two subjects sit at 32% and 69% across, which keeps
+   them both inside the visible band when the panel goes portrait at narrow
+   desktop widths - see CLAUDE.md on cutting a hero photo. */
+const HERO_IMAGE = '/img/hero/advisor-client-review.webp';
+const HERO_IMAGE_ALT =
+  'An advisor and a business owner going through options together over a laptop';
 
 function Check({ color = '#6d94f5' }: { color?: string }) {
   return (
