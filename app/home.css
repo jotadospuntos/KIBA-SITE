@@ -268,6 +268,41 @@
   @media (max-width:920px){
     .hero-inner{ grid-template-columns:1fr; }
   }
+
+  /* ---------- ONE HERO HEIGHT FOR THE WHOLE SITE ----------
+     Every hero matches the homepage's, so moving between pages doesn't feel
+     like the header is jumping around. Before this, desktop heroes ranged from
+     315px (/privacy-policy) to 880px (/).
+
+     TWO numbers, not one, because the homepage genuinely cannot fit in 880px
+     below ~1150px: its h1 takes a third line there and it needs 814px of inner
+     height. Forcing 708px in that band would overlap its own content.
+
+     WHY .hero-inner AND .hero. The image panel stretches to the grid row
+     (.hero-inner > .hero-visual, further down), so the ROW is what has to grow
+     - a min-height on .hero alone would leave the panel short with a navy gap
+     above and below it. .hero gets one too, for the heroes that have no
+     .hero-inner at all: blog posts, the legal pages, /thank-you and /ty-cal.
+     Those are single-column, so they just centre their content in the taller
+     band. The +172px is .hero's 76px/96px padding.
+
+     These are MEASURED from the homepage, not chosen. If its h1 or hero copy
+     changes, re-measure .hero-inner's height on / at 1120px and at 1440px and
+     update both pairs. Below 921px .hero-inner is a single column and the
+     panel switches to a 16/10 aspect, so no min-height applies there.
+
+     min-height, not height: /book-rr, /referral-partners, /business-acquisitions
+     and /partners/* carry a booking embed in the hero and run to ~1063px. They
+     stay taller rather than squashing a live calendar. */
+  @media (min-width:921px){
+    .hero{ min-height:986px; display:grid; align-content:center; }
+    .hero-inner{ min-height:814px; }
+  }
+  @media (min-width:1150px){
+    .hero{ min-height:880px; }
+    .hero-inner{ min-height:708px; }
+  }
+
   .hero-eyebrow{ color:var(--blue-soft); margin-bottom:18px; }
   .partner-badge{
     display:flex;

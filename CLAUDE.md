@@ -153,7 +153,7 @@ example of how a new route should be assembled.
 - **The hero is the homepage hero**, structurally: watermark, two-column `.hero-inner`, the
   split-text headline, the cursor-parallax blobs and the angled clip-path image panel. Don't change
   `.hero`'s padding to resize it — `.hero-inner > .hero-visual`'s `-76px/-96px` margins are tuned to
-  that exact padding, and the panel is what gives the hero its height anyway.
+  that exact padding, and the height is now pinned site-wide anyway (see "One hero height").
 - **The hero photo is `owner-cafe-laptop.webp`.** It was shared with the homepage and with
   `/capital-solutions` until each got its own supplied photo (`industrial-operator.webp` and
   `advisor-client-review.webp`), so this page is now the only user of it. It's cut for this panel
@@ -728,6 +728,34 @@ than snapping to its end state.
    `prefersReduced === false` on the first render, so the flag never flips). It does mean **the
    `?motion=1` recipe above can't verify this kind of animation** — check those on a browser with
    no reduce emulation instead.
+
+---
+
+## One hero height, site-wide
+
+**Every hero on the site is the same height as the homepage's**, by request — desktop heroes used
+to range from 315px (`/privacy-policy`) to 880px (`/`) and moving between pages felt like the
+header was jumping around. The rule lives in `app/home.css` under "ONE HERO HEIGHT FOR THE WHOLE
+SITE"; the comment there carries the detail. In short:
+
+- **880px at ≥1150px, 986px between 921 and 1149px.** Two numbers because the homepage's own h1
+  takes a third line below ~1150px and genuinely cannot fit in 880px — forcing it would overlap its
+  own content. **Both are measured from the homepage, not chosen.** If its h1 or hero copy changes,
+  re-measure `.hero-inner`'s height on `/` at 1120px and 1440px and update both pairs.
+- **The min-height is on `.hero-inner`, not just `.hero`.** The image panel stretches to the grid
+  row, so the row has to grow; a min-height on `.hero` alone leaves the panel short with a navy gap
+  above and below it. `.hero` gets one too (plus `display:grid; align-content:center`) for the
+  heroes that have no `.hero-inner`: blog posts, legal pages, `/thank-you`, `/ty-cal`.
+- **Nothing applies below 921px.** There `.hero-inner` is a single column and the panel switches to
+  a 16/10 aspect; a min-height would just add a gap. Phones are unchanged.
+- **`min-height`, not `height`.** `/book-rr`, `/referral-partners`, `/business-acquisitions` and
+  `/partners/*` carry a booking embed in the hero and run to ~1063px. They stay taller rather than
+  squashing a live calendar — **these four are the only remaining exceptions**, and closing that
+  gap means shrinking a GoHighLevel iframe on the conversion path, which is the human's call.
+- **Known cost, flagged not hidden:** on `/privacy-policy` and the three `/blog/*` posts the hero
+  is now most of a laptop viewport, so the body text starts below the fold. That is the price of
+  uniformity and it was the explicit request. To exempt them, give those two layouts a
+  `hero-compact` class and reset `min-height` on it.
 
 ---
 
