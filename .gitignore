@@ -33,3 +33,4 @@ next-env.d.ts
 # the optimized versions can be regenerated, but not committed - the 9 Pexels
 # originals are ~24MB and would live in git history forever.
 /assets-src/
+__pycache__/

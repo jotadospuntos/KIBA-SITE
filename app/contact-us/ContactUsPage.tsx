@@ -32,8 +32,12 @@ import { ROUND_ROBIN_CALENDAR, loadGhlEmbedScript } from '@/lib/ghl';
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
-const HERO_IMAGE = '/img/hero/advisor-on-call.webp';
-const HERO_IMAGE_ALT = 'A KIBA advisor taking a client call';
+/* KIBA's own branded interior render, supplied by the business. Deliberately
+   NOT put through the tone grade the composite heroes use - that would shift
+   the brand blue in the logo. Cropped flush right so the logo sits as close to
+   the middle of the frame as the source allows. */
+const HERO_IMAGE = '/img/hero/kiba-office-lobby.webp';
+const HERO_IMAGE_ALT = 'The KIBA office lounge, with the KIBA sign on the wall';
 
 /* The SHARED round-robin calendar, the same one /book-rr uses — not any single
    advisor's. A generic Contact page should reach whoever is available. */

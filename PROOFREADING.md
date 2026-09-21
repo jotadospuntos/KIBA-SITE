@@ -105,9 +105,12 @@ These are flagged deliberately. We did not want to guess.
 
 ## 4. Known and intentional — please don't report these
 
-- **The photos in the large hero areas are placeholders**, mostly on the Capital Solutions pages,
-  the blog and Contact. Real photography is still being chosen. Some look slightly soft; that's
-  the placeholder, not the design.
+- **Some photos in the large hero areas are still placeholders** — on SBA Loans, Business
+  Acquisition Loans, Term Loans, the blog and About Us. Real photography is still being chosen.
+  Some look slightly soft; that's the placeholder, not the design.
+- **Equipment Financing and Commercial Real Estate show several images in one frame.** That's
+  intentional — those two programs cover very different assets, and a single photo would suggest
+  we only fund that one thing.
 - **There are only four testimonials**, so they repeat as the columns scroll. We deliberately did
   not invent more.
 - **Client initials appear in circles instead of photos** — we don't have client photos, and using

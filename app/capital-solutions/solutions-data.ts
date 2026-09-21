@@ -195,8 +195,12 @@ export const PROGRAMS: Program[] = [
       'Term matched to the useful life of the asset.',
       'Sometimes the honest answer is to lease it instead.'
     ],
-    heroImage: '/img/hero/workshop-owner.webp',
-    heroImageAlt: 'A workshop owner operating equipment on the shop floor',
+    /* A composite, not a single photo: equipment financing covers wildly
+       different assets, and one machine on the page implies we only fund that
+       one. Four tiles, graded to a common tone. See tools/hero-mashups.py. */
+    heroImage: '/img/hero/equipment-mix.webp',
+    heroImageAlt:
+      'Financed equipment across four industries: a CT scanner, a delivery fleet, an excavator and a server room',
     summary:
       'Equipment financing can be a good option when the equipment directly supports revenue or efficiency. The key is making sure the asset truly earns its place on the balance sheet.',
     expand:
@@ -230,8 +234,11 @@ export const PROGRAMS: Program[] = [
       'Long-term cost control instead of rising rent.',
       'We look at liquidity after the purchase, not before.'
     ],
-    heroImage: '/img/hero/boutique-owner.webp',
-    heroImageAlt: 'A business owner in the commercial space they operate from',
+    /* Composite, same reasoning as equipment financing: two property types
+       rather than one, so the page doesn't read as office-only. */
+    heroImage: '/img/hero/commercial-property-mix.webp',
+    heroImageAlt:
+      'Two commercial properties: a brick-and-glass office building and a light industrial unit',
     summary:
       'Owning property can be a strong long-term move, but it can also tie up cash and reduce flexibility.',
     expand:

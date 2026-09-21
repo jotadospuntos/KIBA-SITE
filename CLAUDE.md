@@ -166,6 +166,38 @@ example of how a new route should be assembled.
 > frame** or they are cropped out entirely there. `industrial-operator.webp` was cut from a
 > 4200x2794 original specifically to put its subject at 40% across; verified in a browser at 1280,
 > 1440, 1920, 2560 and 390.
+>
+> **The ~48% figure is the worst case, not the usual one.** It assumes the homepage's 880px-tall
+> panel. The panel's height is set by the text column beside it, so shorter heroes show much more:
+> measured at 1280px the bands are 72% on `/capital-solutions/equipment-financing`, 66% on
+> `commercial-real-estate-loans` and 83% on `/contact-us`. Measure the route you're cutting for
+> rather than assuming 48% — but don't design right up to the limit either.
+
+### Composite heroes
+
+`/capital-solutions/equipment-financing` and `/capital-solutions/commercial-real-estate-loans` use
+**built composites** rather than single photographs, because one machine or one building on the
+page implies that is the only thing we finance. `tools/hero-mashups.py` rebuilds all three of the
+images it owns from the originals; the `.webp` outputs are committed, and the script exists so a
+composite can be re-cut without reverse-engineering the finished image. Point its `D` at wherever
+the originals are.
+
+- **Equipment is a 2x2 and that is load-bearing.** A 2x2 is the only multi-tile layout that
+  survives the panel going portrait, because every tile touches the centre, so the middle band
+  still shows part of all four. Columns or stripes would hide half of them. Bright and dark tiles
+  alternate on the diagonal so it doesn't read as a light half and a dark half.
+- **Commercial property is two stacked bands, not side by side.** Both subjects are wide
+  buildings and a portrait slot would cut either to a sliver. The heights are unequal (960 / 1026)
+  because the industrial unit fills more of its frame vertically than the office does.
+- **The tiles are tone-graded, and without it the collages don't work.** `grade()` pulls each tile
+  toward a common exposure and a common cool cast (a `pull` below 1 keeps some of each photo's own
+  exposure so they don't flatten to one grey). The equipment sources are a clinical white CT
+  suite, a night car park, full daylight and a red-lit server aisle; ungraded they read as four
+  clippings stuck together. The property pair is graded harder still, since the office is shot at
+  a warm sunset and warm tones fight this palette.
+- **`kiba-office-lobby.webp` (`/contact-us`) is deliberately NOT graded.** It carries the KIBA
+  logo and the grade would shift the brand blue. It is a **branded interior render supplied by the
+  business, not a photograph of a real office** — worth knowing before anyone captions it as one.
 - **The "Clarity first…" band is light here, navy on the homepage.** Deliberate: on this page it
   sits between the navy team section and the navy CTA band, and reusing home.css's `.band` would
   make the three read as one unbroken block. It's built with Tailwind rather than by editing
@@ -261,13 +293,14 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
 - **No numbers, deliberately.** The source quotes no rates, terms, amounts or qualification
   thresholds and none were invented. Anything of that kind is a lending claim and has to come from
   the human — don't let a future copy pass add "typical terms" tables.
-- **Real photos so far: the hub and `lines-of-credit`.** `advisor-client-review.webp` and
-  `garment-factory-operator.webp` were supplied by the business and cut to 2600x2000 for this
-  panel. **The other five programs are still placeholders** pointing at existing
-  `public/img/hero/` photos while real stock is gathered; those are 800x533 and upscale visibly.
-  Swapping one is a one-line `heroImage` / `heroImageAlt` change in `solutions-data.ts`.
-  Replacements want ~2600x2000 *and* their subject near the middle of the frame — see the callout
-  under `/meet-our-team`, which is the constraint that is easy to miss.
+- **Real photos so far: the hub, `lines-of-credit`, `equipment-financing` and
+  `commercial-real-estate-loans`.** All supplied by the business and cut to 2600x2000 for this
+  panel. **Three are still placeholders** — `sba-loans`, `business-acquisition-loans` and
+  `term-loans` point at 800x533 stock in `public/img/hero/` and upscale visibly. Swapping one is a
+  one-line `heroImage` / `heroImageAlt` change in `solutions-data.ts`. Replacements want
+  ~2600x2000 *and* their subject near the middle of the frame — see the callout under
+  `/meet-our-team`, which is the constraint that is easy to miss.
+- **Two of those heroes are composites, not photographs** — see "Composite heroes" below.
 - **`/business-acquisitions` (legacy) still exists and is untouched.** It's a campaign landing page
   with its own GHL form, and it's where that ad traffic lands. It came out of the nav dropdown,
   which now points at the program page instead. Merging or retiring it is a separate, deliberate
@@ -534,6 +567,8 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │       ├── services-card.tsx                ← Embla carousel, "may make sense if…" cards
 │       ├── stats-2.tsx                      ← three-box grid + CTA, "how we decide"
 │       └── faq-accordion.tsx                ← FAQ disclosure list (homepage + /contact-us)
+├── tools/
+│   └── hero-mashups.py           ← rebuilds the composite hero images (not part of the build)
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
 │   ├── testimonials.ts           ← the four real client testimonials (single source)
