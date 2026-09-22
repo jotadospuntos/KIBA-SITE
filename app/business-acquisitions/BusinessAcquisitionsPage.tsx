@@ -100,7 +100,7 @@ export default function BusinessAcquisitionsPage() {
               <li><Check />Acquisition term loans available for Non-US Citizen Green Card holders.</li>
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="#book" className="btn btn-primary">Schedule Strategic Assessment</a>
+              <a href="#book" className="btn btn-primary">Start the Conversation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </Reveal>
             <Reveal className="stat-row reveal" style={{ transitionDelay: '0.32s' }}>
@@ -193,7 +193,7 @@ export default function BusinessAcquisitionsPage() {
                 informed decisions for their businesses and families.
               </p>
               <a href={`/advisors/${michael.slug}`} className="btn btn-primary mt-7">
-                Book with {michael.name.split(' ')[0]}
+                Start the Conversation
               </a>
             </div>
           </Reveal>
@@ -213,7 +213,7 @@ export default function BusinessAcquisitionsPage() {
           <h2>Ready to talk?</h2>
           <p>Schedule your strategic assessment with Michael &mdash; no pressure, no obligation.</p>
           <div className="cta-band-actions">
-            <a href="#book" className="btn btn-primary">Schedule Strategic Assessment</a>
+            <a href="#book" className="btn btn-primary">Start the Conversation</a>
             <a href="/capital-solutions/business-acquisition-loans" className="btn btn-ghost">How Acquisition Loans Work</a>
           </div>
           <div className="contact-row">

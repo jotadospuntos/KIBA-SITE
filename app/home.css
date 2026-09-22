@@ -149,7 +149,7 @@
 
   /* Nav menu (Solutions dropdown + flat links) */
   .nav-menu{ display:none; align-items:center; gap:2px; }
-  @media (min-width:960px){ .nav-menu{ display:flex; } }
+  @media (min-width:1000px){ .nav-menu{ display:flex; } }
   .nav-menu-item{ position:relative; }
   .nav-menu-link, .nav-menu-trigger{
     font-family:'Instrument Sans', sans-serif;
@@ -161,11 +161,24 @@
     border:none;
     padding:10px 14px;
     border-radius:999px;
+    white-space:nowrap;
     display:inline-flex;
     align-items:center;
     gap:6px;
     cursor:pointer;
     transition:color 0.18s ease, background 0.18s ease;
+  }
+  /* THE TIGHT BAND, 1000-1099px. The desktop bar turns on at 1000px, but
+     there isn't room for the full menu plus the Client Portal button next to
+     a 208px "Start the Conversation" pill until ~1100px - it went to two rows
+     (100px tall) at 1024 and 1060. The phone number is already hidden through
+     here (see SiteNav); this claws back the rest from the menu's link padding
+     and the right cluster's gap. Nothing is dropped, only tightened.
+     If the nav CTA's label changes, re-measure: .nav-inner must stay 78px at
+     1000/1024/1060/1100/1180/1280. */
+  @media (min-width:1000px) and (max-width:1099px){
+    .nav-menu-link, .nav-menu-trigger{ padding-left:9px; padding-right:9px; }
+    .nav-right{ gap:14px; }
   }
   .nav-menu-link:hover, .nav-menu-trigger:hover{ color:#fff; background:rgba(255,255,255,0.08); }
   .nav-menu-trigger .nav-caret{ width:14px; height:14px; transition:transform 0.2s ease; }
@@ -203,7 +216,7 @@
     border-radius:10px; background:transparent; color:#fff;
     border:1.5px solid rgba(255,255,255,0.35);
   }
-  @media (min-width:960px){ .nav-toggle{ display:none; } }
+  @media (min-width:1000px){ .nav-toggle{ display:none; } }
   .nav-toggle-icon{ width:18px; height:18px; }
   .nav-toggle-icon-close{ display:none; }
   .nav-toggle.is-open .nav-toggle-icon-open{ display:none; }
@@ -218,7 +231,7 @@
     overflow-y:auto;
   }
   .mobile-menu[hidden]{ display:none; }
-  @media (min-width:960px){ .mobile-menu{ display:none !important; } }
+  @media (min-width:1000px){ .mobile-menu{ display:none !important; } }
   .mobile-menu-inner{ padding:4px 32px 28px; display:flex; flex-direction:column; }
   .mobile-accordion-trigger{
     display:flex; align-items:center; justify-content:space-between; width:100%;

@@ -122,7 +122,7 @@ export default function PostPage({ slug }: { slug: string }) {
                 Book a conversation with a KIBA advisor. You&rsquo;ll get a straight answer about
                 your own numbers &mdash; including if the answer is to wait.
               </p>
-              <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+              <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
             </div>
           </Reveal>
         </div>
@@ -167,7 +167,7 @@ export default function PostPage({ slug }: { slug: string }) {
           <h2>Let&rsquo;s talk about your next move</h2>
           <p>Book a time with a KIBA advisor and find out what your business qualifies for.</p>
           <div className="cta-band-actions">
-            <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+            <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
             <a href="/blog" className="btn btn-ghost">Back to the Blog</a>
           </div>
           <div className="contact-row">

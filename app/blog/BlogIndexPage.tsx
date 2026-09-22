@@ -64,7 +64,7 @@ export default function BlogIndexPage() {
               <li><Check />Written by the advisors who sit in the meetings.</li>
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+              <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
               <a href="/contact-us" className="btn btn-ghost">Contact Us</a>
             </Reveal>
           </div>
@@ -119,7 +119,7 @@ export default function BlogIndexPage() {
           <h2>Have a question the blog didn&rsquo;t answer?</h2>
           <p>Book a time with a KIBA advisor and get a straight answer about your own situation.</p>
           <div className="cta-band-actions">
-            <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+            <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
             <a href="/capital-solutions" className="btn btn-ghost">See Capital Solutions</a>
           </div>
           <div className="contact-row">

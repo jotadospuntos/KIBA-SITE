@@ -90,7 +90,7 @@ export default function PartnerPage({ slug }: { slug: string }) {
               <li><Check />Straightforward answers so you can move forward with confidence.</li>
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="#start" className="btn btn-primary">Get Started Today</a>
+              <a href="#start" className="btn btn-primary">Start the Conversation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </Reveal>
             <Reveal className="stat-row reveal" style={{ transitionDelay: '0.32s' }}>
@@ -153,7 +153,7 @@ export default function PartnerPage({ slug }: { slug: string }) {
           <h2>Ready to explore your options?</h2>
           <p>No pressure, no obligation &mdash; just clear, honest guidance on your next step.</p>
           <div className="cta-band-actions">
-            <a href="#start" className="btn btn-primary">Get Started</a>
+            <a href="#start" className="btn btn-primary">Start the Conversation</a>
             <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
           </div>
           <div className="contact-row">

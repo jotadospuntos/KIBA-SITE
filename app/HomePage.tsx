@@ -163,7 +163,7 @@ export default function HomePage() {
               <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Straight answers on what you actually qualify for.</li>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>One point of contact from application through funding.</li>
             </ul>
-            <div className="cta-row"><a href="#talk" className="btn btn-primary">Get Funded</a><a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a></div>
+            <div className="cta-row"><a href="#talk" className="btn btn-primary">Start the Conversation</a><a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a></div>
             <div className="stat-row">
               <div className="stat"><Counter className="stat-num" to={25} suffix="+" /><div className="stat-label">Years Experience</div></div>
               <div className="stat"><Counter className="stat-num" to={500} suffix="+" /><div className="stat-label">Deals Funded</div></div>

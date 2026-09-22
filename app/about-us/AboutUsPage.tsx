@@ -83,7 +83,7 @@ export default function AboutUsPage() {
               <li><Check />Most advisors sell products. We prepare businesses.</li>
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+              <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
               <a href="/meet-our-team" className="btn btn-ghost">Meet the Team</a>
             </Reveal>
           </div>
@@ -254,7 +254,7 @@ export default function AboutUsPage() {
           <h2>Let&rsquo;s talk about your next move</h2>
           <p>Book a time with a KIBA advisor and find out what your business qualifies for.</p>
           <div className="cta-band-actions">
-            <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+            <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
             <a href="/meet-our-team" className="btn btn-ghost">Meet the Team</a>
           </div>
           <div className="contact-row">

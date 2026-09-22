@@ -81,7 +81,7 @@ export default function CapitalSolutionsPage() {
               <li><Check />Sometimes the right answer is not to borrow at all.</li>
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+              <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </Reveal>
           </div>
@@ -227,7 +227,7 @@ export default function CapitalSolutionsPage() {
           <h2>Start with clarity</h2>
           <p>Book a time with a KIBA advisor and find out which of these actually fits &mdash; or whether the right move is to wait.</p>
           <div className="cta-band-actions">
-            <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+            <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
             <a href="/meet-our-team" className="btn btn-ghost">Meet the Team</a>
           </div>
           <div className="contact-row">

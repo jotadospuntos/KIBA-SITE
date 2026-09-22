@@ -84,7 +84,7 @@ const PORTAL_HREF = 'https://portal.kibadvisors.com/client';
 const PORTAL_LABEL = 'Client Portal';
 
 const SCROLLED_AT = 24;        // px of scroll before the bar shrinks
-const DESKTOP_NAV_WIDTH = 960; // viewport width at which the sheet is force-closed
+const DESKTOP_NAV_WIDTH = 1000; // viewport width at which the sheet is force-closed
 
 function Caret() {
   return (
@@ -271,18 +271,28 @@ export default function SiteNav() {
       ))}
     </div>
     <div className="nav-right">
-      {/* The phone number steps aside between 960 and 1099px so the portal
-          button fits on one row. Measured: with all four items the bar wrapped
-          to 100px tall at 960 and 1024. The number is still in every CTA band
-          and the footer, and back in the nav from 1100px up. */}
+      {/* The phone number steps aside across the whole desktop bar until
+          1280px so everything else fits on one row. It's still in every CTA
+          band and the footer.
+
+          THIS GREW ONCE, and so did the desktop breakpoint. Both were 960px
+          when the CTA read "Let's Talk" (~110px wide). "Start the
+          Conversation" is 208px, which pushed the bar to two rows everywhere
+          below 1280px. Hiding the number reclaimed 1100-1279, tightening the
+          menu reclaimed 1000-1099, and below 1000px the hamburger now takes
+          over - at 960-999 there was no combination of paddings that fitted
+          the full menu, the portal button and a 208px pill without cramming.
+          The mobile sheet carries every link and the portal, so nothing is
+          lost there. If the CTA text changes again, re-measure at
+          960/1000/1024/1060/1100/1180/1280 - .nav-inner must stay 78px. */}
       <a
-        className="nav-phone min-[960px]:max-[1099px]:hidden!"
+        className="nav-phone min-[1000px]:max-[1279px]:hidden!"
         href={PHONE_HREF}
       >{PHONE_LABEL}</a>
-      {/* Desktop only: below 960px the mobile sheet carries this, and keeping it
-          in the top bar wrapped the nav on phones. */}
+      {/* Desktop only: below 1000px the mobile sheet carries this, and keeping
+          it in the top bar wrapped the nav on phones. */}
       <a
-        className="btn btn-ghost nav-portal hidden! min-[960px]:inline-flex!"
+        className="btn btn-ghost nav-portal hidden! min-[1000px]:inline-flex! whitespace-nowrap"
         href={PORTAL_HREF}
         target="_blank"
         rel="noopener noreferrer"
@@ -291,7 +301,10 @@ export default function SiteNav() {
         {PORTAL_LABEL}
         <span className="sr-only"> (opens in a new tab)</span>
       </a>
-      <a className="btn btn-primary" href="#talk" style={{ padding: '11px 22px', fontSize: '14.5px' }}>Let&rsquo;s Talk</a>
+      {/* nowrap: at ~1100px the label broke onto two lines inside the pill,
+          which is what actually made the bar 100px tall rather than the row
+          wrapping. */}
+      <a className="btn btn-primary whitespace-nowrap" href="#talk" style={{ padding: '11px 22px', fontSize: '14.5px' }}>Start the Conversation</a>
       <button
         className={mobileOpen ? 'nav-toggle is-open' : 'nav-toggle'}
         id="navToggle"
@@ -337,7 +350,7 @@ export default function SiteNav() {
             <span className="sr-only"> (opens in a new tab)</span>
           </a>
           <a className="btn btn-ghost" href={PHONE_HREF} onClick={onSheetLinkClick}>{PHONE_LABEL}</a>
-          <a className="btn btn-primary" href="#talk" onClick={onSheetLinkClick}>Let&rsquo;s Talk</a>
+          <a className="btn btn-primary" href="#talk" onClick={onSheetLinkClick}>Start the Conversation</a>
         </div>
       </div>
     </div>

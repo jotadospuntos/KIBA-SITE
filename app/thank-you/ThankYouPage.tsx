@@ -58,7 +58,7 @@ export default function ThankYouPage() {
               hours. Prefer to talk sooner? Pick a time that works for you right below.
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, justifyContent: 'center', transitionDelay: '0.18s' }}>
-              <a href="#book" className="btn btn-primary">Book a Call Now</a>
+              <a href="#book" className="btn btn-primary">Start the Conversation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </Reveal>
           </div>

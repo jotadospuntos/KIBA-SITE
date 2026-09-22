@@ -91,7 +91,7 @@ export default function MeetOurTeamPage() {
               <li><svg viewBox="0 0 24 24" fill="none" stroke="#6d94f5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Over 50 years of combined lending experience.</li>
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+              <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </Reveal>
           </div>
@@ -111,7 +111,7 @@ export default function MeetOurTeamPage() {
           cta={{
             title: 'Start the Conversation',
             body: 'Tell us where your business is headed and we’ll walk you through your real options — no pressure, no obligation.',
-            label: 'Book a Consultation',
+            label: 'Start the Conversation',
           href: '/book-rr'
         }}
       />
@@ -169,7 +169,7 @@ export default function MeetOurTeamPage() {
           <h2>Talk to a KIBA advisor</h2>
           <p>Book a time with the team and find out what your business qualifies for.</p>
           <div className="cta-band-actions">
-            <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+            <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
             <a href="/referral-partners" className="btn btn-ghost">Refer a Client</a>
           </div>
           <div className="contact-row">

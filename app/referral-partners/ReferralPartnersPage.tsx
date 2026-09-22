@@ -93,7 +93,7 @@ export default function ReferralPartnersPage() {
               <li><Check />Keep you exactly where you belong &mdash; at the center of the relationship.</li>
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="#talk-to-us" className="btn btn-primary">Let&rsquo;s Talk</a>
+              <a href="#talk-to-us" className="btn btn-primary">Start the Conversation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </Reveal>
             <Reveal className="stat-row reveal" style={{ transitionDelay: '0.32s' }}>
@@ -190,7 +190,7 @@ export default function ReferralPartnersPage() {
           <h2>Start the conversation</h2>
           <p>Let&rsquo;s find a time to talk about how we can support your clients.</p>
           <div className="cta-band-actions">
-            <a href={`/advisors/${michael.slug}`} className="btn btn-primary">Book a Partner Call</a>
+            <a href={`/advisors/${michael.slug}`} className="btn btn-primary">Start the Conversation</a>
             <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
           </div>
           <div className="contact-row">

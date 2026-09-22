@@ -640,11 +640,23 @@ These used to be duplicated across eleven HTML files and drifted. They are now s
 | Design tokens | `app/globals.css` (`@theme`) + `app/home.css` |
 
 **Nav right-hand cluster:** phone → **Client Portal** (ghost button,
-`https://portal.kibadvisors.com/client`, new tab — a separate app for existing clients) → **Let's
-Talk** (primary CTA). The portal button is desktop-only (`min-[960px]`) because the mobile sheet
-carries it, and **the phone number hides between 960 and 1099px** so all four fit on one row —
-with everything shown the bar wrapped to two rows at 960 and 1024. If you add anything else here,
-re-measure `.nav-inner`'s height across 960/1024/1100/1440; it should stay 78px.
+`https://portal.kibadvisors.com/client`, new tab — a separate app for existing clients) → **Start
+the Conversation** (primary CTA). Fitting all of this on one row took three concessions, all
+driven by that CTA being 208px wide:
+
+- **The desktop bar starts at 1000px, not 960.** Below it the hamburger and mobile sheet take
+  over. At 960–999 there was no combination of paddings that fitted the full menu, the portal
+  button and a 208px pill without cramming. The sheet carries every link plus the portal, so
+  nothing is unreachable there.
+- **The phone number is hidden from 1000 to 1279px.** It's still in every CTA band and the footer.
+- **1000–1099px tightens the menu** — link padding 14px → 9px, `.nav-right` gap 24px → 14px (in
+  `home.css`, "THE TIGHT BAND"). Nothing is dropped, only tightened.
+- **`white-space:nowrap` on the nav links, the portal button and the CTA.** The bar going to 100px
+  was usually a *label* wrapping inside its pill, not the row wrapping — worth knowing, because
+  the two look identical in a screenshot and have different fixes.
+
+If you change the CTA's label or add anything to this cluster, re-measure `.nav-inner`'s height
+across 960/1000/1024/1060/1100/1180/1280/1440. It must stay 78px.
 
 **KIBA contact:** phone `251-210-8445`, email `info@kibadvisors.com`.
 
@@ -728,6 +740,36 @@ than snapping to its end state.
    `prefersReduced === false` on the first render, so the flag never flips). It does mean **the
    `?motion=1` recipe above can't verify this kind of animation** — check those on a browser with
    no reduce emulation instead.
+
+---
+
+## Button labels: one CTA wording, site-wide
+
+**Every button whose job is to start a conversation reads "Start the Conversation"** — 31 of them,
+including the nav's primary CTA. This replaced a spread of per-page wordings ("Book a
+Consultation" ×15, "Get Funded", "Let's Talk", "Schedule Strategic Assessment", "Get Started
+Today", "Book a Partner Call", …).
+
+**What deliberately did NOT change, and why — don't "finish the job" by renaming these:**
+
+- **The 16 `tel:` buttons** keep "Call Our Team" / "Call 251-210-8445". Most pages pair the primary
+  CTA with one of these side by side; renaming both gives two identical buttons where one dials
+  and one opens a calendar.
+- **The 10 navigational buttons** keep their destination names: "Meet the Team" ×4, "Back to the
+  Blog", "Read the Blog", "See All Solutions", "See Capital Solutions", "Explore Capital
+  Solutions", "How Acquisition Loans Work". A button that says "Start the Conversation" and goes
+  to `/blog` is just wrong.
+- **Two secondary buttons that sit beside a primary CTA and point elsewhere**: "Contact Us" on
+  `/blog` (→ `/contact-us`) and "Refer a Client" on `/meet-our-team` (→ `/referral-partners`).
+- **The two Client Portal buttons**, excluded by request.
+- **`/ty-cal`'s two buttons** ("Explore Capital Solutions", "Read the Blog") — that page is
+  reached *after* booking, so a "start" CTA would be nonsense there.
+
+Two of the 31 live in data rather than markup: `ctaLabel` in `ProgramPage.tsx` and the team
+block's `cta.label` in `MeetOurTeamPage.tsx`. A grep for the old strings won't find them.
+
+Verified in the built HTML: no `.cta-row` or `.cta-band-actions` anywhere contains two buttons
+with the same label.
 
 ---
 

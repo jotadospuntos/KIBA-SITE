@@ -137,7 +137,7 @@ export default function ProgramPage({ slug }: { slug: string }) {
               ))}
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.26s' }}>
-              <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+              <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
               <a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a>
             </Reveal>
           </div>
@@ -273,7 +273,7 @@ export default function ProgramPage({ slug }: { slug: string }) {
           boxes={DECISION_ANGLES}
           heading={DECISION_LEAD}
           body={DECISION_PHILOSOPHY}
-          ctaLabel="Book a Consultation"
+          ctaLabel="Start the Conversation"
           ctaHref="/book-rr"
           ctaNote="No pressure, no obligation."
         />
@@ -351,7 +351,7 @@ export default function ProgramPage({ slug }: { slug: string }) {
           <h2>Let&rsquo;s find out if this is the right fit</h2>
           <p>Book a time with a KIBA advisor. You&rsquo;ll get a straight answer on what your business actually qualifies for &mdash; and whether you should take it.</p>
           <div className="cta-band-actions">
-            <a href="/book-rr" className="btn btn-primary">Book a Consultation</a>
+            <a href="/book-rr" className="btn btn-primary">Start the Conversation</a>
             <a href="/capital-solutions" className="btn btn-ghost">See All Solutions</a>
           </div>
           <div className="contact-row">

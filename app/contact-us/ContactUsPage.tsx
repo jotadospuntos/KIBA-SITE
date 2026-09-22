@@ -101,7 +101,7 @@ export default function ContactUsPage() {
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, transitionDelay: '0.18s' }}>
               <a href="tel:2512108445" className="btn btn-primary">Call 251-210-8445</a>
-              <a href="#book" className="btn btn-ghost">Book a Time</a>
+              <a href="#book" className="btn btn-ghost">Start the Conversation</a>
             </Reveal>
           </div>
           <HeroBlobs>
@@ -195,7 +195,7 @@ export default function ContactUsPage() {
           <h2>Start the conversation</h2>
           <p>Tell us where your business is headed and we&rsquo;ll walk you through your real options.</p>
           <div className="cta-band-actions">
-            <a href="#book" className="btn btn-primary">Book a Consultation</a>
+            <a href="#book" className="btn btn-primary">Start the Conversation</a>
             <a href="/meet-our-team" className="btn btn-ghost">Meet the Team</a>
           </div>
           <div className="contact-row">
