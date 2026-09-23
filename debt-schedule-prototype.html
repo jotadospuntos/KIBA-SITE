@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KiBA · Business Debt Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --paper:      #FFFFFF;
+    --card:       #FFFFFF;
+    --heading:    #05014A;
+    --ink:        #0F0E24;
+    --ink-2:      #4A4A63;
+    --ink-3:      #74748C;
+    --line:       #E1E4F1;
+    --line-2:     #EEF0F8;
+    --blue:       #294DFF;
+    --blue-strong:#1B37C9;
+    --blue-tint:  #E9EDFF;
+    --btn-bg:     #294DFF;
+    --btn-hover:  #1B37C9;
+    --accent2:    #05014A;
+    --accent2-hv: #0B0870;
+    --positive:   #1C7A54;
+    --positive-bg:#E4F1EA;
+    --warn:       #94620F;
+    --warn-bg:    #F8EFDC;
+    --danger:     #BF352B;
+    --danger-bg:  #F8E6E3;
+    --focus:      #294DFF;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Montserrat", system-ui, -apple-system, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: "Montserrat", sans-serif; font-weight: 800; letter-spacing: -0.02em; margin: 0; color: var(--heading); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .eyebrow, .group-label, .rules-title, .logo-tag {
+    font-family: "Bebas Neue", "Montserrat", sans-serif;
+    letter-spacing: .06em; font-weight: 400;
+  }
+
+  .wrap { max-width: 660px; margin: 0 auto; padding: 0 20px 160px; }
+
+  /* ---- Masthead ---- */
+  header.masthead { border-bottom: 1px solid var(--line); background: var(--card); }
+  .masthead-inner { max-width: 660px; margin: 0 auto; padding: 18px 20px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo-lockup { display: flex; flex-direction: column; gap: 2px; }
+  .logo-mark { display: flex; align-items: flex-end; gap: 1px; line-height: 1; }
+  .logo-kib { font-family: "Montserrat", sans-serif; font-weight: 800; font-size: 27px; letter-spacing: -1.2px; color: var(--heading); line-height: .9; }
+  .logo-a { height: 25px; width: auto; display: block; margin-bottom: 1px; }
+  .logo-tag { font-size: 9px; letter-spacing: .14em; color: var(--ink-3); margin-top: 3px; }
+  .masthead-sub { font-size: 11px; color: var(--ink-3); text-align: right; line-height: 1.35; max-width: 130px; }
+
+  /* ---- Intro ---- */
+  .intro { padding: 30px 0 8px; }
+  .intro .eyebrow { color: var(--blue); font-size: 15px; display: block; margin-bottom: 8px; }
+  .intro h1 { font-size: 31px; line-height: 1.08; }
+  .intro p.lede { color: var(--ink-2); margin: 12px 0 0; max-width: 52ch; }
+  .est {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin-top: 16px; padding: 6px 12px 6px 9px;
+    background: var(--blue-tint); color: var(--blue-strong);
+    border-radius: 999px; font-size: 12.5px; font-weight: 600;
+  }
+  .est svg { width: 14px; height: 14px; }
+
+  .rules { margin: 22px 0 0; padding: 16px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  .rules-title { font-size: 15px; color: var(--blue); margin-bottom: 10px; }
+  .rules ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+  .rules li { position: relative; padding-left: 22px; font-size: 13.5px; color: var(--ink-2); line-height: 1.4; }
+  .rules li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 7px; height: 7px; border-radius: 2px; background: var(--blue); }
+
+  /* ---- Sections ---- */
+  .section { margin-top: 34px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+  .section-head h2 { font-size: 20px; }
+  .section-num { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+
+  /* ---- Fields ---- */
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  label.lbl { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
+  label.lbl .opt { font-weight: 400; color: var(--ink-3); }
+  .input, select.input, textarea.input {
+    width: 100%; font: inherit; color: var(--ink); background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 13px; line-height: 1.3;
+    transition: border-color .12s, box-shadow .12s; -webkit-appearance: none; appearance: none;
+  }
+  .input:focus, select.input:focus, textarea.input:focus {
+    outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px rgba(41,77,255,.18);
+  }
+  select.input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2374748C' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px;
+  }
+  select.input.placeholder { color: var(--ink-3); }
+  .input.err, select.input.err { border-color: var(--danger); }
+  .input.err:focus { box-shadow: 0 0 0 3px rgba(191,53,43,.16); }
+  .err-msg { display: none; color: var(--danger); font-size: 12px; margin-top: 5px; }
+  .field.showerr .err-msg { display: block; }
+  .hint { color: var(--ink-3); font-size: 12px; margin-top: 5px; }
+  .warn-msg { display: none; align-items: flex-start; gap: 6px; color: var(--warn); font-size: 12px; margin-top: 6px; line-height: 1.35; }
+  .field.showwarn .warn-msg { display: flex; }
+
+  .adorn { position: relative; }
+  .adorn > .input { padding-left: 26px; }
+  .adorn .sym { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-size: 15px; pointer-events: none; }
+  .adorn.pct > .input { padding-left: 13px; padding-right: 28px; }
+  .adorn.pct .sym { left: auto; right: 13px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 460px) { .grid-2 { grid-template-columns: 1fr; gap: 16px; } }
+
+  .card-panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+
+  /* ---- Debt list ---- */
+  .empty { text-align: center; padding: 34px 20px; border: 1.5px dashed var(--line); border-radius: 14px; background: var(--card); }
+  .empty h3 { font-size: 17px; margin-bottom: 6px; }
+  .empty p { color: var(--ink-3); font-size: 13.5px; margin: 0 auto 18px; max-width: 34ch; }
+
+  .debt-card { background: var(--card); border: 1px solid var(--line); border-radius: 13px; padding: 15px 15px 14px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(5,1,74,.05); }
+  .dc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .dc-lender { font-weight: 700; font-size: 15px; line-height: 1.25; color: var(--heading); }
+  .dc-type { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .dc-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--ink-3); cursor: pointer; display: grid; place-items: center; }
+  .icon-btn:hover { background: var(--line-2); color: var(--blue); }
+  .icon-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  .icon-btn svg { width: 17px; height: 17px; }
+  .dc-figures { display: flex; gap: 24px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line-2); }
+  .fig-label { font-size: 11px; color: var(--ink-3); }
+  .fig-val { font-size: 15px; font-weight: 700; margin-top: 1px; color: var(--heading); }
+  .dc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .tag.pos { background: var(--positive-bg); color: var(--positive); }
+  .tag.neu { background: var(--blue-tint); color: var(--blue-strong); }
+  .tag.dang { background: var(--danger-bg); color: var(--danger); }
+
+  /* ---- Buttons ---- */
+  .btn { font: inherit; font-weight: 700; cursor: pointer; border-radius: 10px; padding: 12px 18px; border: 1px solid transparent; line-height: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background .12s, border-color .12s, transform .04s; }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .btn-primary { background: var(--btn-bg); color: #fff; }
+  .btn-primary:hover { background: var(--btn-hover); }
+  .btn-ghost { background: var(--card); color: var(--heading); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-navy { background: var(--accent2); color: #fff; }
+  .btn-navy:hover { background: var(--accent2-hv); }
+  .btn-lg { width: 100%; padding: 15px; font-size: 15.5px; }
+  .btn-add { width: 100%; background: var(--card); border: 1px solid var(--line); color: var(--heading); font-weight: 700; padding: 13px; border-radius: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; font-family: inherit; font-size: 14.5px; }
+  .btn-add:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-add svg { width: 17px; height: 17px; }
+  .btn-text { background: none; border: none; color: var(--blue); font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
+  .btn-text:hover { text-decoration: underline; }
+  .btn[disabled] { opacity: .45; cursor: not-allowed; }
+  .btn[disabled]:active { transform: none; }
+
+  /* ---- No-debt toggle ---- */
+  .nodebt { display: flex; align-items: center; gap: 11px; margin-top: 16px; padding: 13px 15px; background: var(--card); border: 1px solid var(--line); border-radius: 11px; cursor: pointer; }
+  .nodebt input { width: 19px; height: 19px; accent-color: var(--blue); flex-shrink: 0; cursor: pointer; }
+  .nodebt span { font-size: 13.5px; color: var(--ink-2); }
+
+  /* ---- Sticky totals ---- */
+  .totals { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--card); border-top: 1px solid var(--line); box-shadow: 0 -2px 16px rgba(5,1,74,.08); padding-bottom: env(safe-area-inset-bottom, 0px); transform: translateY(0); transition: transform .2s; }
+  .totals.hidden { transform: translateY(120%); }
+  .totals-inner { max-width: 660px; margin: 0 auto; padding: 12px 20px 14px; display: flex; align-items: center; gap: 16px; }
+  .totals-figs { display: flex; gap: 22px; flex: 1; min-width: 0; }
+  .t-block { min-width: 0; }
+  .t-label { font-size: 10.5px; color: var(--ink-3); white-space: nowrap; text-transform: uppercase; letter-spacing: .04em; }
+  .t-val { font-size: 19px; font-weight: 800; margin-top: 1px; color: var(--heading); }
+  .totals .btn { flex-shrink: 0; }
+  @media (max-width: 420px) { .totals-figs { gap: 16px; } .t-val { font-size: 17px; } .totals .btn { padding: 12px 14px; } }
+
+  /* ---- Sheet / modal ---- */
+  .scrim { position: fixed; inset: 0; background: rgba(5,1,40,.5); z-index: 50; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .sheet { position: fixed; z-index: 60; background: var(--paper); left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.98); width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 48px); border-radius: 16px; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; box-shadow: 0 24px 64px rgba(5,1,74,.34); }
+  .sheet.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--line); background: var(--card); border-radius: 16px 16px 0 0; }
+  .sheet-head h2 { font-size: 19px; }
+  .sheet-body { overflow-y: auto; padding: 20px; -webkit-overflow-scrolling: touch; }
+  .sheet-foot { padding: 14px 20px; border-top: 1px solid var(--line); background: var(--card); display: flex; gap: 10px; border-radius: 0 0 16px 16px; padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)); }
+  .sheet-foot .btn { flex: 1; padding-left: 10px; padding-right: 10px; }
+
+  .group-label { font-size: 14px; color: var(--blue); margin: 22px 0 12px; }
+  .group-label:first-child { margin-top: 0; }
+
+  @media (max-width: 560px) {
+    .sheet { left: 0; top: auto; bottom: 0; transform: translateY(100%); width: 100%; max-height: 94vh; height: auto; border-radius: 18px 18px 0 0; }
+    .sheet.open { transform: translateY(0); }
+    .sheet-head { border-radius: 18px 18px 0 0; padding-top: max(18px, env(safe-area-inset-top, 0px)); }
+    .sheet-grab { position: absolute; top: 7px; left: 50%; transform: translateX(-50%); width: 38px; height: 4px; border-radius: 2px; background: var(--line); }
+  }
+  .sheet-grab { display: none; }
+  @media (max-width: 560px) { .sheet-grab { display: block; } }
+
+  /* ---- Review ---- */
+  .review-row { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line-2); font-size: 13.5px; }
+  .review-row:last-child { border-bottom: none; }
+  .review-row .k { color: var(--ink-3); }
+  .review-row .v { font-weight: 600; text-align: right; color: var(--ink); }
+  .review-debt { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .review-debt h4 { font-size: 15px; font-weight: 800; margin: 0 0 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; color: var(--heading); }
+  .review-debt h4 .btn-text { font-size: 13px; }
+
+  /* ---- Success ---- */
+  .success { text-align: center; padding: 50px 20px; }
+  .success-mark { width: 60px; height: 60px; border-radius: 50%; background: var(--blue-tint); color: var(--blue); display: grid; place-items: center; margin: 0 auto 20px; }
+  .success-mark svg { width: 30px; height: 30px; }
+  .success h1 { font-size: 25px; margin-bottom: 10px; }
+  .success p { color: var(--ink-2); max-width: 40ch; margin: 0 auto 8px; }
+
+  .proto-banner { background: var(--accent2); color: #B9C2FF; font-size: 12px; text-align: center; padding: 7px 20px; letter-spacing: .01em; }
+  .proto-banner b { color: #fff; font-weight: 600; }
+
+  .restored { display: none; align-items: center; gap: 10px; justify-content: space-between; background: var(--blue-tint); border: 1px solid #C9D2FF; color: var(--blue-strong); border-radius: 10px; padding: 10px 14px; margin-top: 20px; font-size: 13px; }
+  .restored.show { display: flex; }
+  .restored button { background: none; border: none; color: var(--blue-strong); font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+  .hide { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #060234; --card: #0E0A52; --heading: #EEF0FB; --ink: #E7E8F6;
+      --ink-2: #B3B5D6; --ink-3: #8688AE; --line: #241F6B; --line-2: #1B1658;
+      --blue: #8195FF; --blue-strong: #A6B4FF; --blue-tint: #1A1660;
+      --btn-bg: #3552F0; --btn-hover: #2A44D8; --accent2: #1A1566; --accent2-hv: #241F7A;
+      --positive: #5FC191; --positive-bg: #14301F; --warn: #E0B25C; --warn-bg: #2C2410;
+      --danger: #EE8C82; --danger-bg: #331B1A; --focus: #8195FF;
+    }
+    :root:not([data-theme="light"]) select.input {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238688AE' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    :root:not([data-theme="light"]) .proto-banner { background: #0A073E; }
+  }
+</style>
+</head>
+<body>
+
+<div class="proto-banner">Prototype — <b>no data is sent or stored anywhere</b>. Try it on your phone. PDF &amp; submission are stubbed.</div>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="logo-lockup">
+      <div class="logo-mark">
+        <span class="logo-kib">KiB</span>
+        <svg class="logo-a" viewBox="0 0 40 44" xmlns="http://www.w3.org/2000/svg" aria-label="KiBA">
+          <path d="M20 3 L38 41 L2 41 Z" style="fill:var(--btn-bg)"/>
+          <path d="M20 15 L27.5 27.5 L22.5 27.5 L22.5 36.5 L17.5 36.5 L17.5 27.5 L12.5 27.5 Z" style="fill:var(--card)"/>
+        </svg>
+      </div>
+      <div class="logo-tag">Kingdom Impact Business Advisors</div>
+    </div>
+    <div class="masthead-sub">Client intake<br>Business debt schedule</div>
+  </div>
+</header>
+
+<!-- ============ MAIN FORM ============ -->
+<main id="view-form" class="wrap">
+  <section class="intro">
+    <span class="eyebrow">Bank-ready funding starts here</span>
+    <h1>Your business debt schedule</h1>
+    <p class="lede">A short list of the loans, lines, and cards held in your business's name. It gives your KiBA advisor an accurate picture of your obligations before we structure your funding.</p>
+    <span class="est">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>
+      About 5 minutes with your statements handy
+    </span>
+
+    <div class="rules">
+      <div class="rules-title">Before you start</div>
+      <ul>
+        <li>Only include debts that are in the business's name.</li>
+        <li>Don't include personal debts, or debt taken out by an individual.</li>
+        <li>Include all active EIDL or PPP loans.</li>
+        <li>Include business credit cards — enter the amount you typically pay per month.</li>
+      </ul>
+    </div>
+
+    <div class="restored" id="restored">
+      <span>We restored your progress from last time.</span>
+      <button id="restored-dismiss">Dismiss</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Your details</h2></div>
+    <div class="card-panel">
+      <div class="grid-2">
+        <div class="field">
+          <label class="lbl" for="contactName">Your name</label>
+          <input class="input" id="contactName" type="text" autocomplete="name">
+          <div class="err-msg">Please enter your name.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="businessName">Business name</label>
+          <input class="input" id="businessName" type="text" autocomplete="organization">
+          <div class="err-msg">Please enter your business name.</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px;max-width:260px;">
+        <label class="lbl" for="asOfDate">Date</label>
+        <input class="input" id="asOfDate" type="date">
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Your debts</h2>
+      <span class="section-num" id="debt-count"></span>
+    </div>
+
+    <div id="debt-list"></div>
+
+    <div id="empty-state" class="empty">
+      <h3>No debts added yet</h3>
+      <p>Add each loan, line of credit, or business card one at a time.</p>
+      <button class="btn btn-primary" onclick="openSheet()">Add your first debt</button>
+    </div>
+
+    <button class="btn-add hide" id="add-more" onclick="openSheet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      Add another debt
+    </button>
+
+    <label class="nodebt">
+      <input type="checkbox" id="hasNoDebt">
+      <span>My business has no debt in its name.</span>
+    </label>
+  </section>
+</main>
+
+<!-- ============ REVIEW ============ -->
+<main id="view-review" class="wrap hide">
+  <section class="intro" style="padding-bottom:0;">
+    <span class="eyebrow">Almost done</span>
+    <h1>Review before sending</h1>
+    <p class="lede">Check everything reads correctly. You can jump back to fix any item.</p>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Your details</h2><button class="btn-text" onclick="showForm()">Edit</button></div>
+    <div class="card-panel" id="review-details"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Debts</h2></div>
+    <div id="review-debts"></div>
+    <div class="card-panel" style="margin-top:6px;">
+      <div class="review-row"><span class="k">Total open balances</span><span class="v num" id="review-total-bal">$0.00</span></div>
+      <div class="review-row"><span class="k">Total monthly payments</span><span class="v num" id="review-total-pay">$0.00</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <button class="btn btn-primary btn-lg" onclick="submitForm()">Submit debt schedule</button>
+    <button class="btn btn-text" style="display:block;margin:16px auto 0;" onclick="showForm()">Back to editing</button>
+  </section>
+</main>
+
+<!-- ============ SUCCESS ============ -->
+<main id="view-success" class="wrap hide">
+  <div class="success">
+    <div class="success-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1>Debt schedule received</h1>
+    <p>Thank you — we've got everything we need, and your KiBA advisor will be in touch. Download a copy for your records below.</p>
+    <button class="btn btn-primary" style="margin-top:18px;" onclick="alert('Prototype: the real page downloads your filled PDF here.')">Download your copy (PDF)</button>
+    <p style="color:var(--ink-3);font-size:13px;margin-top:14px;">(Prototype — no file is generated here; the live page returns your filled PDF.)</p>
+    <button class="btn btn-ghost" style="margin-top:22px;" onclick="location.reload()">Start over</button>
+  </div>
+</main>
+
+<!-- ============ STICKY TOTALS ============ -->
+<div class="totals" id="totals-bar">
+  <div class="totals-inner">
+    <div class="totals-figs">
+      <div class="t-block">
+        <div class="t-label">Open balances</div>
+        <div class="t-val num" id="total-bal">$0.00</div>
+      </div>
+      <div class="t-block">
+        <div class="t-label">Monthly payments</div>
+        <div class="t-val num" id="total-pay">$0.00</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="review-btn" onclick="goReview()">Review &amp; submit</button>
+  </div>
+</div>
+
+<!-- ============ EDIT SHEET ============ -->
+<div class="scrim" id="scrim" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head">
+    <h2 id="sheet-title">Add a debt</h2>
+    <button class="icon-btn" onclick="closeSheet()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="sheet-body"></div>
+  <div class="sheet-foot">
+    <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
+    <button class="btn btn-primary" id="save-debt" onclick="saveDebt(false)">Save</button>
+    <button class="btn btn-navy" id="save-add" onclick="saveDebt(true)">Save &amp; add another</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const DEBT_TYPES = ["SBA 7(a)","Equipment Loan","Non-SBA Commercial Loan","Credit Card","Line of Credit","Commercial Mortgage","EIDL","PPP","Other"];
+const SECURED = ["Secured","Unsecured"];
+const STATUS  = ["Current","Delinquent"];
+const STORE_KEY = "kiba-debt-schedule-draft-v1";
+
+let state = { contactName:"", businessName:"", asOfDate:"", hasNoDebt:false, debts:[] };
+let editingIndex = null;
+let draft = {};
+
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") { state = Object.assign(state, parsed); return (state.debts && state.debts.length) || state.contactName || state.businessName; }
+  } catch(e){}
+  return false;
+}
+function clearStore(){ try { localStorage.removeItem(STORE_KEY); } catch(e){} }
+
+const money = n => (isFinite(n) ? "$" + Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "$0.00");
+const pct   = n => (isFinite(n) ? Number(n).toLocaleString("en-US",{maximumFractionDigits:3}) + "%" : "");
+function parseNum(v){ if(v==null) return NaN; const c=String(v).replace(/[^0-9.\-]/g,""); return c===""?NaN:parseFloat(c); }
+function fmtDate(iso){ if(!iso) return "—"; const p=iso.split("-"); return p.length===3?`${p[1]}/${p[2]}/${p[0]}`:"—"; }
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function totals(){
+  let bal=0, pay=0;
+  state.debts.forEach(d=>{ if(isFinite(d.currentBalance)) bal+=d.currentBalance; if(isFinite(d.monthlyPayment)) pay+=d.monthlyPayment; });
+  return {bal,pay};
+}
+
+function render(){
+  const list = document.getElementById("debt-list");
+  const empty = document.getElementById("empty-state");
+  const addMore = document.getElementById("add-more");
+  const noDebt = state.hasNoDebt;
+
+  document.getElementById("debt-count").textContent = state.debts.length ? `${state.debts.length} added` : "";
+
+  list.innerHTML = "";
+  if (noDebt) {
+    empty.classList.add("hide"); addMore.classList.add("hide");
+    list.innerHTML = `<div class="card-panel" style="text-align:center;color:var(--ink-3);font-size:13.5px;">Marked as no business debt. Uncheck below to add debts.</div>`;
+  } else if (state.debts.length === 0) {
+    empty.classList.remove("hide"); addMore.classList.add("hide");
+  } else {
+    empty.classList.add("hide"); addMore.classList.remove("hide");
+    state.debts.forEach((d,i)=> list.appendChild(debtCard(d,i)));
+    if (state.debts.length >= 30) addMore.classList.add("hide");
+  }
+
+  const t = totals();
+  document.getElementById("total-bal").textContent = money(t.bal);
+  document.getElementById("total-pay").textContent = money(t.pay);
+
+  document.getElementById("review-btn").disabled = !(noDebt || state.debts.length>0);
+  save();
+}
+
+function statusTag(d){
+  let tags = `<span class="tag neu">${esc(d.securedStatus||"")}</span>`;
+  if (d.paymentStatus==="Delinquent") tags += `<span class="tag dang">Delinquent</span>`;
+  else if (d.paymentStatus==="Current") tags += `<span class="tag pos">Current</span>`;
+  return tags;
+}
+
+function debtCard(d,i){
+  const el = document.createElement("div");
+  el.className = "debt-card";
+  const typeLabel = d.typeOfDebt==="Other" && d.otherDebtType ? `Other — ${esc(d.otherDebtType)}` : esc(d.typeOfDebt||"");
+  el.innerHTML = `
+    <div class="dc-top">
+      <div style="min-width:0;">
+        <div class="dc-lender">${esc(d.lenderName||"Untitled debt")}</div>
+        <div class="dc-type">${typeLabel}${d.interestRate!=null&&isFinite(d.interestRate)?" · "+pct(d.interestRate):""}</div>
+      </div>
+      <div class="dc-actions">
+        <button class="icon-btn" aria-label="Edit" onclick="openSheet(${i})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z" stroke-linejoin="round"/><path d="M13.5 6.5l3 3"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Delete" onclick="delDebt(${i})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7h14M10 7V5h4v2M6 7l1 12h10l1-12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="dc-figures">
+      <div><div class="fig-label">Current balance</div><div class="fig-val num">${money(d.currentBalance)}</div></div>
+      <div><div class="fig-label">Monthly payment</div><div class="fig-val num">${money(d.monthlyPayment)}</div></div>
+    </div>
+    <div class="dc-tags">${statusTag(d)}</div>
+  `;
+  return el;
+}
+
+let lastFocused = null;
+
+function sheetFields(){
+  const d = draft;
+  const sel = (v,arr) => arr.map(o=>`<option value="${esc(o)}" ${v===o?"selected":""}>${esc(o)}</option>`).join("");
+  return `
+    <div class="group-label">Who and what</div>
+    <div class="field" data-f="lenderName">
+      <label class="lbl" for="f-lender">Lender's name</label>
+      <input class="input" id="f-lender" type="text" value="${esc(d.lenderName||"")}">
+      <div class="err-msg">Enter the lender's name.</div>
+    </div>
+    <div class="field" data-f="typeOfDebt">
+      <label class="lbl" for="f-type">Type of debt</label>
+      <select class="input ${d.typeOfDebt?"":"placeholder"}" id="f-type" onchange="onTypeChange(this)">
+        <option value="" ${!d.typeOfDebt?"selected":""} disabled>Select one</option>
+        ${sel(d.typeOfDebt,DEBT_TYPES)}
+      </select>
+      <div class="err-msg">Choose a type.</div>
+    </div>
+    <div class="field ${d.typeOfDebt==="Other"?"":"hide"}" id="wrap-other" data-f="otherDebtType">
+      <label class="lbl" for="f-other">Please specify</label>
+      <input class="input" id="f-other" type="text" value="${esc(d.otherDebtType||"")}" placeholder="e.g. Merchant cash advance">
+      <div class="err-msg">Describe the debt type.</div>
+    </div>
+
+    <div class="group-label">The numbers</div>
+    <div class="grid-2">
+      <div class="field" data-f="originalAmount">
+        <label class="lbl" for="f-orig">Original amount</label>
+        <div class="adorn"><span class="sym">$</span><input class="input num" id="f-orig" inputmode="decimal" value="${d.originalAmount!=null&&isFinite(d.originalAmount)?d.originalAmount:""}" onblur="fmtMoneyInput(this)"></div>
+        <div class="err-msg">Enter an amount.</div>
+      </div>
+      <div class="field" data-f="currentBalance">
+        <label class="lbl" for="f-bal">Current balance</label>
+        <div class="adorn"><span class="sym">$</span><input class="input num" id="f-bal" inputmode="decimal" value="${d.currentBalance!=null&&isFinite(d.currentBalance)?d.currentBalance:""}" onblur="fmtMoneyInput(this)"></div>
+        <div class="err-msg">Enter a balance.</div>
+        <div class="warn-msg">Balance is above the original amount — worth a quick double-check (fine for cards &amp; lines).</div>
+      </div>
+      <div class="field" data-f="interestRate">
+        <label class="lbl" for="f-rate">Interest rate</label>
+        <div class="adorn pct"><span class="sym">%</span><input class="input num" id="f-rate" inputmode="decimal" value="${d.interestRate!=null&&isFinite(d.interestRate)?d.interestRate:""}"></div>
+        <div class="err-msg">Enter a rate (0–100).</div>
+      </div>
+      <div class="field" data-f="monthlyPayment">
+        <label class="lbl" for="f-pay">Monthly payment</label>
+        <div class="adorn"><span class="sym">$</span><input class="input num" id="f-pay" inputmode="decimal" value="${d.monthlyPayment!=null&&isFinite(d.monthlyPayment)?d.monthlyPayment:""}" onblur="fmtMoneyInput(this)"></div>
+        <div class="err-msg">Enter a payment (0 is allowed).</div>
+        <div class="warn-msg">Cards usually have a monthly payment — enter what you typically pay.</div>
+      </div>
+    </div>
+
+    <div class="group-label">The dates</div>
+    <div class="grid-2">
+      <div class="field" data-f="openDate">
+        <label class="lbl" for="f-open">Open date</label>
+        <input class="input" id="f-open" type="date" value="${esc(d.openDate||"")}">
+        <div class="err-msg">Enter the open date.</div>
+      </div>
+      <div class="field" data-f="maturityDate">
+        <label class="lbl" for="f-mat">Maturity date <span class="opt">— optional</span></label>
+        <input class="input" id="f-mat" type="date" value="${esc(d.maturityDate||"")}" ${d.noMaturity?"disabled":""}>
+        <label style="display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12.5px;color:var(--ink-2);cursor:pointer;">
+          <input type="checkbox" id="f-nomat" ${d.noMaturity?"checked":""} onchange="onNoMat(this)" style="accent-color:var(--blue);width:16px;height:16px;"> No maturity (revolving)
+        </label>
+        <div class="err-msg">Maturity must be after the open date.</div>
+      </div>
+    </div>
+
+    <div class="group-label">Status</div>
+    <div class="grid-2">
+      <div class="field" data-f="securedStatus">
+        <label class="lbl" for="f-sec">Secured or unsecured</label>
+        <select class="input ${d.securedStatus?"":"placeholder"}" id="f-sec" onchange="onSecChange(this)">
+          <option value="" ${!d.securedStatus?"selected":""} disabled>Select one</option>
+          ${sel(d.securedStatus,SECURED)}
+        </select>
+        <div class="err-msg">Choose one.</div>
+      </div>
+      <div class="field" data-f="paymentStatus">
+        <label class="lbl" for="f-pst">Current or delinquent</label>
+        <select class="input ${d.paymentStatus?"":"placeholder"}" id="f-pst">
+          <option value="" ${!d.paymentStatus?"selected":""} disabled>Select one</option>
+          ${sel(d.paymentStatus,STATUS)}
+        </select>
+        <div class="err-msg">Choose one.</div>
+      </div>
+    </div>
+    <div class="field ${d.securedStatus==="Secured"?"":"hide"}" id="wrap-collateral" data-f="collateral" style="margin-top:2px;">
+      <label class="lbl" for="f-col">Type of collateral</label>
+      <input class="input" id="f-col" type="text" value="${esc(d.collateral||"")}" placeholder="e.g. Equipment, real estate, receivables">
+      <div class="err-msg">Describe the collateral securing this debt.</div>
+    </div>
+  `;
+}
+
+function openSheet(index){
+  lastFocused = document.activeElement;
+  editingIndex = (typeof index === "number") ? index : null;
+  draft = editingIndex!=null ? Object.assign({}, state.debts[editingIndex]) : {};
+  document.getElementById("sheet-title").textContent = editingIndex!=null ? "Edit debt" : "Add a debt";
+  document.getElementById("save-add").style.display = editingIndex!=null ? "none" : "";
+  document.getElementById("sheet-body").innerHTML = sheetFields();
+  document.getElementById("scrim").classList.add("open");
+  document.getElementById("sheet").classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(()=>{ const f=document.getElementById("f-lender"); if(f) f.focus(); }, 60);
+}
+
+function closeSheet(){
+  document.getElementById("scrim").classList.remove("open");
+  document.getElementById("sheet").classList.remove("open");
+  document.body.style.overflow = "";
+  if (lastFocused && lastFocused.focus) lastFocused.focus();
+}
+
+function onTypeChange(sel){ sel.classList.toggle("placeholder", !sel.value); document.getElementById("wrap-other").classList.toggle("hide", sel.value!=="Other"); }
+function onSecChange(sel){ sel.classList.toggle("placeholder", !sel.value); document.getElementById("wrap-collateral").classList.toggle("hide", sel.value!=="Secured"); }
+function onNoMat(cb){ const mat = document.getElementById("f-mat"); mat.disabled = cb.checked; if(cb.checked) mat.value=""; }
+function fmtMoneyInput(inp){ const n = parseNum(inp.value); inp.value = isFinite(n) ? n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : ""; }
+
+function readSheet(){
+  const g = id => document.getElementById(id);
+  const type = g("f-type").value;
+  const sec = g("f-sec").value;
+  return {
+    lenderName: g("f-lender").value.trim(),
+    typeOfDebt: type,
+    otherDebtType: type==="Other" ? g("f-other").value.trim() : "",
+    originalAmount: parseNum(g("f-orig").value),
+    currentBalance: parseNum(g("f-bal").value),
+    interestRate: parseNum(g("f-rate").value),
+    monthlyPayment: parseNum(g("f-pay").value),
+    openDate: g("f-open").value,
+    maturityDate: g("f-nomat").checked ? "" : g("f-mat").value,
+    noMaturity: g("f-nomat").checked,
+    securedStatus: sec,
+    paymentStatus: g("f-pst").value,
+    collateral: sec==="Secured" ? g("f-col").value.trim() : ""
+  };
+}
+
+function setErr(fname, on){
+  const el = document.querySelector(`.field[data-f="${fname}"]`);
+  if(!el) return;
+  el.classList.toggle("showerr", on);
+  const inp = el.querySelector(".input");
+  if(inp) inp.classList.toggle("err", on);
+}
+function setWarn(fname, on){ const el = document.querySelector(`.field[data-f="${fname}"]`); if(el) el.classList.toggle("showwarn", on); }
+
+function validateDraft(d){
+  const errs = {};
+  if(!d.lenderName) errs.lenderName=1;
+  if(!d.typeOfDebt) errs.typeOfDebt=1;
+  if(d.typeOfDebt==="Other" && !d.otherDebtType) errs.otherDebtType=1;
+  if(!isFinite(d.originalAmount) || d.originalAmount<0) errs.originalAmount=1;
+  if(!isFinite(d.currentBalance) || d.currentBalance<0) errs.currentBalance=1;
+  if(!isFinite(d.interestRate) || d.interestRate<0 || d.interestRate>100) errs.interestRate=1;
+  if(!isFinite(d.monthlyPayment) || d.monthlyPayment<0) errs.monthlyPayment=1;
+  if(!d.openDate) errs.openDate=1;
+  else if(d.openDate > new Date().toISOString().slice(0,10)) errs.openDate=1;
+  if(!d.noMaturity && d.maturityDate && d.openDate && d.maturityDate <= d.openDate) errs.maturityDate=1;
+  if(!d.securedStatus) errs.securedStatus=1;
+  if(!d.paymentStatus) errs.paymentStatus=1;
+  if(d.securedStatus==="Secured" && !d.collateral) errs.collateral=1;
+  return errs;
+}
+function warningsFor(d){
+  const w = {};
+  if(isFinite(d.currentBalance)&&isFinite(d.originalAmount)&&d.currentBalance>d.originalAmount) w.currentBalance=1;
+  if(d.typeOfDebt==="Credit Card" && d.monthlyPayment===0) w.monthlyPayment=1;
+  return w;
+}
+
+function saveDebt(addAnother){
+  const d = readSheet();
+  const errs = validateDraft(d);
+  ["lenderName","typeOfDebt","otherDebtType","originalAmount","currentBalance","interestRate","monthlyPayment","openDate","maturityDate","securedStatus","paymentStatus","collateral"]
+    .forEach(f=> setErr(f, !!errs[f]));
+  const w = warningsFor(d);
+  setWarn("currentBalance", !!w.currentBalance);
+  setWarn("monthlyPayment", !!w.monthlyPayment);
+
+  if(Object.keys(errs).length){ const first = document.querySelector(".field.showerr .input"); if(first) first.focus(); return; }
+
+  if(editingIndex!=null) state.debts[editingIndex] = d;
+  else state.debts.push(d);
+  render();
+
+  if(addAnother && editingIndex==null){
+    draft = {};
+    document.getElementById("sheet-body").innerHTML = sheetFields();
+    document.getElementById("sheet-body").scrollTop = 0;
+    setTimeout(()=>{ const f=document.getElementById("f-lender"); if(f) f.focus(); },40);
+  } else { closeSheet(); }
+}
+
+function delDebt(i){
+  const d = state.debts[i];
+  if(confirm(`Remove ${d.lenderName||"this debt"}?`)){ state.debts.splice(i,1); render(); }
+}
+
+function showView(id){
+  ["view-form","view-review","view-success"].forEach(v=>document.getElementById(v).classList.toggle("hide", v!==id));
+  document.getElementById("totals-bar").classList.toggle("hidden", id!=="view-form");
+  window.scrollTo(0,0);
+}
+function showForm(){ showView("view-form"); }
+
+function goReview(){
+  let ok = true;
+  if(!state.contactName.trim()){ markHeaderErr("contactName",true); ok=false; } else markHeaderErr("contactName",false);
+  if(!state.businessName.trim()){ markHeaderErr("businessName",true); ok=false; } else markHeaderErr("businessName",false);
+  if(!ok){ document.getElementById("view-form").scrollIntoView(); const e=document.querySelector(".field.showerr .input"); if(e)e.focus(); return; }
+  buildReview();
+  showView("view-review");
+}
+function markHeaderErr(id, on){
+  const inp = document.getElementById(id);
+  const field = inp.closest(".field");
+  field.classList.toggle("showerr", on);
+  inp.classList.toggle("err", on);
+}
+
+function buildReview(){
+  document.getElementById("review-details").innerHTML = `
+    <div class="review-row"><span class="k">Name</span><span class="v">${esc(state.contactName)}</span></div>
+    <div class="review-row"><span class="k">Business</span><span class="v">${esc(state.businessName)}</span></div>
+    <div class="review-row"><span class="k">Date</span><span class="v num">${fmtDate(state.asOfDate)}</span></div>
+  `;
+  const wrap = document.getElementById("review-debts");
+  if(state.hasNoDebt){
+    wrap.innerHTML = `<div class="card-panel" style="color:var(--ink-3);text-align:center;">Client indicated no business debt.</div>`;
+  } else {
+    wrap.innerHTML = state.debts.map((d,i)=>{
+      const typeLabel = d.typeOfDebt==="Other"&&d.otherDebtType ? `Other — ${esc(d.otherDebtType)}` : esc(d.typeOfDebt);
+      return `<div class="review-debt">
+        <h4><span>${esc(d.lenderName)}</span><button class="btn-text" onclick="editFromReview(${i})">Edit</button></h4>
+        <div class="review-row"><span class="k">Type</span><span class="v">${typeLabel}</span></div>
+        <div class="review-row"><span class="k">Original / balance</span><span class="v num">${money(d.originalAmount)} / ${money(d.currentBalance)}</span></div>
+        <div class="review-row"><span class="k">Rate / payment</span><span class="v num">${pct(d.interestRate)} / ${money(d.monthlyPayment)}</span></div>
+        <div class="review-row"><span class="k">Open / maturity</span><span class="v num">${fmtDate(d.openDate)} / ${d.noMaturity?"revolving":fmtDate(d.maturityDate)}</span></div>
+        <div class="review-row"><span class="k">Status</span><span class="v">${esc(d.securedStatus)} · ${esc(d.paymentStatus)}${d.collateral?" · "+esc(d.collateral):""}</span></div>
+      </div>`;
+    }).join("");
+  }
+  const t = totals();
+  document.getElementById("review-total-bal").textContent = money(t.bal);
+  document.getElementById("review-total-pay").textContent = money(t.pay);
+}
+function editFromReview(i){ showForm(); openSheet(i); }
+
+function submitForm(){ clearStore(); showView("view-success"); }
+
+function bindHeader(){
+  const c=document.getElementById("contactName"), b=document.getElementById("businessName"), da=document.getElementById("asOfDate");
+  c.value=state.contactName; b.value=state.businessName;
+  da.value = state.asOfDate || new Date().toISOString().slice(0,10);
+  state.asOfDate = da.value;
+  c.addEventListener("input",()=>{ state.contactName=c.value; markHeaderErr("contactName",false); save(); });
+  b.addEventListener("input",()=>{ state.businessName=b.value; markHeaderErr("businessName",false); save(); });
+  da.addEventListener("change",()=>{ state.asOfDate=da.value; save(); });
+  const nd=document.getElementById("hasNoDebt");
+  nd.checked=state.hasNoDebt;
+  nd.addEventListener("change",()=>{ state.hasNoDebt=nd.checked; render(); });
+}
+
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && document.getElementById("sheet").classList.contains("open")) closeSheet(); });
+
+const restored = load();
+bindHeader();
+render();
+if(restored){
+  const r=document.getElementById("restored"); r.classList.add("show");
+  document.getElementById("restored-dismiss").onclick=()=>r.classList.remove("show");
+}
+</script>
+</body>
+</html>
