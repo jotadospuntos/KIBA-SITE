@@ -29,3 +29,16 @@ export function secret(name: SecretName): string {
   if (!value) throw new MissingSecretError(name);
   return value;
 }
+
+/* Every secret the submit route needs. Checked before any work is done, so a
+   missing one can't leave a half-finished submission (a PDF in Blob with no
+   GHL contact) behind. Returns the names that are missing. */
+export function missingSubmitSecrets(): SecretName[] {
+  const needed: SecretName[] = [
+    'TURNSTILE_SECRET_KEY',
+    'BLOB_READ_WRITE_TOKEN',
+    'DEBT_SCHEDULE_LINK_SECRET',
+    'GHL_PRIVATE_TOKEN'
+  ];
+  return needed.filter((name) => !process.env[name]);
+}

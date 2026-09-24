@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { CLIENT_LINK_TTL_MS, RETENTION_DAYS } from '@/lib/debt-schedule/constants';
-import { MissingSecretError } from '@/lib/debt-schedule/env';
+import { MissingSecretError, missingSubmitSecrets } from '@/lib/debt-schedule/env';
 import { fillDebtSchedule } from '@/lib/debt-schedule/fill-pdf';
 import { GhlError, addSummaryNote, tagContact, upsertContact } from '@/lib/debt-schedule/ghl';
 import { debtScheduleSchema } from '@/lib/debt-schedule/schema';
@@ -46,6 +46,14 @@ function logError(where: string, e: unknown, id?: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const missing = missingSubmitSecrets();
+  if (missing.length) {
+    /* Names only, never values. Env vars reach a deployment only when it is
+       (re)built, so "added it in Vercel" still needs a redeploy. */
+    console.error(`[debt-schedule] config - missing environment variable(s): ${missing.join(', ')}`);
+    return fail(500, 'server', 'Something went wrong on our end.');
+  }
+
   let body: { schedule?: unknown; turnstileToken?: unknown };
   try {
     body = await req.json();
@@ -74,7 +82,13 @@ export async function POST(req: NextRequest) {
 
   const id = randomUUID();
   const origin = req.nextUrl.origin;
+  let staffUrl: string;
+  let downloadUrl: string;
   try {
+    /* Signed first: it can't fail after the files exist. The staff link lives
+       as long as the file does. */
+    staffUrl = signedPdfUrl(origin, id, Date.now() + RETENTION_DAYS * 24 * 60 * 60 * 1000);
+    downloadUrl = signedPdfUrl(origin, id, Date.now() + CLIENT_LINK_TTL_MS);
     const pdf = await fillDebtSchedule(data);
     await saveSubmission(id, pdf, data);
   } catch (e) {
@@ -82,8 +96,6 @@ export async function POST(req: NextRequest) {
     return fail(500, 'server', 'Something went wrong on our end.');
   }
 
-  /* Staff link lives as long as the file does. */
-  const staffUrl = signedPdfUrl(origin, id, Date.now() + RETENTION_DAYS * 24 * 60 * 60 * 1000);
   let stage: GhlError['stage'] = 'upsert';
   try {
     const contactId = await upsertContact(data, staffUrl, totals);
@@ -100,5 +112,5 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ downloadUrl: signedPdfUrl(origin, id, Date.now() + CLIENT_LINK_TTL_MS) });
+  return NextResponse.json({ downloadUrl });
 }
