@@ -51,6 +51,18 @@ export async function POST(req: NextRequest) {
     /* Names only, never values. Env vars reach a deployment only when it is
        (re)built, so "added it in Vercel" still needs a redeploy. */
     console.error(`[debt-schedule] config - missing environment variable(s): ${missing.join(', ')}`);
+    /* Diagnostics for "but it IS set in Vercel": which deployment answered,
+       and the NAMES (never values) of variables that look like the missing
+       ones - a trailing space or a typo shows up here. JSON.stringify makes
+       invisible whitespace visible. */
+    const lookalikes = Object.keys(process.env).filter((k) =>
+      missing.some((m) => k.toUpperCase().replace(/[^A-Z]/g, '').includes(m.replace(/_/g, '').slice(0, 10)))
+    );
+    console.error(
+      `[debt-schedule] config - env=${process.env.VERCEL_ENV ?? 'local'} branch=${process.env.VERCEL_GIT_COMMIT_REF ?? '?'} ` +
+        `commit=${(process.env.VERCEL_GIT_COMMIT_SHA ?? '?').slice(0, 7)} ` +
+        `lookalike names=${JSON.stringify(lookalikes)} empty=${JSON.stringify(missing.filter((m) => m in process.env))}`
+    );
     return fail(500, 'server', 'Something went wrong on our end.');
   }
 
