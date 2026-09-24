@@ -310,7 +310,7 @@ own page, with a hub at `/capital-solutions` that the nav dropdown's first item 
 
 ## Testimonials — one treatment, on EVERY page
 
-**Every page in this repo carries a testimonial section** — with one exception, below. That
+**Every page in this repo carries a testimonial section** — with two exceptions, below. That
 includes the `/thank-you` and `/ty-cal` confirmation pages. If you add a page, it gets one; that is
 a standing requirement, like the animations.
 
@@ -318,6 +318,10 @@ a standing requirement, like the animations.
 middle of a privacy policy undercuts the document and reads as a marketing insert on something
 people come to for compliance information. Legal pages keep the CTA band — and specifically its
 `id="talk"`, or the nav's "Let's Talk" button is dead there — but not the testimonials.
+
+**The second exception is `/debt-schedule`** (decided by the human). It's an intake form: a wall of
+client praise in the middle of someone entering their debts reads wrong, for the same reason it
+does on a privacy policy. Same terms as legal pages — CTA band kept, with its `id="talk"`.
 
 The design is `components/ui/testimonial-v2.tsx` (v2: semantic list/blockquote/cite markup, cards
 that lift on hover *and* keyboard focus, a pill badge above the heading, a section entrance
@@ -327,7 +331,8 @@ and `intro` per page.
 Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-solutions`, all six
 `/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, `/book-rr`, `/thank-you`,
 `/ty-cal`, `/referral-partners`, `/business-acquisitions`, all three `/advisors/*` and both
-`/partners/*`. In other words every route. `v2.html` is the only page without one, deliberately.
+`/partners/*`. In other words every route except `/privacy-policy` and `/debt-schedule` (above).
+`v2.html` is the only other page without one, deliberately.
 
 **One element selector will bite you here.** `home.css` styles the SITE footer with a bare element
 rule, and unlayered CSS beats Tailwind's layered utilities:
@@ -478,6 +483,26 @@ Facebook, Instagram and LinkedIn, and this footer only had two.
 
 ---
 
+## `/debt-schedule` (phase 1 shipped: frontend only)
+
+The online Business Debt Schedule. **The brief is `docs/debt-schedule-build-spec.md`**; the
+behavioural reference is `docs/debt-schedule-prototype.html`. Three phases: (1) the form, (2) PDF
+filling with pdf-lib, (3) the API route + GoHighLevel storage. **Only phase 1 exists** — submit
+validates and `console.log`s the payload.
+
+- **`lib/debt-schedule/schema.ts` is the one source of truth** (zod). The dropdown strings in
+  `constants.ts` must match the PDF's AcroForm options exactly or pdf-lib rejects them.
+- **Two departures, both decided:** no testimonial section, and a `hero-compact` hero (see
+  "Testimonials" and "One hero height").
+- **"Other" goes on the PDF as plain "Other"**; the "Please specify" text is kept only in the
+  submitted data (the template has no field for it).
+- **One public page, one fixed autosave key** (`kiba-debt-schedule` in localStorage), cleared on
+  submit. No per-client links.
+- **Components** are in `components/debt-schedule/`. The per-debt editor is a Base UI Dialog
+  (full-screen below `sm`). Every button in it is plain `<button>`/`.btn`, and each non-`.btn`
+  button overrides `home.css`'s bare `button` rule with `!`. The dialog's action row is a `<div>`,
+  because `home.css` makes any bare `footer` navy.
+
 ## Legal pages
 
 `components/LegalPage/LegalPage.tsx` renders a `LegalDoc`; the text lives in one verbatim data file
@@ -545,6 +570,7 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │   ├── advisors/                 ← "/advisors/<slug>" (advisors-data.ts, 3 pages)
 │   ├── partners/                 ← "/partners/<slug>" (partners-data.ts, 2 pages)
 │   ├── privacy-policy/           ← "/privacy-policy" (verbatim legal text in privacy-content.ts)
+│   ├── debt-schedule/            ← "/debt-schedule" intake form (components/debt-schedule, lib/debt-schedule)
 │   ├── book-rr/ · thank-you/ · ty-cal/          ← booking + the two GHL redirect targets
 │   ├── referral-partners/ · business-acquisitions/  ← recruitment + campaign landing
 │   └── capital-solutions/        ← hub + the six program pages
@@ -794,6 +820,10 @@ SITE"; the comment there carries the detail. In short:
   `/partners/*` carry a booking embed in the hero and run to ~1063px. They stay taller rather than
   squashing a live calendar — **these four are the only remaining exceptions**, and closing that
   gap means shrinking a GoHighLevel iframe on the conversion path, which is the human's call.
+- **One exemption: `/debt-schedule` uses `hero-compact`** (decided by the human). The form is the
+  page, and an 880px navy band would push it below the fold. `.hero.hero-compact{ min-height:0 }`
+  sits in `home.css` right after the rule; two classes, so it outranks `.hero` in both media
+  queries. It's the only user — don't add `hero-compact` to other pages without asking.
 - **Known cost, flagged not hidden:** on `/privacy-policy` and the three `/blog/*` posts the hero
   is now most of a laptop viewport, so the body text starts below the fold. That is the price of
   uniformity and it was the explicit request. To exempt them, give those two layouts a

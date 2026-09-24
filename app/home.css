@@ -316,6 +316,12 @@
     .hero-inner{ min-height:708px; }
   }
 
+  /* THE ONE EXCEPTION to the rule above: .hero-compact opts a hero out of the
+     site-wide height. Used only by /debt-schedule, where the form is the page
+     and an 880px band would push it below the fold (decided by the human; see
+     CLAUDE.md). Two classes, so it outranks .hero in both media queries. */
+  .hero.hero-compact{ min-height:0; }
+
   .hero-eyebrow{ color:var(--blue-soft); margin-bottom:18px; }
   .partner-badge{
     display:flex;
