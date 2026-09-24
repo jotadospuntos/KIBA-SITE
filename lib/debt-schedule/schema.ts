@@ -77,10 +77,16 @@ export const debtEntrySchema = debtEntryBase.superRefine((d, ctx) => {
   }
 });
 
+/* Exported so the form's blur check and the server use the same rule. */
+export const emailSchema = z.string().trim().pipe(z.email('Please enter a valid email address.'));
+
 export const debtScheduleSchema = z
   .object({
     contactName: z.string().trim().min(1, 'Please enter your name.'),
     businessName: z.string().trim().min(1, 'Please enter your business name.'),
+    /* Required: it's how the submission finds its GoHighLevel contact. */
+    email: emailSchema,
+    phone: z.string().trim().max(30).optional(),
     asOfDate: z.string().regex(ISO_DATE),
     hasNoDebt: z.boolean(),
     debts: z.array(debtEntrySchema).max(MAX_DEBTS)

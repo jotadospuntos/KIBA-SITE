@@ -1,20 +1,27 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { MutableRefObject, ReactNode } from 'react';
 import Reveal from '@/components/Reveal/Reveal';
 import { formatDate, formatMoney, formatPercent } from '@/lib/debt-schedule/format';
 import type { DebtEntry } from '@/lib/debt-schedule/schema';
 import { debtTypeLabel } from './DebtCard';
+import Turnstile from './Turnstile';
+import type { TurnstileHandle } from './Turnstile';
 
 type Props = {
   contactName: string;
   businessName: string;
+  email: string;
+  phone: string;
   asOfDate: string;
   hasNoDebt: boolean;
   debts: DebtEntry[];
   balance: number;
   payment: number;
   submitting: boolean;
+  submitError?: string;
+  turnstileRef: MutableRefObject<TurnstileHandle | null>;
+  onTurnstileToken: (token: string | null) => void;
   onEditDetails: () => void;
   onEditDebt: (index: number) => void;
   onBack: () => void;
@@ -59,6 +66,8 @@ export default function ReviewStep(p: Props) {
         <div className={panel}>
           <Row k="Name" v={p.contactName} />
           <Row k="Business" v={p.businessName} />
+          <Row k="Email" v={p.email} />
+          {p.phone.trim() && <Row k="Phone" v={p.phone} />}
           <Row k="Date" v={formatDate(p.asOfDate)} num />
         </div>
       </Reveal>
@@ -109,6 +118,12 @@ export default function ReviewStep(p: Props) {
       </Reveal>
 
       <div className="flex flex-col items-center gap-4">
+        <Turnstile ref={p.turnstileRef} onToken={p.onTurnstileToken} />
+        {p.submitError && (
+          <p role="alert" className="max-w-[480px] text-center text-[14px] text-destructive">
+            {p.submitError}
+          </p>
+        )}
         <button
           type="button"
           className="btn btn-primary w-full max-w-[420px] justify-center py-4! text-[16.5px]!"
@@ -118,6 +133,14 @@ export default function ReviewStep(p: Props) {
         >
           {p.submitting ? 'Sending…' : 'Submit debt schedule'}
         </button>
+        <p className="max-w-[480px] text-center text-[13px] leading-relaxed text-slate">
+          We use this only to prepare your funding options. It&rsquo;s stored securely and shared only
+          with your KIBA advisor. See our{' '}
+          <a href="/privacy-policy" className="text-blue underline underline-offset-2">
+            privacy policy
+          </a>
+          .
+        </p>
         <button type="button" className={textButton} onClick={p.onBack}>
           Back to editing
         </button>

@@ -15,7 +15,8 @@ pages from `public/legacy/`. **That bridge is gone.** Every page is now an `app/
 - **`public/legacy/` contains exactly one file: `v2.html`**, the frozen homepage-redesign reference
   served at `/v2`. It is deliberately kept (see below) and is the only `rewrites()` entry left.
 - **There is a real build step.** Run `npm install && npm run build` before pushing.
-- **`vercel.json` is gone.** Redirects and the one remaining rewrite live in `next.config.js`.
+- **`vercel.json` holds ONE thing: the debt-schedule cleanup cron.** Redirects and the one remaining
+  rewrite live in `next.config.js`. Don't move routing back into `vercel.json`.
 - **Images/favicons never moved.** `public/img/...`, `public/partners/img/...`,
   `public/advisors/img/...` and the root favicons keep their original public paths, because several
   `og:image` tags reference them as absolute `https://go.kibadvisors.com/...` URLs.
@@ -483,12 +484,11 @@ Facebook, Instagram and LinkedIn, and this footer only had two.
 
 ---
 
-## `/debt-schedule` (phase 1 shipped: frontend only)
+## `/debt-schedule` (all three phases built)
 
 The online Business Debt Schedule. **The brief is `docs/debt-schedule-build-spec.md`**; the
 behavioural reference is `docs/debt-schedule-prototype.html`. Three phases: (1) the form, (2) PDF
-filling with pdf-lib, (3) the API route + GoHighLevel storage. **Only phase 1 exists** — submit
-validates and `console.log`s the payload.
+filling with pdf-lib, (3) the API route + GoHighLevel storage.
 
 - **`lib/debt-schedule/schema.ts` is the one source of truth** (zod). The dropdown strings in
   `constants.ts` must match the PDF's AcroForm options exactly or pdf-lib rejects them.
@@ -502,6 +502,33 @@ validates and `console.log`s the payload.
   (full-screen below `sm`). Every button in it is plain `<button>`/`.btn`, and each non-`.btn`
   button overrides `home.css`'s bare `button` rule with `!`. The dialog's action row is a `<div>`,
   because `home.css` makes any bare `footer` navy.
+
+**The submit path** (`app/api/debt-schedule/route.ts`, Node runtime), in a deliberate order:
+Turnstile → re-validate with the shared schema → fill the PDF → **save PDF + raw JSON to private
+Vercel Blob** → GoHighLevel (upsert contact by email with five custom fields, add tag, add note) →
+return a signed download link. Blob is written *before* GHL so a GHL outage can't lose a
+submission; if GHL fails, the client still succeeds and a `ghl-failed.json` marker is written in
+that submission's Blob folder for replay.
+
+- **Private Blob, signed links (decided).** PDFs are never reachable by storage URL. Every link is
+  `/api/debt-schedule/file?id&exp&sig` (HMAC, `lib/debt-schedule/signed-link.ts`): the client's
+  expires in 1 hour, the staff link on the GHL contact lasts the full retention window.
+- **45-day retention (decided).** `/api/debt-schedule/cleanup`, run daily by the cron in
+  `vercel.json`, deletes Blob files older than `RETENTION_DAYS`. **It covers Blob only** — what's
+  written onto the GHL contact (totals, the JSON field, the note) stays in GHL.
+- **No IP rate limiting (decided): Turnstile alone.** The site key is in `constants.ts` (public by
+  design); the secret is env-only.
+- **GHL client is `lib/debt-schedule/ghl.ts`, not `lib/ghl.ts`** (that one is embed config). The
+  location ID and the five custom-field IDs are constants there. Tags go in a separate call because
+  tags on upsert can replace the contact's existing ones.
+- **Env vars, Production AND Preview:** `GHL_PRIVATE_TOKEN`, `TURNSTILE_SECRET_KEY`,
+  `DEBT_SCHEDULE_LINK_SECRET`, `CRON_SECRET`, `BLOB_READ_WRITE_TOKEN` (from the Blob integration).
+  `lib/debt-schedule/env.ts` names the missing one in the log.
+- **Never log the request body** or anything from it; GHL errors are logged as stage + HTTP status
+  only, because GHL error bodies can echo the contact back.
+- **The template must be traced into the function**: `next.config.js`'s
+  `outputFileTracingIncludes` does it. Without it the route 500s on Vercel (ENOENT) but works locally.
+- `scripts/test-fill-pdf.ts` writes 3/10/14-debt sample PDFs to `scripts/out/` (gitignored).
 
 ## Legal pages
 
@@ -872,7 +899,7 @@ Tokens live in **`app/globals.css`** for the `app/` side and are duplicated in e
 ## Deploy / workflow
 
 - Push to `main` → Vercel auto-deploys to go.kibadvisors.com. Clean URLs and all path
-  redirects/rewrites live in `next.config.js` (there is no `vercel.json`).
+  redirects/rewrites live in `next.config.js` (`vercel.json` holds only the cleanup cron).
 - Typical loop: edit → `npm run build` (must pass) → review diff → `git add -A && git commit && git push`.
 - After deploying, verify on the live URL (logo, form/calendar, and that the correct version
   shipped — a quick tell is the testimonial text). For the homepage, also spot-check `/` against

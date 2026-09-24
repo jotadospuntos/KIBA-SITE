@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, Clock } from 'lucide-react';
+import { Check, Clock, Download } from 'lucide-react';
 import Reveal from '@/components/Reveal/Reveal';
 import { STORAGE_KEY } from '@/lib/debt-schedule/constants';
 import { todayISO } from '@/lib/debt-schedule/format';
-import { debtScheduleSchema, sanitizeStoredDebts } from '@/lib/debt-schedule/schema';
+import { debtScheduleSchema, emailSchema, sanitizeStoredDebts } from '@/lib/debt-schedule/schema';
 import type { DebtEntry } from '@/lib/debt-schedule/schema';
 import DebtEntryDialog from './DebtEntryForm';
 import DebtList from './DebtList';
 import type { DebtItem } from './DebtList';
 import ReviewStep from './ReviewStep';
 import TotalsBar from './TotalsBar';
+import type { TurnstileHandle } from './Turnstile';
 import { Field, describedBy, inputClass } from './fields';
 
 /*
@@ -24,12 +25,14 @@ import { Field, describedBy, inputClass } from './fields';
  * find a statement; losing their work is the main reason these don't come
  * back. The key is cleared on a successful submit.
  *
- * PHASE 1: submit validates with the shared schema and console.logs the
- * payload. The API route, the PDF and the download link arrive in phases 2-3.
+ * SUBMIT posts to /api/debt-schedule with a Turnstile token. The draft is
+ * cleared only once the server has the submission; any failure leaves it in
+ * place so nothing has to be typed twice.
  */
 
 type View = 'form' | 'review' | 'success';
-type HeaderErrors = Partial<Record<'contactName' | 'businessName', string>>;
+type HeaderField = 'contactName' | 'businessName' | 'email';
+type HeaderErrors = Partial<Record<HeaderField, string>>;
 
 let idCounter = 0;
 const newId = () => `debt-${++idCounter}`;
@@ -37,6 +40,8 @@ const newId = () => `debt-${++idCounter}`;
 export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean }) {
   const [contactName, setContactName] = useState('');
   const [businessName, setBusinessName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [asOfDate, setAsOfDate] = useState('');
   const [hasNoDebt, setHasNoDebt] = useState(false);
   const [items, setItems] = useState<DebtItem[]>([]);
@@ -47,6 +52,10 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
   const [headerErrors, setHeaderErrors] = useState<HeaderErrors>({});
   const [debtsError, setDebtsError] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | undefined>();
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileHandle | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -76,13 +85,17 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
         const saved = JSON.parse(raw) as Record<string, unknown>;
         const name = typeof saved.contactName === 'string' ? saved.contactName : '';
         const business = typeof saved.businessName === 'string' ? saved.businessName : '';
+        const savedEmail = typeof saved.email === 'string' ? saved.email : '';
+        const savedPhone = typeof saved.phone === 'string' ? saved.phone : '';
         const restoredDebts = sanitizeStoredDebts(saved.debts);
         if (typeof saved.asOfDate === 'string' && saved.asOfDate) date = saved.asOfDate;
         setContactName(name);
         setBusinessName(business);
+        setEmail(savedEmail);
+        setPhone(savedPhone);
         setHasNoDebt(saved.hasNoDebt === true);
         setItems(restoredDebts.map((debt) => ({ id: newId(), debt })));
-        setRestored(Boolean(name || business || restoredDebts.length));
+        setRestored(Boolean(name || business || savedEmail || restoredDebts.length));
       }
     } catch {
       /* Corrupt or blocked storage: start blank. */
@@ -98,12 +111,12 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
     try {
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ contactName, businessName, asOfDate, hasNoDebt, debts })
+        JSON.stringify({ contactName, businessName, email, phone, asOfDate, hasNoDebt, debts })
       );
     } catch {
       /* Private mode / quota: the form still works, it just won't persist. */
     }
-  }, [hydrated, view, contactName, businessName, asOfDate, hasNoDebt, debts]);
+  }, [hydrated, view, contactName, businessName, email, phone, asOfDate, hasNoDebt, debts]);
 
   /* Focus that has to wait for a view switch to render. */
   useEffect(() => {
@@ -141,7 +154,12 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
     }
   }
 
-  function headerError(field: keyof HeaderErrors, value: string) {
+  function headerError(field: HeaderField, value: string) {
+    if (field === 'email') {
+      if (!value.trim()) return 'Please enter your email address.';
+      const r = emailSchema.safeParse(value);
+      return r.success ? undefined : r.error.issues[0]?.message;
+    }
     if (value.trim()) return undefined;
     return field === 'contactName' ? 'Please enter your name.' : 'Please enter your business name.';
   }
@@ -149,14 +167,16 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
   function goReview() {
     const errs: HeaderErrors = {
       contactName: headerError('contactName', contactName),
-      businessName: headerError('businessName', businessName)
+      businessName: headerError('businessName', businessName),
+      email: headerError('email', email)
     };
     setHeaderErrors(errs);
     const noDebts = !hasNoDebt && items.length === 0;
     setDebtsError(noDebts ? 'Add at least one debt, or tick the box if your business has none.' : undefined);
 
-    if (errs.contactName || errs.businessName) {
-      document.getElementById(errs.contactName ? 'contactName' : 'businessName')?.focus();
+    const firstBad = (['contactName', 'businessName', 'email'] as const).find((f) => errs[f]);
+    if (firstBad) {
+      document.getElementById(firstBad)?.focus();
       return;
     }
     if (noDebts) {
@@ -173,37 +193,69 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
     scrollToTop();
   }
 
-  function submit() {
-    const payload = {
+  async function submit() {
+    const schedule = {
       contactName,
       businessName,
+      email,
+      phone: phone.trim() || undefined,
       asOfDate,
       hasNoDebt,
       debts: hasNoDebt ? [] : debts
     };
-    const result = debtScheduleSchema.safeParse(payload);
+    const result = debtScheduleSchema.safeParse(schedule);
     if (!result.success) {
       /* Shouldn't be reachable - every debt was validated on save and the
          header on review - but never submit something the server will reject. */
       backToForm();
       return;
     }
-    setSubmitting(true);
-    // PHASE 1 STUB: replaced by POST /api/debt-schedule in phase 3.
-    console.log('[debt-schedule] validated payload', result.data);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* no-op */
+    if (!turnstileToken) {
+      setSubmitError('Please wait for the security check above to finish, then submit again.');
+      return;
     }
-    setSubmitting(false);
-    setView('success');
-    scrollToTop();
+
+    setSubmitting(true);
+    setSubmitError(undefined);
+    try {
+      const res = await fetch('/api/debt-schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ schedule: result.data, turnstileToken })
+      });
+      const json = (await res.json().catch(() => ({}))) as { downloadUrl?: string; message?: string };
+      if (!res.ok || !json.downloadUrl) {
+        setSubmitError(
+          `${json.message ?? 'Something went wrong on our end.'} Your answers are saved on this device — try again, or call us at 251-210-8445.`
+        );
+        return;
+      }
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        /* no-op */
+      }
+      setDownloadUrl(json.downloadUrl);
+      setView('success');
+      scrollToTop();
+    } catch {
+      setSubmitError(
+        'We couldn’t reach our server. Check your connection and try again — your answers are saved on this device.'
+      );
+    } finally {
+      /* Turnstile tokens are single-use, whatever happened. */
+      turnstileRef.current?.reset();
+      setSubmitting(false);
+    }
   }
 
   function startOver() {
     setContactName('');
     setBusinessName('');
+    setEmail('');
+    setPhone('');
+    setDownloadUrl(null);
+    setSubmitError(undefined);
     setAsOfDate(todayISO());
     setHasNoDebt(false);
     setItems([]);
@@ -225,10 +277,22 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
           <p className="mx-auto mt-3 max-w-[480px] text-[16px] text-slate">
             Thank you — we&rsquo;ve got everything we need, and your KIBA advisor will be in touch.
           </p>
-          {/* The "Download your copy (PDF)" link lands here in phase 3. */}
-          <button type="button" className="btn btn-dark-ghost mt-8!" onClick={startOver}>
-            Start over
-          </button>
+          {downloadUrl && (
+            <>
+              <a className="btn btn-primary mt-8!" href={downloadUrl}>
+                <Download className="size-4" />
+                Download your copy (PDF)
+              </a>
+              <p className="mx-auto mt-3 max-w-[420px] text-[13px] text-slate">
+                For your security this link works for one hour. Your advisor has their own copy.
+              </p>
+            </>
+          )}
+          <div>
+            <button type="button" className="btn btn-dark-ghost mt-8!" onClick={startOver}>
+              Start over
+            </button>
+          </div>
         </div>
       )}
 
@@ -236,12 +300,17 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
         <ReviewStep
           contactName={contactName}
           businessName={businessName}
+          email={email}
+          phone={phone}
           asOfDate={asOfDate}
           hasNoDebt={hasNoDebt}
           debts={debts}
           balance={totals.balance}
           payment={totals.payment}
           submitting={submitting}
+          submitError={submitError}
+          turnstileRef={turnstileRef}
+          onTurnstileToken={setTurnstileToken}
           onEditDetails={() => backToForm('contactName')}
           onEditDebt={(i) => {
             backToForm();
@@ -320,6 +389,41 @@ export default function DebtScheduleForm({ forceMotion }: { forceMotion: boolean
                     onBlur={(e) =>
                       setHeaderErrors((h) => ({ ...h, businessName: headerError('businessName', e.target.value) }))
                     }
+                  />
+                </Field>
+                <Field id="email" label="Email" error={headerErrors.email}>
+                  <input
+                    id="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    className={inputClass}
+                    value={email}
+                    aria-invalid={headerErrors.email ? true : undefined}
+                    aria-describedby={describedBy('email', headerErrors.email)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setHeaderErrors((h) => ({ ...h, email: undefined }));
+                    }}
+                    onBlur={(e) => setHeaderErrors((h) => ({ ...h, email: headerError('email', e.target.value) }))}
+                  />
+                </Field>
+                <Field
+                  id="phone"
+                  label={
+                    <>
+                      Phone <span className="font-normal text-slate">— optional</span>
+                    </>
+                  }
+                >
+                  <input
+                    id="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    maxLength={30}
+                    className={inputClass}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                   />
                 </Field>
               </div>

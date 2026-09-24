@@ -2,6 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
 
+  // The debt-schedule API reads its PDF template off disk. Files in public/
+  // are served by the CDN and are NOT bundled into serverless functions by
+  // default, so without this the route would 500 on Vercel with ENOENT
+  // while working fine locally.
+  experimental: {
+    outputFileTracingIncludes: {
+      '/api/debt-schedule': ['./public/templates/business-debt-schedule.pdf'],
+    },
+  },
+
   // --- Phase 1 of the Next.js migration ---
   // Every page below is still the original static HTML file, now living under
   // public/legacy/. These rewrites make it so the *browser URL* stays exactly
