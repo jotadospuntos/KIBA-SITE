@@ -34,3 +34,6 @@ next-env.d.ts
 # originals are ~24MB and would live in git history forever.
 /assets-src/
 __pycache__/
+
+# scripts/test-fill-pdf.ts output
+/scripts/out/
