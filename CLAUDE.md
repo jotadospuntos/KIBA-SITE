@@ -20,6 +20,12 @@ pages from `public/legacy/`. **That bridge is gone.** Every page is now an `app/
 - **Images/favicons never moved.** `public/img/...`, `public/partners/img/...`,
   `public/advisors/img/...` and the root favicons keep their original public paths, because several
   `og:image` tags reference them as absolute `https://go.kibadvisors.com/...` URLs.
+- **`public/wp-content/uploads/` is a byte-for-byte mirror of the WordPress media library**
+  (355 files: every original plus every resized variant WordPress generated), at the exact same
+  paths. It exists so `kibadvisors.com/wp-content/uploads/...` URLs keep resolving after this site
+  replaces WordPress. **The team's email signatures load from there** (`2026/08/*-Email-Signature*`),
+  as may GHL email templates, partner sites and old social posts. Nothing on this site uses these
+  files, and that's expected. Don't delete them as dead weight.
 
 ### What this means for you
 
