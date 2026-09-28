@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description:
     'List the loans, lines of credit and cards held in your business’s name, so your KIBA advisor has an accurate picture before structuring your funding.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/debt-schedule' }
+  alternates: { canonical: '/debt-schedule' }
 };
 
 export default function Page() {

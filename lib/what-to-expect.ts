@@ -44,8 +44,8 @@ export const WHAT_TO_EXPECT: ExpectItem[] = [
 ];
 
 /* The three-stat row both page types carry in the hero. Verbatim from the
-   legacy pages — note "24–72h Guidance Time", which is the figure the live
-   WordPress homepage also uses (see CLAUDE.md on the stats discrepancy). */
+   legacy pages. "24–72h Guidance Time" is also the homepage's stat (it
+   replaced an unverified "500+ Deals Funded", by the business's decision). */
 export const TRUST_STATS = [
   { value: '50+', label: 'States Served' },
   { value: '$100M+', label: 'Capital Accessed' },

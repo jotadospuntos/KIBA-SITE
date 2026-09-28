@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description:
     'A trusted capital and advisory partner for CPAs, bankers and advisors. We strengthen your client’s position and keep you at the center of the relationship.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/referral-partners' },
+  alternates: { canonical: '/referral-partners' },
   openGraph: {
     type: 'website',
-    url: 'https://go.kibadvisors.com/referral-partners',
+    url: '/referral-partners',
     title: 'Referral Partners — Kingdom Impact Business Advisors',
     description: 'A disciplined, transparent partner — not another lender in the room.',
-    images: [{ url: 'https://go.kibadvisors.com/img/referral-partners.png', width: 1200, height: 630 }]
+    images: [{ url: '/img/referral-partners.png', width: 1200, height: 630 }]
   }
 };
 

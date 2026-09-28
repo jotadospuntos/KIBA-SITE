@@ -166,7 +166,7 @@ export default function HomePage() {
             <div className="cta-row"><a href="#talk" className="btn btn-primary">Start the Conversation</a><a href="tel:2512108445" className="btn btn-ghost">Call Our Team</a></div>
             <div className="stat-row">
               <div className="stat"><Counter className="stat-num" to={25} suffix="+" /><div className="stat-label">Years Experience</div></div>
-              <div className="stat"><Counter className="stat-num" to={500} suffix="+" /><div className="stat-label">Deals Funded</div></div>
+              <div className="stat"><div className="stat-num">24&ndash;72h</div><div className="stat-label">Guidance Time</div></div>
               <div className="stat"><Counter className="stat-num" to={100} prefix="$" suffix="M+" /><div className="stat-label">Capital Accessed</div></div>
               <div className="stat"><Counter className="stat-num" to={50} suffix="+" /><div className="stat-label">States Served</div></div>
             </div>

@@ -15,13 +15,13 @@ export const metadata: Metadata = {
   description:
     'Clear thinking on capital decisions: cash flow, business credit and knowing when your business is actually ready for financing.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/blog' },
+  alternates: { canonical: '/blog' },
   openGraph: {
     type: 'website',
-    url: 'https://go.kibadvisors.com/blog',
+    url: '/blog',
     title: 'Blog — Kingdom Impact Business Advisors',
     description: 'Practical writing for business owners weighing whether, and when, to borrow.',
-    images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+    images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
   }
 };
 

@@ -18,14 +18,14 @@ export const metadata: Metadata = {
   description:
     'Built for business. Grounded in faith. Focused on impact. Why Kingdom Impact Business Advisors exists, the five values behind every call we make, and how preparation-first advisory changes the answer you get from a lender.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/about-us' },
+  alternates: { canonical: '/about-us' },
   openGraph: {
     type: 'website',
-    url: 'https://go.kibadvisors.com/about-us',
+    url: '/about-us',
     title: 'About Us — Kingdom Impact Business Advisors',
     description:
       'Built for business. Grounded in faith. Focused on impact. Why KIBA exists and the values behind every call we make.',
-    images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+    images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
   }
 };
 

@@ -45,6 +45,31 @@ const nextConfig = {
 
       // Ported 1:1 from the old vercel.json.
       { source: '/partners/ace-tools', destination: '/partners/integ-funding', permanent: true },
+
+      // --- The WordPress URL map, for the move onto kibadvisors.com ---
+      // Every URL in the WordPress sitemap either exists here at the same path
+      // (/, /about-us, /meet-our-team, /capital-solutions, /blog, /contact-us,
+      // /privacy-policy, /terms-and-conditions) or is redirected below, so no
+      // indexed or shared link 404s after the domain switch. Harmless before it:
+      // nothing links to these paths on go.kibadvisors.com.
+
+      // WordPress served posts at the root; here they live under /blog.
+      ...[
+        'how-to-improve-cash-flow-before-taking-on-debt',
+        'how-to-know-if-your-business-is-ready-for-financing',
+        'why-you-need-business-credit-and-how-to-build-it',
+      ].map((slug) => ({ source: `/${slug}`, destination: `/blog/${slug}`, permanent: true })),
+      { source: '/category/:slug*', destination: '/blog', permanent: true },
+
+      // The WordPress scheduling and referral-partner pages go to /book-rr, the
+      // round-robin booking page (the business's decision). Not /thank-you: that
+      // page says "we've got your details" to someone who hasn't submitted anything.
+      ...[
+        'schedule-a-conversation',
+        'schedule-a-conversation-for-referral-partners',
+        'referral-partner',
+        'link-for-referral-partner',
+      ].map((slug) => ({ source: `/${slug}`, destination: '/book-rr', permanent: true })),
     ];
   },
 };

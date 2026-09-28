@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     'How Kingdom Impact Business Advisors collects, uses, discloses and protects your personal information.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/privacy-policy' }
+  alternates: { canonical: '/privacy-policy' }
 };
 
 export default function Page() {

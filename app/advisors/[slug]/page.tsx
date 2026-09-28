@@ -21,7 +21,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const advisor = getAdvisor(params.slug);
   if (!advisor) return {};
 
-  const url = `https://go.kibadvisors.com/advisors/${advisor.slug}`;
+  const url = `/advisors/${advisor.slug}`;
   const title = `Book with ${advisor.name} — Kingdom Impact Business Advisors`;
   return {
     title,
@@ -33,7 +33,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       url,
       title,
       description: advisor.tagline,
-      images: [{ url: `https://go.kibadvisors.com${advisor.photo}`, width: 800, height: 800 }]
+      images: [{ url: advisor.photo, width: 800, height: 800 }]
     }
   };
 }

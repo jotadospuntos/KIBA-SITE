@@ -19,14 +19,14 @@ export const metadata: Metadata = {
   description:
     'Meet the Kingdom Impact Business Advisors team: Michael Sylkatis, Barbara Sylkatis and Ariel Austria — the advisors who guide business owners through capital strategy, lending, and funding decisions.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/meet-our-team' },
+  alternates: { canonical: '/meet-our-team' },
   openGraph: {
     type: 'website',
-    url: 'https://go.kibadvisors.com/meet-our-team',
+    url: '/meet-our-team',
     title: 'Meet the Team — Kingdom Impact Business Advisors',
     description:
       'The advisors who guide business owners through capital strategy, lending, and funding decisions.',
-    images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+    images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
   }
 };
 

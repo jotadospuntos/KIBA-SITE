@@ -30,7 +30,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const program = getProgram(params.slug);
   if (!program) return {};
 
-  const url = `https://go.kibadvisors.com/capital-solutions/${program.slug}`;
+  const url = `/capital-solutions/${program.slug}`;
   const title = `${program.name} — Kingdom Impact Business Advisors`;
 
   return {
@@ -43,7 +43,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       url,
       title,
       description: program.metaDescription,
-      images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+      images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
     }
   };
 }

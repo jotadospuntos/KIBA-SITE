@@ -25,7 +25,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const post = getPost(params.slug);
   if (!post) return {};
 
-  const url = `https://go.kibadvisors.com/blog/${post.slug}`;
+  const url = `/blog/${post.slug}`;
   return {
     title: `${post.title} — Kingdom Impact Business Advisors`,
     description: post.excerpt,
@@ -38,7 +38,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       description: post.excerpt,
       publishedTime: post.date,
       authors: [post.author],
-      images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+      images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
     }
   };
 }

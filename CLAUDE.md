@@ -332,7 +332,8 @@ and `intro` per page.
 Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-solutions`, all six
 `/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, `/book-rr`, `/thank-you`,
 `/ty-cal`, `/referral-partners`, `/business-acquisitions`, all three `/advisors/*` and both
-`/partners/*`. In other words every route except `/privacy-policy` and `/debt-schedule` (above).
+`/partners/*`. In other words every route except the two legal pages (`/privacy-policy`, `/terms-and-conditions`) and
+`/debt-schedule` (above).
 `v2.html` is the only other page without one, deliberately.
 
 **One element selector will bite you here.** `home.css` styles the SITE footer with a bare element
@@ -475,18 +476,14 @@ and booking are one page; that needs `form_embed.js`, which the page loads itsel
 footer gained a Blog link, and **Instagram was added to the footer socials** — the live site lists
 Facebook, Instagram and LinkedIn, and this footer only had two.
 
-### Still open against the live site
+### Gaps against the live site: closed
 
-- **Privacy Policy and Terms are deliberately NOT ported.** They still link to WordPress. Legal
-  text transcribed by an agent from a scraped page is a liability, not a feature — if these should
-  live here, paste the authoritative text.
-- **The homepage stats don't match and one of them is unverified.** Live shows
-  `50+ States · $100M+ Capital · 24–72h Avg Guidance Time · 25+ Years`. This repo shows
-  `25+ Years · 500+ Deals Funded · $100M+ · 50+ States`. "500+ Deals Funded" appears only here and
-  "24–72h" only there. These are marketing claims — don't reconcile them without the human.
-- **"Client Portal"** is a nav item on the live site with no equivalent here.
-- **The legacy-design gap.** The ten `public/legacy/` pages still have no nav bar, the old
-  single-row footer and no scroll motion.
+- **Both legal pages are ported**, from text supplied by the business (see "Legal pages").
+- **The homepage stats are settled** (the business's decision): `25+ Years · 24–72h Guidance Time ·
+  $100M+ · 50+ States`. "500+ Deals Funded" was unverified and is gone from the homepage, the
+  `/business-acquisitions` stat row and the trust marquee. The stats are marketing claims — don't
+  add or change one without the human.
+- **Client Portal** is in the nav (see "Shared elements").
 
 ---
 
@@ -539,7 +536,8 @@ that submission's Blob folder for replay.
 ## Legal pages
 
 `components/LegalPage/LegalPage.tsx` renders a `LegalDoc`; the text lives in one verbatim data file
-per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.ts`).
+per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.ts`) and
+`/terms-and-conditions` (`app/terms-and-conditions/terms-content.ts`).
 
 - **THE TEXT IS SUPPLIED BY THE BUSINESS AND IS VERBATIM.** No tightening, no house style, no
   punctuation "fixes". If it changes, the business supplies new text and the file is replaced
@@ -548,9 +546,9 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
   lines, zero differences.
 - **The WordPress copy at kibadvisors.com/privacy-policy/ is now a SECOND copy** and can drift.
   Update both, or decide which is authoritative.
-- **Terms & Conditions is not built.** The footer still links to WordPress for it, deliberately —
-  we don't have the authoritative text. When it arrives it's a new content file plus a three-line
-  `page.tsx`; the layout already exists.
+- **Terms & Conditions follows the same rules** (supplied by the business, verbatim). Verified the
+  same way: the rendered page diffed against the supplied text, 116 lines after the title, zero
+  differences. Its path matches the WordPress URL, so existing links survive the domain move.
 - Legal pages skip the testimonial section (see "Testimonials") and use a compact hero, because the
   revision date is what a reader is actually looking for. Section headings get stable slug ids and
   a contents list, so support can link straight to a clause.

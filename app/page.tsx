@@ -24,16 +24,16 @@ export const metadata: Metadata = {
   description:
     'Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital — with clarity, integrity, and decades of lending experience.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/' },
+  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    url: 'https://go.kibadvisors.com/',
+    url: '/',
     title: 'Kingdom Impact Business Advisors — Funding & Growth Capital',
     description:
       'Kingdom Impact Business Advisors helps business owners access bank-ready funding and growth capital.',
     /* Filename is historical (it was the /v2 draft preview); the image is the
        current hero and is referenced absolutely by other pages' og tags too. */
-    images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+    images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
   }
 };
 

@@ -14,14 +14,14 @@ export const metadata: Metadata = {
   description:
     'SBA loans, business acquisition financing, term loans, equipment financing, commercial real estate and revolving lines of credit. KIBA starts with your business, not with a loan product.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://go.kibadvisors.com/capital-solutions' },
+  alternates: { canonical: '/capital-solutions' },
   openGraph: {
     type: 'website',
-    url: 'https://go.kibadvisors.com/capital-solutions',
+    url: '/capital-solutions',
     title: 'Capital Solutions — Kingdom Impact Business Advisors',
     description:
       'Six funding programs, and an honest answer on which one fits your business — or whether to borrow at all.',
-    images: [{ url: 'https://go.kibadvisors.com/img/v2-preview.png', width: 1200, height: 630 }]
+    images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
   }
 };
 

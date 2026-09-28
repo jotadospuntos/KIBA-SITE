@@ -58,9 +58,8 @@ export default function SiteFooter() {
         <Reveal className="footer-col reveal">
           <h3>Company</h3>
           <ul>
-            {/* About and Team point at this subdomain now - both pages live here
-                (app/about-us, app/meet-our-team) rather than on WordPress. The
-                policy links stay off-site; those documents only exist there. */}
+            {/* Every link here is on this site now, including both legal
+                pages (app/privacy-policy, app/terms-and-conditions). */}
             <li><a href="/about-us">About</a></li>
             <li><a href="/meet-our-team">Meet the Team</a></li>
             <li><a href="/blog">Blog</a></li>
@@ -68,9 +67,7 @@ export default function SiteFooter() {
             <li><a href="/book-rr">Book a Consultation</a></li>
             <li><a href="/contact-us">Contact</a></li>
             <li><a href="/privacy-policy">Privacy Policy</a></li>
-            {/* Terms still points at WordPress: we don't have the authoritative
-                text for it yet. Swap to /terms-and-conditions once we do. */}
-            <li><a href="https://kibadvisors.com/terms-and-conditions/">Terms &amp; Conditions</a></li>
+            <li><a href="/terms-and-conditions">Terms &amp; Conditions</a></li>
           </ul>
         </Reveal>
 

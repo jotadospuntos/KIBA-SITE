@@ -20,7 +20,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const partner = getPartner(params.slug);
   if (!partner) return {};
 
-  const url = `https://go.kibadvisors.com/partners/${partner.slug}`;
+  const url = `/partners/${partner.slug}`;
   const title = `KIBA × ${partner.shortName} — Kingdom Impact Business Advisors`;
   const description = `Recommended by ${partner.name}. Navigate financing with clarity and confidence — no pressure, no obligation.`;
   return {
@@ -33,7 +33,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       url,
       title,
       description,
-      images: [{ url: `https://go.kibadvisors.com${partner.ogImage}`, width: 1200, height: 630 }]
+      images: [{ url: partner.ogImage, width: 1200, height: 630 }]
     }
   };
 }

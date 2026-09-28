@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { SITE_URL } from '@/lib/site';
 
 /* Meta Pixel ID, as used by every legacy page before the migration. */
 const META_PIXEL_ID = '1653996785650157';
 
 export const metadata: Metadata = {
+  /* Resolves every relative canonical / og:url / og:image path. See lib/site.ts. */
+  metadataBase: new URL(SITE_URL),
   title: 'Kingdom Impact Business Advisors',
   description: 'Kingdom Impact Business Advisors — funding and advisory for growing businesses.',
 };

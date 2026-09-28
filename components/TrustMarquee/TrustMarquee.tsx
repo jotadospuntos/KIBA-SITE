@@ -26,7 +26,7 @@ type MarqueeItem = { label: string; path: string };
 const ITEMS: MarqueeItem[] = [
   { label: '$100M+ Capital Accessed', path: 'M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' },
   { label: '25+ Years Experience', path: 'CLOCK' },
-  { label: '500+ Deals Funded', path: 'M4 20V8l5-3 6 3 5-3v12l-5 3-6-3-5 3Z' },
+  { label: '24–72h Guidance Time', path: 'M13 2 3 14h9l-1 8 10-12h-9l1-8Z' },
   { label: '50+ States Served', path: 'GLOBE' },
   { label: 'Bank-Ready Guidance', path: 'M4 12.5l5 5L20 6.5' },
   { label: 'SBA-Preferred Process', path: 'M4 12.5l5 5L20 6.5' }
