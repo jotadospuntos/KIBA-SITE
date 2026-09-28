@@ -545,8 +545,8 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
   wholesale with `updated` bumped. Only the structure — headings, paragraphs, lists, the definition
   list — was added to render it. Verified by diffing the rendered page against the source: 97
   lines, zero differences.
-- **The WordPress copy at kibadvisors.com/privacy-policy/ is now a SECOND copy** and can drift.
-  Update both, or decide which is authoritative.
+- **These are the only copies.** The WordPress versions went away with the main-domain launch, so
+  there is nothing to keep in sync.
 - **Terms & Conditions follows the same rules** (supplied by the business, verbatim). Verified the
   same way: the rendered page diffed against the supplied text, 116 lines after the title, zero
   differences. Its path matches the WordPress URL, so existing links survive the domain move.
