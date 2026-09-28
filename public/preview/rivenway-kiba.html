@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RivenWay × KIBA — Capital, After the Foundation</title>
+<meta name="description" content="RivenWay builds the financial foundation. When the next move is capital, RivenWay brings in Kingdom Impact Business Advisors (KIBA) to map the right financing path.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;0,700;0,800;1,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<!--
+  ============================================================================
+  RIVENWAY × KIBA co-branded page — hand-off file for rivenway.com
+  ============================================================================
+  Built to live on RivenWay's WordPress/Elementor site, not on kibadvisors.com.
+
+  INSTALLING IN ELEMENTOR
+    1. New page → Page Attributes → Template: "Elementor Canvas" (no theme
+       header/footer; this file carries its own replica of both).
+    2. Drop in one HTML widget and paste everything between the
+       "PASTE FROM HERE" and "PASTE TO HERE" markers below.
+    3. The Montserrat + Source Sans 3 <link> above is already loaded by the
+       RivenWay site; paste it too if a Canvas page doesn't pick it up.
+
+  Every rule is scoped under .kxr, and every class is kxr-prefixed, so the
+  page can't restyle anything else on the site and Elementor's kit styles
+  can't restyle it.
+
+  WHAT IS WHOSE
+    - Nav + footer: modeled on rivenway.com as of 2026-09-28. If RivenWay's
+      menu changes, update both the desktop menu and the mobile sheet.
+    - Lead form: KIBA's GoHighLevel form "REFERRAL - Rivenway"
+      (a7Jl5YHY3tyDzwGxpX1w). Do NOT swap in another GHL form ID — each routes
+      to a different place. On submit, GHL redirects to KIBA's thank-you page.
+    - KIBA copy (the six "what to expect" cards, the FAQ, the program
+      summaries, the stats, the testimonials) is VERBATIM from
+      kibadvisors.com and approved by KIBA. Don't reword it; ask KIBA.
+    - RivenWay copy follows RivenWay's brand guidelines and site.
+  ============================================================================
+-->
+</head>
+<body>
+
+<!-- ======================= PASTE FROM HERE ======================= -->
+<style>
+.kxr{
+  --rw-navy-deep:#001548;   /* the site's header / footer navy */
+  --rw-navy:#19305A;
+  --rw-blue:#295BAA;
+  --rw-btn:#225DA8;
+  --rw-sky:#52B5E6;
+  --rw-silver:#C6CBD3;
+  --rw-grey:#5C6573;
+  --rw-black:#121417;
+  --rw-ink:#05060E;
+  --rw-mist:#F3F5F8;
+  --kiba-blue:#294DFF;
+  --kxr-head:'Montserrat',system-ui,sans-serif;
+  --kxr-body:'Source Sans 3','Source Sans Pro',system-ui,sans-serif;
+  --kxr-wrap:1200px;
+  --kxr-hdr:110px;
+  font-family:var(--kxr-body);
+  font-size:18px;
+  line-height:1.6;
+  color:var(--rw-grey);
+  background:#fff;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;
+}
+.kxr *,.kxr *::before,.kxr *::after{ box-sizing:border-box; }
+.kxr h1,.kxr h2,.kxr h3,.kxr h4{ font-family:var(--kxr-head); color:var(--rw-ink); margin:0; letter-spacing:-0.01em; }
+.kxr h1{ font-weight:800; font-size:clamp(2.4rem,5vw,4rem); line-height:1.12; }
+.kxr h2{ font-weight:800; font-size:clamp(1.9rem,3.4vw,2.6rem); line-height:1.18; }
+.kxr h3{ font-weight:700; font-size:1.25rem; line-height:1.3; }
+.kxr p{ margin:0 0 1em; }
+.kxr p:last-child{ margin-bottom:0; }
+.kxr a{ color:inherit; text-decoration:none; }
+.kxr img{ max-width:100%; display:block; }
+.kxr ul,.kxr ol{ margin:0; padding:0; list-style:none; }
+.kxr button{ font:inherit; }
+.kxr .kxr-wrap{ max-width:var(--kxr-wrap); margin:0 auto; padding:0 24px; }
+.kxr .kxr-accent{ color:var(--rw-sky); }
+.kxr .kxr-accent-blue{ color:var(--rw-blue); }
+.kxr .kxr-eyebrow{
+  font-family:var(--kxr-body); font-weight:600; font-size:0.95rem;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--rw-blue); margin-bottom:16px;
+}
+.kxr .kxr-on-dark .kxr-eyebrow,.kxr .kxr-eyebrow.on-dark{ color:var(--rw-sky); }
+.kxr .kxr-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.kxr :focus-visible{ outline:3px solid var(--rw-sky); outline-offset:3px; border-radius:4px; }
+
+/* ---------- buttons (RivenWay's: Montserrat 700, #225DA8, 8px) ---------- */
+.kxr .kxr-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  font-family:var(--kxr-head); font-weight:700; font-size:1.05rem; line-height:1;
+  padding:17px 36px; border-radius:8px; border:2px solid transparent;
+  background:var(--rw-btn); color:#fff; cursor:pointer; white-space:nowrap;
+  transition:background-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.kxr .kxr-btn:hover{ background:var(--rw-blue); transform:translateY(-2px); box-shadow:0 10px 24px -10px rgba(34,93,168,.7); }
+.kxr .kxr-btn.sky{ background:var(--rw-sky); color:var(--rw-navy-deep); }
+.kxr .kxr-btn.sky:hover{ background:#6cc3ee; }
+.kxr .kxr-btn.ghost{ background:transparent; border-color:rgba(255,255,255,.5); color:#fff; }
+.kxr .kxr-btn.ghost:hover{ background:rgba(255,255,255,.08); border-color:#fff; box-shadow:none; }
+.kxr .kxr-link{
+  display:inline-flex; align-items:center; gap:10px; font-family:var(--kxr-head); font-weight:700;
+  font-size:1.05rem; color:#fff; padding:14px 10px 12px; border-bottom:1px solid var(--rw-sky);
+}
+.kxr .kxr-link svg{ width:20px; height:20px; color:var(--rw-sky); transition:transform .25s ease; }
+.kxr .kxr-link:hover svg{ transform:translateX(4px); }
+.kxr .kxr-cta-row{ display:flex; flex-wrap:wrap; gap:20px; align-items:center; }
+
+/* ================================ HEADER ================================ */
+.kxr .kxr-header{
+  position:fixed; top:0; left:0; right:0; z-index:1000; height:var(--kxr-hdr);
+  transition:background-color .3s ease, height .3s ease, box-shadow .3s ease;
+}
+body.admin-bar .kxr .kxr-header{ top:32px; }
+@media (max-width:782px){ body.admin-bar .kxr .kxr-header{ top:46px; } }
+.kxr .kxr-header.is-scrolled{ background:var(--rw-navy-deep); box-shadow:0 8px 30px -18px rgba(0,0,0,.6); }
+.kxr .kxr-header-inner{
+  height:100%; max-width:1440px; margin:0 auto; padding:0 30px;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+}
+.kxr .kxr-logo img{ width:218px; height:auto; }
+.kxr .kxr-menu{ display:flex; align-items:center; gap:2px; margin-left:auto; }
+.kxr .kxr-menu > li{ position:relative; }
+.kxr .kxr-menu > li > a,.kxr .kxr-menu > li > button{
+  display:flex; align-items:center; gap:8px; height:50px; padding:0 8px;
+  font-family:var(--kxr-body); font-size:16px; color:#fff; background:none; border:0; cursor:pointer; white-space:nowrap;
+  transition:color .2s ease;
+}
+.kxr .kxr-menu > li > a:hover,.kxr .kxr-menu > li > button:hover,
+.kxr .kxr-menu > li.is-open > button{ color:var(--rw-sky); }
+.kxr .kxr-caret{ width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid currentColor; margin-left:6px; transition:transform .2s ease; }
+.kxr .kxr-menu > li.is-open .kxr-caret{ transform:rotate(180deg); }
+.kxr .kxr-sub{
+  position:absolute; top:100%; left:0; min-width:260px; background:var(--rw-navy-deep); padding:6px 0;
+  opacity:0; visibility:hidden; transform:translateY(6px); transition:opacity .2s ease, transform .2s ease, visibility .2s;
+}
+.kxr .kxr-menu > li.is-open .kxr-sub{ opacity:1; visibility:visible; transform:none; }
+@media (hover:hover){
+  .kxr .kxr-menu > li:hover .kxr-sub{ opacity:1; visibility:visible; transform:none; }
+}
+.kxr .kxr-sub a{ display:block; padding:13px 20px; font-size:16px; color:#fff; white-space:nowrap; }
+.kxr .kxr-sub a:hover{ color:var(--rw-sky); background:rgba(255,255,255,.04); }
+.kxr .kxr-header .kxr-btn{ margin-left:20px; padding:15px 20px; }
+.kxr .kxr-burger{ display:none; width:48px; height:48px; background:none; border:0; color:#fff; cursor:pointer; padding:10px; }
+.kxr .kxr-burger svg{ width:28px; height:28px; }
+
+.kxr .kxr-sheet{
+  position:fixed; inset:0; z-index:999; background:var(--rw-navy-deep); padding:calc(var(--kxr-hdr) + 8px) 24px 40px;
+  overflow-y:auto; opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s;
+}
+.kxr .kxr-sheet.is-open{ opacity:1; visibility:visible; }
+.kxr .kxr-sheet > ul > li{ border-bottom:1px solid rgba(255,255,255,.1); }
+.kxr .kxr-sheet a,.kxr .kxr-sheet button.kxr-acc{
+  display:flex; width:100%; justify-content:space-between; align-items:center; padding:16px 4px;
+  font-size:18px; color:#fff; background:none; border:0; text-align:left; cursor:pointer;
+}
+.kxr .kxr-sheet .kxr-acc-panel{ display:none; padding:0 0 10px 14px; }
+.kxr .kxr-sheet .kxr-acc-panel a{ font-size:16px; padding:10px 4px; color:rgba(255,255,255,.8); }
+.kxr .kxr-sheet li.is-open .kxr-acc-panel{ display:block; }
+.kxr .kxr-sheet li.is-open .kxr-caret{ transform:rotate(180deg); }
+.kxr .kxr-sheet .kxr-btn{ margin-top:28px; width:100%; }
+
+@media (max-width:1180px){
+  .kxr .kxr-menu,.kxr .kxr-header .kxr-btn{ display:none; }
+  .kxr .kxr-burger{ display:block; }
+  .kxr{ --kxr-hdr:96px; }
+  .kxr .kxr-logo img{ width:180px; }
+}
+
+/* ================================= HERO ================================= */
+.kxr .kxr-hero{
+  position:relative; color:#fff; background:var(--rw-navy-deep);
+  padding:calc(var(--kxr-hdr) + 90px) 0 170px; min-height:900px; display:flex; align-items:center;
+  clip-path:polygon(0 0,100% 0,100% 100%,0 calc(100% - 90px));
+  isolation:isolate;
+}
+.kxr .kxr-hero-photo{
+  position:absolute; top:0; bottom:0; right:0; left:42%; z-index:-2;
+  background:url('https://go.kibadvisors.com/img/hero/industrial-operator.webp') 40% 25%/cover no-repeat;
+}
+.kxr .kxr-hero::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:
+    linear-gradient(90deg, rgba(0,21,72,1) 0%, rgba(0,21,72,1) 42%, rgba(0,21,72,.55) 62%, rgba(25,48,90,.3) 100%),
+    linear-gradient(0deg, rgba(0,21,72,.85) 0%, rgba(0,21,72,0) 40%);
+}
+.kxr .kxr-hero-mark{ position:absolute; left:-160px; bottom:-120px; width:560px; color:var(--rw-sky); opacity:.05; z-index:-1; pointer-events:none; }
+.kxr .kxr-hero > .kxr-wrap{ width:100%; }
+.kxr .kxr-hero-inner{ max-width:800px; }
+.kxr .kxr-hero h1 .kxr-accent{ white-space:nowrap; }
+.kxr .kxr-hero h1{ color:#fff; margin-bottom:34px; }
+.kxr .kxr-hero-copy{ border-left:3px solid var(--rw-sky); padding-left:22px; max-width:560px; margin-bottom:40px; font-size:1.2rem; color:rgba(255,255,255,.92); }
+.kxr .kxr-lockup{ display:flex; align-items:center; gap:18px; margin-top:52px; flex-wrap:wrap; }
+.kxr .kxr-lockup-label{ font-family:var(--kxr-head); font-weight:600; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.65); }
+.kxr .kxr-lockup-x{ width:1px; height:40px; background:rgba(255,255,255,.3); }
+
+/* the KIBA logo, defined once (inline so the file has no dependency on KIBA's
+   server for its own mark). KIBA's guidelines: never recolor it, show it on
+   white or a dark field — every use here is on navy. */
+.kxr .kxr-kiba-logo{
+  display:inline-block; aspect-ratio:480/215; width:112px;
+  background:url('data:image/png;base64,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') center/contain no-repeat;
+}
+
+/* split-word headline reveal */
+.kxr .kxr-word{ display:inline-block; }
+.kxr.kxr-anim .kxr-word{ opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.kxr.kxr-anim .kxr-hero.is-in .kxr-word{ opacity:1; transform:none; }
+
+/* ============================ OVERLAP CARD ============================== */
+.kxr .kxr-overlap{ position:relative; z-index:2; margin-top:-150px; }
+.kxr .kxr-overlap-card{
+  display:grid; grid-template-columns:auto 1fr; align-items:center; gap:40px;
+  background:var(--rw-blue); color:#fff; border-radius:6px; padding:38px 48px; max-width:960px;
+  box-shadow:0 30px 60px -30px rgba(0,21,72,.6);
+}
+.kxr .kxr-overlap-card .kxr-kiba-logo{ width:150px; }
+.kxr .kxr-overlap-card p{ font-size:1.15rem; }
+.kxr .kxr-overlap-card strong{ font-family:var(--kxr-head); font-weight:700; }
+
+/* =============================== SECTIONS =============================== */
+.kxr .kxr-section{ padding:110px 0; position:relative; }
+.kxr .kxr-head{ max-width:760px; margin:0 auto 60px; text-align:center; }
+.kxr .kxr-head p{ font-size:1.15rem; margin-top:18px; }
+.kxr .kxr-head.left{ margin-left:0; text-align:left; }
+
+/* two partners */
+.kxr .kxr-partners{ display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-bottom:90px; }
+.kxr .kxr-pcard{
+  border:1px solid var(--rw-silver); border-radius:8px; padding:40px; background:#fff; position:relative;
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.kxr .kxr-pcard:hover{ transform:translateY(-4px); box-shadow:0 24px 48px -28px rgba(25,48,90,.45); border-color:var(--rw-blue); }
+.kxr .kxr-pcard::before{ content:""; position:absolute; left:-1px; right:-1px; top:-1px; height:5px; border-radius:8px 8px 0 0; background:var(--rw-blue); }
+.kxr .kxr-pcard.kiba::before{ background:var(--kiba-blue); }
+.kxr .kxr-pcard-tag{ display:inline-block; font-family:var(--kxr-head); font-weight:700; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--rw-blue); background:#E8EFF9; padding:7px 12px; border-radius:4px; margin-bottom:22px; }
+.kxr .kxr-pcard.kiba .kxr-pcard-tag{ color:var(--kiba-blue); background:#ECEFFF; }
+.kxr .kxr-pcard h3{ font-size:1.6rem; margin-bottom:14px; }
+.kxr .kxr-pcard > p{ margin-bottom:22px; }
+.kxr .kxr-checks li{ display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-top:1px solid #E7EAEF; color:var(--rw-black); font-size:1.02rem; }
+.kxr .kxr-checks li:first-child{ border-top:0; }
+.kxr .kxr-checks svg{ flex:none; width:22px; height:22px; margin-top:2px; color:var(--rw-blue); }
+.kxr .kxr-pcard.kiba .kxr-checks svg{ color:var(--kiba-blue); }
+
+/* numbered steps (RivenWay's referral-page pattern) */
+.kxr .kxr-steps{ display:grid; grid-template-columns:repeat(4,1fr); gap:32px; position:relative; }
+.kxr .kxr-steps::before{ content:""; position:absolute; top:26px; left:12%; right:12%; height:2px; background:linear-gradient(90deg,var(--rw-navy),var(--rw-sky)); z-index:0; }
+.kxr .kxr-step{ position:relative; z-index:1; }
+.kxr .kxr-step-num{
+  width:54px; height:54px; border-radius:50%; background:var(--rw-navy); color:#fff; display:grid; place-items:center;
+  font-family:var(--kxr-head); font-weight:800; font-size:1.3rem; margin-bottom:22px; box-shadow:0 0 0 6px #fff;
+}
+.kxr .kxr-step.kiba .kxr-step-num{ background:var(--rw-blue); }
+.kxr .kxr-step-who{ font-family:var(--kxr-head); font-weight:700; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--rw-blue); margin-bottom:6px; }
+.kxr .kxr-step h3{ font-size:1.1rem; margin-bottom:10px; }
+.kxr .kxr-step p{ font-size:1rem; }
+
+/* form section */
+.kxr .kxr-start{ background:var(--rw-mist); }
+.kxr .kxr-wave{ position:absolute; left:0; right:0; width:100%; height:80px; display:block; }
+.kxr .kxr-wave.top{ top:-79px; }
+.kxr .kxr-start-grid{ display:grid; grid-template-columns:1fr 1.05fr; gap:64px; align-items:start; }
+.kxr .kxr-start-copy{ position:sticky; top:calc(var(--kxr-hdr) + 30px); }
+.kxr .kxr-start-copy h2{ margin-bottom:20px; }
+.kxr .kxr-start-copy > p{ font-size:1.15rem; margin-bottom:28px; }
+.kxr .kxr-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:40px; }
+.kxr .kxr-stat{ background:#fff; border:1px solid var(--rw-silver); border-radius:8px; padding:22px 18px; }
+.kxr .kxr-stat-num{ font-family:var(--kxr-head); font-weight:800; font-size:1.75rem; line-height:1; color:var(--rw-blue); margin-bottom:8px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.kxr .kxr-stat-label{ font-size:.95rem; color:var(--rw-grey); }
+.kxr .kxr-stats-note{ font-size:.85rem; margin-top:12px; color:var(--rw-grey); }
+.kxr .kxr-form-card{ background:#fff; border-radius:10px; padding:36px; box-shadow:0 30px 70px -40px rgba(25,48,90,.55); border-top:5px solid var(--rw-blue); }
+.kxr .kxr-form-card h3{ font-size:1.5rem; margin-bottom:8px; }
+.kxr .kxr-form-card > p{ font-size:1rem; margin-bottom:20px; }
+.kxr .kxr-form-embed{ border-radius:8px; overflow:hidden; min-height:640px; }
+.kxr .kxr-form-embed iframe{ display:block; width:100%; min-height:640px; border:none; }
+.kxr .kxr-form-foot{ display:flex; align-items:center; gap:8px; font-size:.9rem; margin-top:14px; }
+.kxr .kxr-form-foot svg{ width:16px; height:16px; color:var(--rw-blue); }
+
+/* programs: navy, angled top + bottom */
+.kxr .kxr-programs{
+  background:var(--rw-navy-deep); color:rgba(255,255,255,.85); padding:170px 0 180px;
+  clip-path:polygon(0 90px,100% 0,100% calc(100% - 90px),0 100%); margin:-40px 0;
+  isolation:isolate; overflow:hidden;
+}
+.kxr .kxr-programs::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:url('https://rivenway.com/wp-content/uploads/2026/08/rw-s7-bg.jpg') center/cover no-repeat; opacity:.55;
+}
+.kxr .kxr-programs h2{ color:#fff; }
+.kxr .kxr-programs .kxr-head p{ color:rgba(255,255,255,.8); }
+.kxr .kxr-prog-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.kxr .kxr-prog{
+  border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.03); border-radius:6px; padding:30px;
+  display:flex; flex-direction:column; transition:background-color .3s ease, border-color .3s ease, transform .3s ease;
+}
+.kxr .kxr-prog:hover{ background:rgba(82,181,230,.08); border-color:rgba(82,181,230,.55); transform:translateY(-4px); }
+.kxr .kxr-prog-icon{ width:52px; height:52px; border-radius:6px; background:var(--rw-blue); display:grid; place-items:center; margin-bottom:22px; }
+.kxr .kxr-prog-icon svg{ width:26px; height:26px; color:#fff; }
+.kxr .kxr-prog h3{ color:#fff; font-size:1.15rem; margin-bottom:12px; }
+.kxr .kxr-prog p{ font-size:1rem; flex:1; }
+.kxr .kxr-prog .kxr-more{ margin-top:18px; font-family:var(--kxr-head); font-weight:700; font-size:.9rem; color:var(--rw-sky); display:inline-flex; align-items:center; gap:8px; }
+.kxr .kxr-prog .kxr-more svg{ width:16px; height:16px; transition:transform .25s ease; }
+.kxr .kxr-prog:hover .kxr-more svg{ transform:translateX(4px); }
+.kxr .kxr-programs-foot{ text-align:center; margin-top:48px; font-size:1.1rem; color:#fff; font-family:var(--kxr-head); font-weight:600; font-style:italic; }
+
+/* what to expect */
+.kxr .kxr-expect-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.kxr .kxr-expect{
+  border:1px solid var(--rw-silver); border-radius:8px; padding:30px; background:#fff;
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.kxr .kxr-expect:hover{ transform:translateY(-4px); box-shadow:0 20px 40px -26px rgba(25,48,90,.45); border-color:var(--rw-blue); }
+.kxr .kxr-expect-icon{ width:46px; height:46px; border-radius:50%; background:#E8EFF9; color:var(--rw-blue); display:grid; place-items:center; margin-bottom:18px; }
+.kxr .kxr-expect-icon svg{ width:22px; height:22px; }
+.kxr .kxr-expect h3{ font-size:1.1rem; margin-bottom:8px; }
+.kxr .kxr-expect p{ font-size:1rem; }
+
+/* testimonials */
+.kxr .kxr-proof{ background:var(--rw-mist); }
+.kxr .kxr-feature{
+  display:grid; grid-template-columns:auto 1fr; gap:40px; align-items:start;
+  background:linear-gradient(120deg,var(--rw-navy) 0%,var(--rw-blue) 100%); color:#fff; border-radius:10px; padding:56px 60px; margin-bottom:28px;
+  position:relative; overflow:hidden;
+}
+.kxr .kxr-feature::after{ content:""; position:absolute; right:-80px; top:-80px; width:360px; height:360px; background:url('https://rivenway.com/wp-content/uploads/2026/08/rw-footer-logo.png') center/contain no-repeat; opacity:.07; }
+.kxr .kxr-feature-quote{ font-family:var(--kxr-head); font-size:4.5rem; line-height:.8; color:var(--rw-sky); font-weight:800; }
+.kxr .kxr-feature blockquote{ margin:0; font-family:var(--kxr-head); font-weight:600; font-size:clamp(1.15rem,1.8vw,1.45rem); line-height:1.5; color:#fff; position:relative; z-index:1; }
+.kxr .kxr-feature figcaption{ margin-top:26px; display:flex; align-items:center; gap:14px; position:relative; z-index:1; }
+.kxr .kxr-feature figcaption img{ width:44px; height:44px; }
+.kxr .kxr-feature cite{ font-style:normal; display:block; font-family:var(--kxr-head); font-weight:700; color:#fff; }
+.kxr .kxr-feature cite span{ display:block; font-family:var(--kxr-body); font-weight:400; color:rgba(255,255,255,.75); font-size:.95rem; }
+.kxr .kxr-quotes{ columns:3; column-gap:22px; }
+.kxr .kxr-quote{
+  break-inside:avoid; margin:0 0 22px; background:#fff; border:1px solid var(--rw-silver); border-radius:8px; padding:28px;
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+.kxr .kxr-quote:hover{ transform:translateY(-3px); box-shadow:0 20px 40px -28px rgba(25,48,90,.45); }
+.kxr .kxr-quote blockquote{ margin:0; font-size:1rem; color:var(--rw-black); font-style:italic; }
+.kxr .kxr-quote blockquote p{ margin:0 0 .8em; }
+.kxr .kxr-quote blockquote p:last-child{ margin:0; }
+.kxr .kxr-quote figcaption{ margin-top:18px; padding-top:16px; border-top:1px solid #E7EAEF; display:flex; align-items:center; gap:12px; }
+.kxr .kxr-avatar{ width:40px; height:40px; border-radius:50%; background:var(--rw-navy); color:#fff; display:grid; place-items:center; font-family:var(--kxr-head); font-weight:700; font-size:.85rem; flex:none; }
+.kxr .kxr-avatar svg{ width:20px; height:20px; }
+.kxr .kxr-quote cite{ font-style:normal; font-family:var(--kxr-head); font-weight:700; color:var(--rw-ink); font-size:.95rem; }
+.kxr .kxr-quote cite span{ display:block; font-family:var(--kxr-body); font-weight:400; color:var(--rw-grey); font-size:.88rem; }
+
+/* FAQ */
+.kxr .kxr-faq{ max-width:860px; margin:0 auto; }
+.kxr .kxr-faq details{ border-bottom:1px solid #E1E5EB; }
+.kxr .kxr-faq summary{
+  list-style:none; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:20px;
+  padding:24px 4px; font-family:var(--kxr-head); font-weight:700; font-size:1.1rem; color:var(--rw-ink);
+}
+.kxr .kxr-faq summary::-webkit-details-marker{ display:none; }
+.kxr .kxr-faq summary:hover{ color:var(--rw-blue); }
+.kxr .kxr-plus{ position:relative; width:18px; height:18px; flex:none; }
+.kxr .kxr-plus::before,.kxr .kxr-plus::after{ content:""; position:absolute; left:0; right:0; top:8px; height:2px; background:var(--rw-blue); transition:transform .25s ease; }
+.kxr .kxr-plus::after{ transform:rotate(90deg); }
+.kxr .kxr-faq details[open] .kxr-plus::after{ transform:rotate(0); }
+.kxr .kxr-faq .kxr-faq-a{ padding:0 4px 26px; font-size:1.05rem; max-width:760px; }
+
+/* final CTA */
+.kxr .kxr-final{
+  background:var(--rw-navy-deep); color:#fff; text-align:center; padding:160px 0 150px; position:relative; overflow:hidden; isolation:isolate;
+  clip-path:polygon(0 90px,100% 0,100% 100%,0 100%);
+}
+.kxr .kxr-final::before{ content:""; position:absolute; inset:0; z-index:-2; background:url('https://rivenway.com/wp-content/uploads/2026/08/rw-s10-bg.jpg') center bottom/cover no-repeat; opacity:.8; }
+.kxr .kxr-helm{ position:absolute; left:50%; top:50%; width:760px; height:760px; transform:translate(-50%,-46%); z-index:-1; color:var(--rw-sky); opacity:.12; }
+.kxr.kxr-anim .kxr-helm{ animation:kxrHelm 90s linear infinite; }
+@keyframes kxrHelm{ to{ transform:translate(-50%,-46%) rotate(360deg); } }
+.kxr .kxr-final h2{ color:#fff; max-width:820px; margin:0 auto 20px; }
+.kxr .kxr-final > .kxr-wrap > p{ max-width:620px; margin:0 auto 38px; font-size:1.15rem; color:rgba(255,255,255,.85); }
+.kxr .kxr-final .kxr-cta-row{ justify-content:center; }
+.kxr .kxr-tagline{ font-family:var(--kxr-head); font-weight:800; font-size:clamp(1.6rem,3vw,2.2rem); color:var(--rw-sky); margin-top:70px; }
+.kxr .kxr-contact-row{ display:flex; justify-content:center; flex-wrap:wrap; gap:14px 32px; margin-top:26px; font-size:1rem; color:rgba(255,255,255,.8); }
+.kxr .kxr-contact-row a{ display:inline-flex; align-items:center; gap:8px; }
+.kxr .kxr-contact-row a:hover{ color:#fff; }
+.kxr .kxr-contact-row svg{ width:18px; height:18px; color:var(--rw-sky); }
+
+/* ================================ FOOTER ================================ */
+.kxr .kxr-footer{ background:var(--rw-navy-deep); color:#fff; padding:100px 0 0; border-top:1px solid rgba(255,255,255,.08); }
+.kxr .kxr-footer-grid{ display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; gap:40px; padding-bottom:60px; }
+.kxr .kxr-footer-brand img{ width:96px; height:96px; margin-bottom:26px; }
+.kxr .kxr-footer-brand p{ font-size:16px; max-width:260px; }
+.kxr .kxr-footer h4{ font-family:var(--kxr-body); font-weight:400; font-size:16px; text-transform:uppercase; color:#fff; margin-bottom:22px; letter-spacing:0; }
+.kxr .kxr-footer li{ margin-bottom:20px; font-size:16px; }
+.kxr .kxr-footer li a:hover{ color:var(--rw-sky); }
+.kxr .kxr-footer-cobrand{ display:flex; align-items:center; gap:22px; padding:26px 0; border-top:1px solid rgba(255,255,255,.1); font-size:15px; color:rgba(255,255,255,.72); flex-wrap:wrap; }
+.kxr .kxr-footer-cobrand .kxr-kiba-logo{ width:84px; }
+.kxr .kxr-footer-cobrand a:hover{ color:#fff; }
+.kxr .kxr-footer-bottom{ display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; padding:28px 0 36px; border-top:1px solid rgba(255,255,255,.1); font-size:16px; }
+.kxr .kxr-footer-bottom span:last-child{ color:rgba(255,255,255,.55); }
+
+/* ================================ MOTION ================================ */
+.kxr.kxr-anim .kxr-rv{ opacity:0; transform:translateY(26px); transition:opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1); }
+.kxr.kxr-anim .kxr-rv.is-in{ opacity:1; transform:none; }
+.kxr.kxr-anim .kxr-rv.d1{ transition-delay:.08s; } .kxr.kxr-anim .kxr-rv.d2{ transition-delay:.16s; }
+.kxr.kxr-anim .kxr-rv.d3{ transition-delay:.24s; } .kxr.kxr-anim .kxr-rv.d4{ transition-delay:.32s; }
+.kxr.kxr-anim .kxr-rv.d5{ transition-delay:.40s; }
+@media (prefers-reduced-motion:reduce){
+  .kxr *,.kxr *::before,.kxr *::after{ transition-duration:.001ms !important; animation:none !important; }
+}
+
+/* ============================== RESPONSIVE ============================== */
+@media (max-width:1024px){
+  .kxr .kxr-steps{ grid-template-columns:1fr 1fr; row-gap:44px; }
+  .kxr .kxr-steps::before{ display:none; }
+  .kxr .kxr-prog-grid,.kxr .kxr-expect-grid{ grid-template-columns:1fr 1fr; }
+  .kxr .kxr-quotes{ columns:2; }
+  .kxr .kxr-start-grid{ grid-template-columns:1fr; gap:48px; }
+  .kxr .kxr-start-copy{ position:static; }
+  .kxr .kxr-footer-grid{ grid-template-columns:1fr 1fr; }
+}
+@media (max-width:760px){
+  .kxr{ font-size:17px; }
+  .kxr .kxr-hero{ padding:calc(var(--kxr-hdr) + 50px) 0 150px; min-height:0; clip-path:polygon(0 0,100% 0,100% 100%,0 calc(100% - 50px)); }
+  .kxr .kxr-hero-photo{ left:0; background-position:40% 20%; }
+  .kxr .kxr-hero h1 .kxr-accent{ white-space:normal; }
+  .kxr .kxr-link{ width:100%; justify-content:space-between; }
+  .kxr .kxr-hero::before{ background:linear-gradient(0deg, rgba(0,21,72,.96) 0%, rgba(0,21,72,.86) 55%, rgba(0,21,72,.6) 100%); }
+  .kxr .kxr-overlap{ margin-top:-110px; }
+  .kxr .kxr-overlap-card{ grid-template-columns:1fr; gap:22px; padding:30px 26px; }
+  .kxr .kxr-section{ padding:80px 0; }
+  .kxr .kxr-partners,.kxr .kxr-steps,.kxr .kxr-prog-grid,.kxr .kxr-expect-grid{ grid-template-columns:1fr; }
+  .kxr .kxr-pcard{ padding:30px 24px; }
+  .kxr .kxr-stats{ grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .kxr .kxr-stat{ padding:16px 12px; }
+  .kxr .kxr-stat-num{ font-size:1.2rem; }
+  .kxr .kxr-form-card{ padding:24px 18px; }
+  .kxr .kxr-programs{ padding:130px 0 140px; clip-path:polygon(0 50px,100% 0,100% calc(100% - 50px),0 100%); }
+  .kxr .kxr-feature{ grid-template-columns:1fr; gap:10px; padding:40px 28px; }
+  .kxr .kxr-quotes{ columns:1; }
+  .kxr .kxr-final{ padding:120px 0 110px; clip-path:polygon(0 50px,100% 0,100% 100%,0 100%); }
+  .kxr .kxr-helm{ width:520px; height:520px; }
+  .kxr .kxr-footer-grid{ grid-template-columns:1fr; }
+  .kxr .kxr-cta-row .kxr-btn{ width:100%; }
+}
+</style>
+
+<div class="kxr" id="kxr">
+
+  <!-- ============================ HEADER ============================ -->
+  <!-- Modeled on rivenway.com's Elementor header. Links are RivenWay's own. -->
+  <header class="kxr-header" id="kxr-header">
+    <div class="kxr-header-inner">
+      <a class="kxr-logo" href="https://rivenway.com/" aria-label="RivenWay Business Solutions home">
+        <img src="https://rivenway.com/wp-content/uploads/2026/08/rivenway-logo.png" alt="RivenWay Business Solutions" width="255" height="59">
+      </a>
+      <nav aria-label="Main">
+        <ul class="kxr-menu">
+          <li><a href="https://rivenway.com/financial-review-page/">Financial Review</a></li>
+          <li><a href="https://rivenway.com/take-the-helm/">Take the Helm</a></li>
+          <li><a href="https://rivenway.com/who-we-serve/">Who We Serve</a></li>
+          <li><a href="https://rivenway.com/client-results/">Client Results</a></li>
+          <li class="kxr-has-sub">
+            <button type="button" aria-expanded="false" aria-controls="kxr-sub-issues">Business Issues<span class="kxr-caret" aria-hidden="true"></span></button>
+            <ul class="kxr-sub" id="kxr-sub-issues">
+              <li><a href="https://rivenway.com/personal-credit-carrying-business-weight/">Personal Credit Carrying Business Weight</a></li>
+              <li><a href="https://rivenway.com/wrong-capital-stack/">Wrong Capital Stack</a></li>
+              <li><a href="https://rivenway.com/business-credit-report-errors/">Business Credit Report Errors</a></li>
+              <li><a href="https://rivenway.com/payment-history-not-building-business-credit/">Payment History Not Building Business Credit</a></li>
+              <li><a href="https://rivenway.com/financial-infrastructure-for-growing-businesses/">Financial Infrastructure for Growing Businesses</a></li>
+            </ul>
+          </li>
+          <li class="kxr-has-sub">
+            <button type="button" aria-expanded="false" aria-controls="kxr-sub-services">Services<span class="kxr-caret" aria-hidden="true"></span></button>
+            <ul class="kxr-sub" id="kxr-sub-services">
+              <li><a href="https://rivenway.com/hvac/">HVAC</a></li>
+              <li><a href="https://rivenway.com/plumbing/">Plumbing</a></li>
+              <li><a href="https://rivenway.com/electrical/">Electrical</a></li>
+              <li><a href="https://rivenway.com/roofing/">Roofing</a></li>
+              <li><a href="https://rivenway.com/landscaping/">Landscaping</a></li>
+              <li><a href="https://rivenway.com/construction/">Construction</a></li>
+            </ul>
+          </li>
+          <li><a href="https://rivenway.com/why-we-exist/">About Us</a></li>
+          <li><a href="https://rivenway.com/book-a-call/">Contact</a></li>
+        </ul>
+      </nav>
+      <a class="kxr-btn" href="https://rivenway.com/book-a-call/">Book a Call</a>
+      <button type="button" class="kxr-burger" id="kxr-burger" aria-expanded="false" aria-controls="kxr-sheet" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="kxr-sheet" id="kxr-sheet" aria-label="Menu">
+    <ul>
+      <li><a href="https://rivenway.com/financial-review-page/">Financial Review</a></li>
+      <li><a href="https://rivenway.com/take-the-helm/">Take the Helm</a></li>
+      <li><a href="https://rivenway.com/who-we-serve/">Who We Serve</a></li>
+      <li><a href="https://rivenway.com/client-results/">Client Results</a></li>
+      <li>
+        <button type="button" class="kxr-acc" aria-expanded="false">Business Issues<span class="kxr-caret" aria-hidden="true"></span></button>
+        <div class="kxr-acc-panel">
+          <a href="https://rivenway.com/personal-credit-carrying-business-weight/">Personal Credit Carrying Business Weight</a>
+          <a href="https://rivenway.com/wrong-capital-stack/">Wrong Capital Stack</a>
+          <a href="https://rivenway.com/business-credit-report-errors/">Business Credit Report Errors</a>
+          <a href="https://rivenway.com/payment-history-not-building-business-credit/">Payment History Not Building Business Credit</a>
+          <a href="https://rivenway.com/financial-infrastructure-for-growing-businesses/">Financial Infrastructure for Growing Businesses</a>
+        </div>
+      </li>
+      <li>
+        <button type="button" class="kxr-acc" aria-expanded="false">Services<span class="kxr-caret" aria-hidden="true"></span></button>
+        <div class="kxr-acc-panel">
+          <a href="https://rivenway.com/hvac/">HVAC</a>
+          <a href="https://rivenway.com/plumbing/">Plumbing</a>
+          <a href="https://rivenway.com/electrical/">Electrical</a>
+          <a href="https://rivenway.com/roofing/">Roofing</a>
+          <a href="https://rivenway.com/landscaping/">Landscaping</a>
+          <a href="https://rivenway.com/construction/">Construction</a>
+        </div>
+      </li>
+      <li><a href="https://rivenway.com/why-we-exist/">About Us</a></li>
+      <li><a href="https://rivenway.com/book-a-call/">Contact</a></li>
+    </ul>
+    <a class="kxr-btn" href="https://rivenway.com/book-a-call/">Book a Call</a>
+  </div>
+
+  <main>
+    <!-- ============================= HERO ============================= -->
+    <section class="kxr-hero" id="kxr-hero" aria-labelledby="kxr-h1">
+      <div class="kxr-hero-photo" role="img" aria-label="An operator in blue workwear reviewing a tablet on the shop floor"></div>
+      <svg class="kxr-hero-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#kxr-helm-shape"/></svg>
+      <div class="kxr-wrap">
+        <div class="kxr-hero-inner">
+          <div class="kxr-eyebrow on-dark kxr-rv">RivenWay × KIBA &middot; When the next move is capital</div>
+          <h1 id="kxr-h1" data-split>First the foundation. Then the <span class="kxr-accent">right capital</span>.</h1>
+          <div class="kxr-hero-copy kxr-rv d2">
+            <p>RivenWay helps owners clean up the financial picture and build what is missing. When the next step is borrowing, we bring in Kingdom Impact Business Advisors.</p>
+            <p>KIBA looks at whether capital makes sense first, then maps the financing that fits. No pressure, no obligation on any option they present.</p>
+          </div>
+          <div class="kxr-cta-row kxr-rv d3">
+            <a class="kxr-btn" href="#kxr-start">Start the Conversation</a>
+            <a class="kxr-link" href="#kxr-how">See How the Partnership Works
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="kxr-lockup kxr-rv d4">
+            <span class="kxr-lockup-label">Capital partner</span>
+            <span class="kxr-lockup-x" aria-hidden="true"></span>
+            <span class="kxr-kiba-logo" role="img" aria-label="Kingdom Impact Business Advisors"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- overlap card (the blue box RivenWay's homepage uses under its hero) -->
+    <div class="kxr-overlap">
+      <div class="kxr-wrap">
+        <div class="kxr-overlap-card kxr-rv">
+          <span class="kxr-kiba-logo" role="img" aria-label="Kingdom Impact Business Advisors"></span>
+          <p><strong>RivenWay recommends KIBA to the business owners they work with.</strong> Same standard of care, start to finish.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================= TWO PARTNERS ======================= -->
+    <section class="kxr-section" id="kxr-how" aria-labelledby="kxr-how-h">
+      <div class="kxr-wrap">
+        <div class="kxr-head kxr-rv">
+          <div class="kxr-eyebrow">How the partnership works</div>
+          <h2 id="kxr-how-h">Two partners. <span class="kxr-accent-blue">One path forward.</span></h2>
+          <p>Capital works best on a clean foundation. RivenWay builds it. KIBA helps you put it to work when the time is right.</p>
+        </div>
+
+        <div class="kxr-partners">
+          <article class="kxr-pcard kxr-rv">
+            <span class="kxr-pcard-tag">RivenWay &middot; Capital readiness</span>
+            <h3>Get the full picture right first.</h3>
+            <p>Before anything is recommended, RivenWay reviews the business the way a banker or underwriter would.</p>
+            <ul class="kxr-checks">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>Clean up what is inaccurate</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>Untangle what should not still be connected</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>Identify what is actually creating friction</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>Build the strongest next path forward</li>
+            </ul>
+          </article>
+          <article class="kxr-pcard kiba kxr-rv d2">
+            <span class="kxr-pcard-tag">KIBA &middot; Capital access</span>
+            <h3>Then find the financing that fits.</h3>
+            <p>We assess whether capital makes sense first &mdash; before ever discussing a specific path.</p>
+            <ul class="kxr-checks">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>Financing options structured around your actual cash flow and long-term goals.</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>Expert insight and loan recommendations delivered in 24&ndash;72 hours, not weeks.</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>You work directly with an advisor who stays involved from first call to close.</li>
+            </ul>
+          </article>
+        </div>
+
+        <ol class="kxr-steps" aria-label="The four steps">
+          <li class="kxr-step kxr-rv">
+            <div class="kxr-step-num">1</div>
+            <div class="kxr-step-who">RivenWay</div>
+            <h3>The full picture gets reviewed.</h3>
+            <p>Cash flow, debt structure, banking relationships, the business credit profile and personal guarantees, before any recommendation.</p>
+          </li>
+          <li class="kxr-step kxr-rv d1">
+            <div class="kxr-step-num">2</div>
+            <div class="kxr-step-who">RivenWay</div>
+            <h3>The foundation gets built.</h3>
+            <p>What is broken gets fixed and what is missing gets built, so you walk into a lending conversation with leverage and options.</p>
+          </li>
+          <li class="kxr-step kiba kxr-rv d2">
+            <div class="kxr-step-num">3</div>
+            <div class="kxr-step-who">RivenWay + KIBA</div>
+            <h3>KIBA joins the conversation.</h3>
+            <p>When the next move involves capital, RivenWay introduces you to KIBA&rsquo;s advisory team.</p>
+          </li>
+          <li class="kxr-step kiba kxr-rv d3">
+            <div class="kxr-step-num">4</div>
+            <div class="kxr-step-who">KIBA</div>
+            <h3>Your options, mapped.</h3>
+            <p>Every situation is reviewed individually, with guidance matched to the right next step.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========================= FORM ========================= -->
+    <section class="kxr-section kxr-start" id="kxr-start" aria-labelledby="kxr-start-h">
+      <svg class="kxr-wave top" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F3F5F8" d="M0 80V46c120-22 240-34 360-30s240 26 360 30 240-8 360-22 240-22 360-10v66Z"/></svg>
+      <div class="kxr-wrap kxr-start-grid">
+        <div class="kxr-start-copy kxr-rv">
+          <div class="kxr-eyebrow">Get started</div>
+          <h2 id="kxr-start-h">Ready to talk capital? <span class="kxr-accent-blue">Start here.</span></h2>
+          <p>Share a few details and a member of KIBA&rsquo;s team will reach out within 24&ndash;72 hours to talk through your options.</p>
+          <ul class="kxr-checks">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>No pressure, no obligation on any option we present.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="m8 12.5 2.6 2.6L16 9.6"/></svg>Straightforward answers so you can move forward with confidence.</li>
+          </ul>
+          <div class="kxr-stats">
+            <div class="kxr-stat"><div class="kxr-stat-num" data-count="50" data-suffix="+">50+</div><div class="kxr-stat-label">States Served</div></div>
+            <div class="kxr-stat"><div class="kxr-stat-num" data-count="100" data-prefix="$" data-suffix="M+">$100M+</div><div class="kxr-stat-label">Capital Accessed</div></div>
+            <div class="kxr-stat"><div class="kxr-stat-num">24&ndash;72h</div><div class="kxr-stat-label">Guidance Time</div></div>
+          </div>
+          <p class="kxr-stats-note">Figures are KIBA&rsquo;s.</p>
+        </div>
+
+        <div class="kxr-form-card kxr-rv d2">
+          <h3>Tell us about your business</h3>
+          <p>This goes straight to KIBA&rsquo;s team as a RivenWay referral.</p>
+          <div class="kxr-form-embed">
+            <iframe
+              src="https://api.leadconnectorhq.com/widget/form/a7Jl5YHY3tyDzwGxpX1w"
+              title="REFERRAL - Rivenway"
+              id="inline-a7Jl5YHY3tyDzwGxpX1w"
+              data-layout="{'id':'INLINE'}"
+              data-trigger-type="alwaysShow"
+              data-activation-type="alwaysActivated"
+              data-deactivation-type="neverDeactivate"
+              data-form-name="REFERRAL - Rivenway"
+              data-form-id="a7Jl5YHY3tyDzwGxpX1w"
+              data-layout-iframe-id="inline-a7Jl5YHY3tyDzwGxpX1w"
+              scrolling="no"
+              loading="lazy"></iframe>
+          </div>
+          <div class="kxr-form-foot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            Your information is kept private and secure.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= PROGRAMS (navy) ======================= -->
+    <section class="kxr-programs" aria-labelledby="kxr-prog-h">
+      <div class="kxr-wrap">
+        <div class="kxr-head kxr-rv">
+          <div class="kxr-eyebrow on-dark">What KIBA can help you access</div>
+          <h2 id="kxr-prog-h">The right tool for the job. <span class="kxr-accent">Not the easiest one to sell.</span></h2>
+          <p>Six kinds of financing, each with a job it does well and a situation it doesn&rsquo;t fit. KIBA will tell you which is which.</p>
+        </div>
+        <div class="kxr-prog-grid">
+          <a class="kxr-prog kxr-rv" href="https://go.kibadvisors.com/capital-solutions/sba-loans" target="_blank" rel="noopener">
+            <div class="kxr-prog-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10M19 21V10M9 21v-7M15 21v-7M12 3 3 8h18Z"/></svg></div>
+            <h3>SBA Loans</h3>
+            <p>SBA loans can offer longer terms and lower monthly payments, but they also come with more structure and a longer approval process. They tend to work best for stable businesses with steady cash flow and clear long-term plans.</p>
+            <span class="kxr-more">Learn more at KIBA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="kxr-prog kxr-rv d1" href="https://go.kibadvisors.com/capital-solutions/business-acquisition-loans" target="_blank" rel="noopener">
+            <div class="kxr-prog-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M2 21h20M8 7h4M8 11h4M8 15h4"/></svg></div>
+            <h3>Business Acquisition Loans</h3>
+            <p>Buying another business is about more than getting approved. The numbers have to hold up, and the deal needs to strengthen&mdash;not strain&mdash;your existing operation.</p>
+            <span class="kxr-more">Learn more at KIBA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="kxr-prog kxr-rv d2" href="https://go.kibadvisors.com/capital-solutions/term-loans" target="_blank" rel="noopener">
+            <div class="kxr-prog-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 15.5l2 2 4-4"/></svg></div>
+            <h3>Term Loans</h3>
+            <p>Term loans work best when there&rsquo;s a clear purpose, such as expansion, refinancing, or stabilizing cash flow, and when payments fit comfortably into the business. Approval matters less than sustainability.</p>
+            <span class="kxr-more">Learn more at KIBA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="kxr-prog kxr-rv" href="https://go.kibadvisors.com/capital-solutions/equipment-financing" target="_blank" rel="noopener">
+            <div class="kxr-prog-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
+            <h3>Equipment Financing</h3>
+            <p>Equipment financing can be a good option when the equipment directly supports revenue or efficiency. The key is making sure the asset truly earns its place on the balance sheet.</p>
+            <span class="kxr-more">Learn more at KIBA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="kxr-prog kxr-rv d1" href="https://go.kibadvisors.com/capital-solutions/commercial-real-estate-loans" target="_blank" rel="noopener">
+            <div class="kxr-prog-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V9l6-5 6 5v12M10 21v-5h4v5M10 11h4"/></svg></div>
+            <h3>Commercial &amp; Investment Real Estate Loans</h3>
+            <p>Owning property can be a strong long-term move, but it can also tie up cash and reduce flexibility.</p>
+            <span class="kxr-more">Learn more at KIBA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="kxr-prog kxr-rv d2" href="https://go.kibadvisors.com/capital-solutions/lines-of-credit" target="_blank" rel="noopener">
+            <div class="kxr-prog-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2M3 12a9 9 0 0 1 15.5-6.2"/><path d="M21 4v5h-5M3 20v-5h5"/></svg></div>
+            <h3>Revolving Lines of Credit</h3>
+            <p>Lines of credit can provide flexibility, but they&rsquo;re often misunderstood. Used wisely, they help smooth timing gaps. Used incorrectly, they can hide deeper cash flow issues.</p>
+            <span class="kxr-more">Learn more at KIBA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+        <p class="kxr-programs-foot kxr-rv">Sometimes the honest answer is &ldquo;not yet.&rdquo; That&rsquo;s a real answer too.</p>
+      </div>
+    </section>
+
+    <!-- ======================= WHAT TO EXPECT ======================= -->
+    <section class="kxr-section" aria-labelledby="kxr-exp-h" style="padding-top:150px">
+      <div class="kxr-wrap">
+        <div class="kxr-head kxr-rv">
+          <div class="kxr-eyebrow">Working with KIBA</div>
+          <h2 id="kxr-exp-h">What to expect <span class="kxr-accent-blue">once you&rsquo;re in the room.</span></h2>
+          <p>Every business KIBA works with gets the same disciplined, transparent process.</p>
+        </div>
+        <div class="kxr-expect-grid">
+          <div class="kxr-expect kxr-rv"><div class="kxr-expect-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div><h3>Flexible Solutions</h3><p>Financing options structured around your actual cash flow and long-term goals.</p></div>
+          <div class="kxr-expect kxr-rv d1"><div class="kxr-expect-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><h3>Dedicated Support</h3><p>You work directly with an advisor who stays involved from first call to close.</p></div>
+          <div class="kxr-expect kxr-rv d2"><div class="kxr-expect-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></div><h3>Transparent Process</h3><p>Straightforward communication and clear expectations &mdash; no hidden fees, no surprises.</p></div>
+          <div class="kxr-expect kxr-rv"><div class="kxr-expect-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M10 2h4"/></svg></div><h3>Quick Guidance</h3><p>Expert insight and loan recommendations delivered in 24&ndash;72 hours, not weeks.</p></div>
+          <div class="kxr-expect kxr-rv d1"><div class="kxr-expect-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5Z"/></svg></div><h3>Tailored Strategy</h3><p>Every situation is reviewed individually, with guidance matched to the right next step.</p></div>
+          <div class="kxr-expect kxr-rv d2"><div class="kxr-expect-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V6Z"/><path d="m9 12 2 2 4-4"/></svg></div><h3>Clear, Honest Guidance</h3><p>We assess whether capital makes sense first &mdash; before ever discussing a specific path.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= TESTIMONIALS ======================= -->
+    <!-- All six are real KIBA client testimonials, verbatim (Paul Childers is
+         the featured one). Do not add, reword or add star ratings — none were
+         given. The first card's client asked not to be named. -->
+    <section class="kxr-section kxr-proof" aria-labelledby="kxr-proof-h">
+      <div class="kxr-wrap">
+        <div class="kxr-head kxr-rv">
+          <div class="kxr-eyebrow">In their words</div>
+          <h2 id="kxr-proof-h">Why RivenWay sends owners <span class="kxr-accent-blue">to KIBA.</span></h2>
+        </div>
+
+        <figure class="kxr-feature kxr-rv">
+          <div class="kxr-feature-quote" aria-hidden="true">&ldquo;</div>
+          <div>
+            <blockquote>We continue to work with Michael because of his deep experience in the lending space and his genuine commitment to doing what&rsquo;s right for each client. He consistently goes above and beyond, giving every file the care and attention it deserves. That level of effort and integrity is why we confidently refer our clients to him whenever the need arises.</blockquote>
+            <figcaption>
+              <img src="https://rivenway.com/wp-content/uploads/2026/08/rw-footer-logo.png" alt="" width="44" height="44">
+              <cite>Paul Childers<span>Founder, RivenWay Business Solutions</span></cite>
+            </figcaption>
+          </div>
+        </figure>
+
+        <div class="kxr-quotes">
+          <figure class="kxr-quote kxr-rv">
+            <blockquote>
+              <p>Michael has been great to work with. Communication is always quick, and he genuinely looks out for my best interests rather than just trying to make a quick buck.</p>
+              <p>I talked with several other bankers before working with Michael, and most of them immediately pushed short-term loans and MCAs with high fees and aggressive payback terms. Michael took a completely different approach. He helped me find the funding I actually needed and guided me through the SBA process.</p>
+              <p>I expected the SBA process to be long and complicated, but Michael made it surprisingly smooth and moved things along much faster than I expected. He stayed on top of everything, communicated throughout the process, and kept things moving from start to finish.</p>
+              <p>It is hard to find a banker who takes the time to understand your situation and focuses on what is actually best for you. I highly recommend Michael to any business owner looking for financing.</p>
+            </blockquote>
+            <figcaption>
+              <span class="kxr-avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+              <cite>Business Owner<span>SBA Loan Client</span></cite>
+            </figcaption>
+          </figure>
+          <figure class="kxr-quote kxr-rv d1">
+            <blockquote>
+              <p>I recently worked with Michael and his team at Kingdom Impact Business Advisors to secure a new SBA loan, and the entire experience was excellent. The process was simple, and straightforward from start to finish. Michael was easy to work with, communicated clearly, and made what can normally be a stressful and complicated process feel effortless.</p>
+              <p>Everything moved along smoothly, and I always knew where things stood. I would highly recommend Michael and Kingdom Impact Business Advisors to any business owner looking for financing or help navigating the SBA loan process. Great experience all around!</p>
+            </blockquote>
+            <figcaption><span class="kxr-avatar" aria-hidden="true">RJ</span><cite>Russell J.<span>SBA Loan Client</span></cite></figcaption>
+          </figure>
+          <figure class="kxr-quote kxr-rv d2">
+            <blockquote><p>Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout. He made an otherwise stressful process easy and successful! Highly recommend his services!</p></blockquote>
+            <figcaption><span class="kxr-avatar" aria-hidden="true">NR</span><cite>Nick R.<span>SBA Loan Client</span></cite></figcaption>
+          </figure>
+          <figure class="kxr-quote kxr-rv">
+            <blockquote><p>Michael was excellent in trying to find every possible solution for my funding needs. He stayed connected to the deal at all times to make sure we got to the closing table.</p></blockquote>
+            <figcaption><span class="kxr-avatar" aria-hidden="true">RR</span><cite>Richard R.<span>Business Funding Client</span></cite></figcaption>
+          </figure>
+          <figure class="kxr-quote kxr-rv d1">
+            <blockquote><p>Michael &amp; Barbara helped us navigate the complexities of an SBA loan. They were patient and proficient with their work, and made the process extremely easy. I would work with them again.</p></blockquote>
+            <figcaption><span class="kxr-avatar" aria-hidden="true">RG</span><cite>Raul G.<span>SBA Loan Client</span></cite></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ FAQ ============================ -->
+    <!-- Verbatim from KIBA's FAQ (answers about fees/timelines/documents). -->
+    <section class="kxr-section" aria-labelledby="kxr-faq-h">
+      <div class="kxr-wrap">
+        <div class="kxr-head kxr-rv">
+          <div class="kxr-eyebrow">Before you reach out</div>
+          <h2 id="kxr-faq-h">Frequently Asked Questions</h2>
+        </div>
+        <div class="kxr-faq kxr-rv">
+          <details open>
+            <summary>How long does the process take?<span class="kxr-plus" aria-hidden="true"></span></summary>
+            <div class="kxr-faq-a">Most clients receive guidance and lender recommendations within 24&ndash;72 hours. The exact timeline for approval depends on the lender and type of financing.</div>
+          </details>
+          <details>
+            <summary>Are there any hidden fees?<span class="kxr-plus" aria-hidden="true"></span></summary>
+            <div class="kxr-faq-a">Absolutely not. Our guidance is transparent, and we help you understand all terms and costs before connecting you with a lender.</div>
+          </details>
+          <details>
+            <summary>What types of financing can I access?<span class="kxr-plus" aria-hidden="true"></span></summary>
+            <div class="kxr-faq-a">We help you connect with SBA loans, term loans, business acquisition loans, equipment financing, commercial real estate solutions and revolving lines of credit.</div>
+          </details>
+          <details>
+            <summary>What documents will I need to apply?<span class="kxr-plus" aria-hidden="true"></span></summary>
+            <div class="kxr-faq-a">Basic requirements include 3&ndash;6 months of business bank statements, recent tax returns (business and personal), profit &amp; loss statements, balance sheet, business license, and a voided business check. For larger loans or SBA programs, additional documentation may be required.</div>
+          </details>
+          <details>
+            <summary>Will I have support through the process?<span class="kxr-plus" aria-hidden="true"></span></summary>
+            <div class="kxr-faq-a">Absolutely. You&rsquo;ll work with a dedicated loan specialist who guides you from eligibility assessment to lender communication, application submission, and final approval.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================== FINAL CTA ========================== -->
+    <section class="kxr-final" aria-labelledby="kxr-final-h">
+      <svg class="kxr-helm" viewBox="0 0 100 100" aria-hidden="true"><use href="#kxr-helm-shape"/></svg>
+      <div class="kxr-wrap">
+        <h2 id="kxr-final-h" class="kxr-rv">Get the full picture <span class="kxr-accent">before the next financial move.</span></h2>
+        <p class="kxr-rv d1">Clear, honest guidance on your next step. If capital isn&rsquo;t the right move yet, you&rsquo;ll hear that too.</p>
+        <div class="kxr-cta-row kxr-rv d2">
+          <a class="kxr-btn sky" href="#kxr-start">Start the Conversation</a>
+          <a class="kxr-btn ghost" href="tel:2512108445">Call KIBA</a>
+        </div>
+        <div class="kxr-contact-row kxr-rv d3">
+          <a href="tel:2512108445"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.4 2.1L8 9.9a16 16 0 0 0 6 6l1.4-1.4a2 2 0 0 1 2.1-.4c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.8 2Z"/></svg>251-210-8445</a>
+          <a href="mailto:info@kibadvisors.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>info@kibadvisors.com</a>
+        </div>
+        <div class="kxr-tagline kxr-rv d4">Command your own path.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ FOOTER ============================ -->
+  <!-- RivenWay's footer, plus one co-brand row for KIBA. -->
+  <footer class="kxr-footer">
+    <div class="kxr-wrap">
+      <div class="kxr-footer-grid">
+        <div class="kxr-footer-brand">
+          <img src="https://rivenway.com/wp-content/uploads/2026/08/rw-footer-logo.png" alt="RivenWay" width="96" height="96">
+          <p>The pathway forward from fragmentation. We help owners in the trades and home services command their own path.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="https://rivenway.com/financial-review-page/">Financial Review</a></li>
+            <li><a href="https://rivenway.com/take-the-helm/">Take the Helm</a></li>
+            <li><a href="https://rivenway.com/who-we-serve/">Who We Serve</a></li>
+            <li><a href="https://rivenway.com/client-results/">Client Results</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="https://rivenway.com/why-we-exist/">About Us</a></li>
+            <li><a href="https://rivenway.com/referral-partner/">Referral Partners</a></li>
+            <li><a href="https://rivenway.com/book-a-call/">Contact</a></li>
+            <li><a href="https://rivenway.com/privacy-policy/">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Based In</h4>
+          <ul>
+            <li>Owatonna, MN<br>Serving owners nationwide</li>
+          </ul>
+        </div>
+      </div>
+      <div class="kxr-footer-cobrand">
+        <span class="kxr-kiba-logo" role="img" aria-label="Kingdom Impact Business Advisors"></span>
+        <span>Capital advisory on this page is provided by Kingdom Impact Business Advisors (KIBA). <a href="https://go.kibadvisors.com/" target="_blank" rel="noopener">kibadvisors.com</a> &middot; <a href="tel:2512108445">251-210-8445</a></span>
+      </div>
+      <div class="kxr-footer-bottom">
+        <span>&copy; <span id="kxr-year">2026</span> RivenWay Business Solutions. All rights reserved</span>
+        <span>RivenWay is not a lender and not a broker. We do not get paid by lenders. That is the whole point.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- The Helm (RivenWay's key graphic), drawn once and reused. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="kxr-helm-shape" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-linecap="round">
+        <circle cx="50" cy="50" r="30" stroke-width="4.5"/>
+        <circle cx="50" cy="50" r="25" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="7" stroke-width="3.5"/>
+        <g stroke-width="3.2">
+          <path d="M50 43V6M50 57v37M43 50H6M57 50h37M45 45 19 19M55 55l26 26M55 45l26-26M45 55 19 81"/>
+        </g>
+      </g>
+      <g fill="currentColor">
+        <circle cx="50" cy="4.5" r="3.4"/><circle cx="50" cy="95.5" r="3.4"/><circle cx="4.5" cy="50" r="3.4"/><circle cx="95.5" cy="50" r="3.4"/>
+        <circle cx="17.8" cy="17.8" r="3.4"/><circle cx="82.2" cy="82.2" r="3.4"/><circle cx="82.2" cy="17.8" r="3.4"/><circle cx="17.8" cy="82.2" r="3.4"/>
+        <circle cx="50" cy="50" r="3"/>
+      </g>
+    </symbol>
+  </svg>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('kxr');
+  if (!root) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var header = document.getElementById('kxr-header');
+
+  /* Year in the footer. */
+  var yr = document.getElementById('kxr-year');
+  if (yr) yr.textContent = new Date().getFullYear();
+
+  /* Header: transparent over the hero, RivenWay navy once scrolled — same as
+     rivenway.com. */
+  function onScroll() { header.classList.toggle('is-scrolled', window.scrollY > 40); }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* Desktop dropdowns: hover opens them (CSS); these buttons make them work by
+     click, touch and keyboard too. Escape and outside clicks close. */
+  var subs = root.querySelectorAll('.kxr-has-sub');
+  function closeAll(except) {
+    subs.forEach(function (li) {
+      if (li === except) return;
+      li.classList.remove('is-open');
+      li.querySelector('button').setAttribute('aria-expanded', 'false');
+    });
+  }
+  subs.forEach(function (li) {
+    var btn = li.querySelector('button');
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = !li.classList.contains('is-open');
+      closeAll(li);
+      li.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    });
+    li.addEventListener('focusout', function (e) {
+      if (!li.contains(e.relatedTarget)) { li.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); }
+    });
+  });
+  document.addEventListener('click', function () { closeAll(); });
+
+  /* Mobile sheet + its accordions. */
+  var burger = document.getElementById('kxr-burger');
+  var sheet = document.getElementById('kxr-sheet');
+  function setSheet(open) {
+    sheet.classList.toggle('is-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    burger.innerHTML = open
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+    header.classList.toggle('is-scrolled', open || window.scrollY > 40);
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+  }
+  burger.addEventListener('click', function () { setSheet(!sheet.classList.contains('is-open')); });
+  sheet.querySelectorAll('.kxr-acc').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var li = b.parentElement, open = !li.classList.contains('is-open');
+      li.classList.toggle('is-open', open);
+      b.setAttribute('aria-expanded', String(open));
+    });
+  });
+  sheet.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setSheet(false); }); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (sheet.classList.contains('is-open')) { setSheet(false); burger.focus(); }
+    var open = root.querySelector('.kxr-has-sub.is-open');
+    if (open) { closeAll(); open.querySelector('button').focus(); }
+  });
+
+  /* In-page anchors: offset for the fixed header. */
+  root.querySelectorAll('a[href^="#kxr-"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var t = document.querySelector(a.getAttribute('href'));
+      if (!t) return;
+      e.preventDefault();
+      var y = t.getBoundingClientRect().top + window.scrollY - header.offsetHeight + 1;
+      window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+    });
+  });
+
+  /* GoHighLevel resize script — without it the form iframe sizes wrong. */
+  var GHL = 'https://link.msgsndr.com/js/form_embed.js';
+  if (!document.querySelector('script[src="' + GHL + '"]')) {
+    var s = document.createElement('script'); s.src = GHL; s.async = true; document.body.appendChild(s);
+  }
+
+  /* Everything below is motion. Content is fully visible without it: the
+     hidden starting states only apply once .kxr-anim is set, and it is never
+     set for visitors who ask for reduced motion. */
+  if (reduce || !('IntersectionObserver' in window)) return;
+
+  /* Split the h1 into words for a staggered rise. Keeps the accent span. */
+  var h1 = root.querySelector('[data-split]');
+  var i = 0;
+  (function split(node) {
+    Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+      if (n.nodeType === 3) {
+        var frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          var w = document.createElement('span');
+          w.className = 'kxr-word';
+          w.style.transitionDelay = (0.15 + i++ * 0.07) + 's';
+          w.textContent = part;
+          frag.appendChild(w);
+        });
+        n.parentNode.replaceChild(frag, n);
+      } else if (n.nodeType === 1) { split(n); }
+    });
+  })(h1);
+
+  root.classList.add('kxr-anim');
+  requestAnimationFrame(function () { requestAnimationFrame(function () { document.getElementById('kxr-hero').classList.add('is-in'); }); });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('is-in');
+      io.unobserve(en.target);
+      var c = en.target.querySelectorAll('[data-count]');
+      c.forEach(countUp);
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  root.querySelectorAll('.kxr-rv').forEach(function (el) { io.observe(el); });
+
+  /* The final value is already in the HTML; this only animates up to it. */
+  function countUp(el) {
+    var to = +el.dataset.count, pre = el.dataset.prefix || '', suf = el.dataset.suffix || '';
+    var t0 = null, dur = 1400;
+    function tick(t) {
+      if (!t0) t0 = t;
+      var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = pre + Math.round(to * e) + suf;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+})();
+</script>
+<!-- ======================== PASTE TO HERE ======================== -->
+
+</body>
+</html>
