@@ -14,10 +14,6 @@ import { PROGRAMS, getProgram } from '../solutions-data';
  *
  * dynamicParams=false so an unknown slug 404s at build/serve time instead of
  * trying to render a page with no content.
- *
- * NOINDEX matches the rest of the subdomain, and is the same call as the other
- * routes: kibadvisors.com/capital-solutions/ is the indexable copy of this
- * material. See CLAUDE.md "Scope boundary" — flipping it is the human's.
  */
 
 export const dynamicParams = false;
@@ -36,7 +32,6 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   return {
     title,
     description: program.metaDescription,
-    robots: { index: false, follow: false },
     alternates: { canonical: url },
     openGraph: {
       type: 'website',

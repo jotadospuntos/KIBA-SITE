@@ -29,7 +29,6 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   return {
     title: `${post.title} — Kingdom Impact Business Advisors`,
     description: post.excerpt,
-    robots: { index: false, follow: false },
     alternates: { canonical: url },
     openGraph: {
       type: 'article',

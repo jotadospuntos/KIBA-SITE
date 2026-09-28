@@ -1,9 +1,9 @@
 # CLAUDE.md — Project guide for AI agents
 
-This repo holds KIBA's referral-partner and advisor booking landing pages.
-Deployed on **Vercel** (auto-deploys on every push to `main`) at **https://go.kibadvisors.com**.
-"KIBA" = Kingdom Impact Business Advisors, a funding/advisory company. Main site (a **separate**
-WordPress site, not this repo): https://kibadvisors.com.
+This repo IS KIBA's website. Deployed on **Vercel** (auto-deploys on every push to `main`) at
+**https://kibadvisors.com**, which it took over from a WordPress site (see "Main domain").
+"KIBA" = Kingdom Impact Business Advisors, a funding/advisory company. It started as the
+referral-partner and advisor booking pages on **go.kibadvisors.com**, which now 301s here.
 
 ---
 
@@ -51,11 +51,8 @@ behavior was a real component.
   entry and still `noindex`, not linked from anywhere. It is deliberately **kept as the visual
   reference** to diff the homepage against. Do **not** delete it as cleanup — retiring it is a
   separate, explicit decision.
-- **`noindex` on `/` is deliberate.** This subdomain is a landing/booking host: its pages are
-  campaign- or partner-targeted and reached by direct link. `kibadvisors.com` stays the only
-  indexable KIBA homepage rather than competing with this one for the same terms. The canonical is
-  already `https://go.kibadvisors.com/`, so flipping to indexable later is a one-line change in
-  `app/page.tsx` — and it's the human's call.
+- **`/` is indexed** since the main-domain launch; it's KIBA's one public homepage. (It was
+  `noindex` while it lived on go.kibadvisors.com beside the WordPress site.)
 
 **Source-of-truth rule:** the homepage is where all work goes. `v2.html` is frozen and is **not**
 updated to match — so the diff against `/v2` is a diff with *known, listed* exceptions rather than
@@ -83,7 +80,7 @@ migration bug):
    off the DOM. That config is props now. No CSS selected on them.
 
 The promotion is **done**. What's left of it: `/v2` and its rewrite stay until the human retires
-them (see above), and `noindex` stays until the human decides otherwise.
+them (see above).
 
 ### Real components (the port is complete)
 
@@ -154,7 +151,7 @@ example of how a new route should be assembled.
 - **Photos are the existing advisor headshots** (`/advisors/img/*.jpg`), the same files the legacy
   `/advisors/*` booking pages use. Each card's calendar icon deep-links to that person's booking
   page.
-- **Structure:** `page.tsx` (server component: metadata + noindex) → `MeetOurTeamPage.tsx` (client),
+- **Structure:** `page.tsx` (server component: metadata) → `MeetOurTeamPage.tsx` (client),
   reusing `SiteNav`, `SiteFooter`, `Reveal`, `GradientBlob`, `SplitText`, `HeroBlobs`, `HeroReveal`
   and the `.hero` / `.band` / `.cta-band` shells from `home.css`. Only the team block itself is new.
 - **The hero is the homepage hero**, structurally: watermark, two-column `.hero-inner`, the
@@ -209,8 +206,6 @@ the originals are.
   sits between the navy team section and the navy CTA band, and reusing home.css's `.band` would
   make the three read as one unbroken block. It's built with Tailwind rather than by editing
   `.band`, since those rules are shared with the homepage. Same triangle, recolored to a blue ramp.
-- **`noindex`** matches the rest of the subdomain and is doubly deliberate here: the same bios are
-  live on kibadvisors.com, and two indexable copies would compete. The human's call to change.
 - **`SiteNav` gained a "Team" link** pointing at this route, so it now shows on the homepage too.
 
 ### The team block, and the one CSS trap to know about
@@ -597,7 +592,7 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 ├── app/
 │   ├── layout.tsx                ← root layout (fonts, base metadata)
 │   ├── globals.css               ← Tailwind v4 @theme tokens + shadcn semantic tokens
-│   ├── page.tsx                  ← "/" route: metadata + noindex, renders HomePage
+│   ├── page.tsx                  ← "/" route: metadata, renders HomePage
 │   ├── HomePage.tsx              ← the homepage itself (client component)
 │   ├── home.css                  ← v2.html's <style> block, minus the glow + one divergence
 │   ├── meet-our-team/            ← "/meet-our-team": page.tsx + MeetOurTeamPage.tsx + team-data.ts
@@ -908,7 +903,7 @@ Tokens live in **`app/globals.css`** for the `app/` side and are duplicated in e
 
 ## Deploy / workflow
 
-- Push to `main` → Vercel auto-deploys to go.kibadvisors.com. Clean URLs and all path
+- Push to `main` → Vercel auto-deploys to kibadvisors.com. Clean URLs and all path
   redirects/rewrites live in `next.config.js` (`vercel.json` holds only the cleanup cron).
 - Typical loop: edit → `npm run build` (must pass) → review diff → `git add -A && git commit && git push`.
 - After deploying, verify on the live URL (logo, form/calendar, and that the correct version
@@ -917,25 +912,39 @@ Tokens live in **`app/globals.css`** for the `app/` side and are duplicated in e
 
 ---
 
-## Scope boundary (decided — do not re-open)
+## Main domain: this site replaced WordPress on kibadvisors.com
 
-**This repo only ever changes `go.kibadvisors.com`. Nothing here touches what's live at
-`kibadvisors.com`.** The main site is a separate WordPress install; it is not migrated, not
-replaced, and not repointed by any work in this repo.
+Until the launch this repo served only `go.kibadvisors.com`, and the WordPress site on
+`kibadvisors.com` was off-limits. **The human reversed that** and this site now IS
+`kibadvisors.com`. What that involved, so none of it gets undone by accident:
 
-This was settled at the `/v3` promotion, which is now done: the redesign became the root of
-`go.kibadvisors.com` (`app/page.tsx`), the `/` → `kibadvisors.com` redirect was removed, and the
-canonical is `https://go.kibadvisors.com/`. The subdomain root stays **`noindex`** — decided, so
-the WordPress site remains the only indexable KIBA homepage.
-
-- Do **not** propose a domain move, a DNS change, a WordPress export, or a cross-domain
-  canonical/redirect pointing at `kibadvisors.com`. Out of scope.
-- Do **not** drop the homepage's `noindex` without the human asking for it.
+- **`lib/site.ts` holds the one origin** (`SITE_URL`). `metadataBase` in `app/layout.tsx`
+  resolves every canonical, `og:url` and `og:image` against it, so page metadata uses paths only.
+  Don't hard-code a domain in a `page.tsx` again.
+- **go.kibadvisors.com 301s to the same path and query on kibadvisors.com** (the first rule in
+  `next.config.js`'s `redirects()`). Keep it: ads, partner links and GoHighLevel's `/thank-you` and
+  `/ty-cal` redirects still point at `go.*`, and so do the debt-schedule staff links already saved
+  on GHL contacts (their HMAC doesn't cover the host, so they survive the hop).
+- **Every WordPress URL resolves.** They're either the same path here or redirected in
+  `next.config.js`: root-level blog posts → `/blog/<slug>`, `/category/*` → `/blog`, the four
+  scheduling/referral-partner pages → `/book-rr` (the human's decision), Rank Math's sitemap
+  files → `/sitemap.xml`.
+- **Indexing is per page.** Indexed and listed in `app/sitemap.ts`: `/`, `/about-us`,
+  `/meet-our-team`, `/capital-solutions` + the six programs, `/blog` + posts, `/contact-us`,
+  `/referral-partners`, both legal pages. **Still `noindex`**, and absent from the sitemap: `/thank-you`,
+  `/ty-cal`, `/book-rr`, `/business-acquisitions`, `/debt-schedule`, `/partners/*`, `/advisors/*`
+  and `/v2`. Those are booking-flow, campaign or partner-specific pages. Add a new page to
+  both places or neither.
+- **DNS is Cloudflare; email is Google Workspace MX on the same zone.** Only the apex and `www`
+  records point at Vercel (DNS-only, not proxied). `portal.kibadvisors.com` is a separate record
+  and a separate app. Never touch the MX, SPF or verification TXT records.
+- **Content copied from WordPress is now the only copy.** Files that say "verbatim from
+  kibadvisors.com/…" (`team-data.ts`, `lib/faq.ts`, `posts.ts`, `solutions-data.ts`) describe where
+  the text came from. They are the source now; changes come from the business as new text.
 
 ---
 
 ## Open decisions (ask the human — don't assume)
 
-- _None blocking._ Two standing decisions, both the human's to revisit and neither to be changed
-  by an agent on its own: whether the homepage stays `noindex` (currently yes), and when `/v2` +
-  its rewrite get retired (currently kept as the visual reference).
+- _None blocking._ One standing decision, the human's to revisit and not to be changed by an agent
+  on its own: when `/v2` + its rewrite get retired (currently kept as the visual reference).

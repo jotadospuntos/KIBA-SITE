@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   title: 'Terms & Conditions — Kingdom Impact Business Advisors',
   description:
     'The terms that govern your use of the Kingdom Impact Business Advisors website and services, including communications and SMS consent.',
-  robots: { index: false, follow: false },
   alternates: { canonical: '/terms-and-conditions' }
 };
 

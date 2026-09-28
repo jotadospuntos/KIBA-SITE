@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   title: 'Referral Partners — Kingdom Impact Business Advisors',
   description:
     'A trusted capital and advisory partner for CPAs, bankers and advisors. We strengthen your client’s position and keep you at the center of the relationship.',
-  robots: { index: false, follow: false },
   alternates: { canonical: '/referral-partners' },
   openGraph: {
     type: 'website',

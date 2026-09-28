@@ -171,7 +171,7 @@ export async function fillDebtSchedule(data: DebtSchedule): Promise<Uint8Array> 
   const out = await PDFDocument.create();
   out.setTitle(`Business Debt Schedule — ${data.businessName}`);
   out.setAuthor('Kingdom Impact Business Advisors');
-  out.setCreator('go.kibadvisors.com/debt-schedule');
+  out.setCreator('kibadvisors.com/debt-schedule');
 
   for (let i = 0; i < chunks.length; i++) {
     const page = await fillPage(data, chunks[i], i === chunks.length - 1, totals);

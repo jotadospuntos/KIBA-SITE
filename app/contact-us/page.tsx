@@ -4,15 +4,11 @@ import ContactUsPage from './ContactUsPage';
 /*
  * /contact-us — closes the gap against kibadvisors.com/contact-us/, which this
  * repo had no equivalent of (only a `#talk` anchor).
- *
- * NOINDEX matches the rest of the subdomain; the WordPress contact page stays
- * the indexable copy. See CLAUDE.md "Scope boundary".
  */
 export const metadata: Metadata = {
   title: 'Contact Us — Kingdom Impact Business Advisors',
   description:
     'Call 251-210-8445, email info@kibadvisors.com, or book a time directly. Office hours Monday to Friday, 8:30 AM to 5:00 PM.',
-  robots: { index: false, follow: false },
   alternates: { canonical: '/contact-us' },
   openGraph: {
     type: 'website',

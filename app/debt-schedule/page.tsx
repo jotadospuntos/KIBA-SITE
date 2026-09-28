@@ -6,8 +6,8 @@ import DebtSchedulePage from './DebtSchedulePage';
  * form clients fill in before funding is structured. One public page (no
  * per-client links). See docs/debt-schedule-build-spec.md.
  *
- * NOINDEX matches the rest of the subdomain, and is doubly right here: it's an
- * intake form reached by a direct link from an advisor, not a landing page.
+ * NOINDEX: it's an intake form reached by a direct link from an advisor, not
+ * a landing page, so it stays out of search (and out of app/sitemap.ts).
  */
 export const metadata: Metadata = {
   title: 'Business Debt Schedule — Kingdom Impact Business Advisors',

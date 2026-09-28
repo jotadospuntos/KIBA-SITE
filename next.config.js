@@ -31,11 +31,19 @@ const nextConfig = {
 
   async redirects() {
     return [
-      // '/' used to redirect to https://kibadvisors.com because this repo had no
-      // homepage of its own. It has one now - the promoted redesign at
-      // app/page.tsx - so the redirect is gone. kibadvisors.com is untouched by
-      // that change; it remains a separate WordPress property (see CLAUDE.md
-      // "Scope boundary").
+      // This site IS kibadvisors.com now (it replaced the WordPress site).
+      // go.kibadvisors.com was its old home, and ad traffic, partner links and
+      // two GoHighLevel redirects (/thank-you, /ty-cal) still point there, so
+      // every go.* request forwards to the same path and query on the main
+      // domain. Must stay FIRST, so a go.* URL is forwarded before any other
+      // rule rewrites it. Only matches that host: preview deployments and
+      // localhost are unaffected.
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'go.kibadvisors.com' }],
+        destination: 'https://kibadvisors.com/:path*',
+        permanent: true,
+      },
 
       // /v3 was where the React port was built and reviewed. It's the root route
       // now, so the old path forwards rather than 404ing any bookmark or link
@@ -70,6 +78,14 @@ const nextConfig = {
         'referral-partner',
         'link-for-referral-partner',
       ].map((slug) => ({ source: `/${slug}`, destination: '/book-rr', permanent: true })),
+
+      // Rank Math's sitemap files -> ours, so Search Console's saved sitemap
+      // entries resolve instead of erroring.
+      ...['sitemap_index', 'post-sitemap', 'page-sitemap', 'category-sitemap'].map((name) => ({
+        source: `/${name}.xml`,
+        destination: '/sitemap.xml',
+        permanent: true,
+      })),
     ];
   },
 };

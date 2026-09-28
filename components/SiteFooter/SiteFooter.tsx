@@ -23,7 +23,7 @@ export default function SiteFooter() {
     <div className="wrap">
       <div className="footer-grid">
         <Reveal className="footer-col footer-brand reveal">
-          <a className="logo-mark" href="https://kibadvisors.com" aria-label="Kingdom Impact Business Advisors home"><svg viewBox="0 0 1500 736.33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ height: '34px', width: 'auto' }}>
+          <a className="logo-mark" href="/" aria-label="Kingdom Impact Business Advisors home"><svg viewBox="0 0 1500 736.33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ height: '34px', width: 'auto' }}>
                 <g fill="#ffffff">
                   <polygon points="515.23 206.04 439.07 206.04 327.41 356.49 327.41 206.04 262.93 206.04 262.93 535.9 270.41 535.9 370.86 400.41 456.36 531.23 533.92 531.23 410.57 346.68 515.23 206.04" />
                   <rect x="555.4" y="265.56" width="64.47" height="64.59" />

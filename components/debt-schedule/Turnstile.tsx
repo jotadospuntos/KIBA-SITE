@@ -13,7 +13,7 @@ import { TURNSTILE_SITE_KEY } from '@/lib/debt-schedule/constants';
  * attempt, successful or not.
  *
  * The widget only renders on hostnames added to it in the Cloudflare
- * dashboard - go.kibadvisors.com and the Vercel preview domain.
+ * dashboard - kibadvisors.com, go.kibadvisors.com and the Vercel preview domain.
  */
 
 type TurnstileApi = {

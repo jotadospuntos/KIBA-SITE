@@ -57,19 +57,14 @@ const SOLUTIONS = [
   }))
 ];
 
-/* Top-level links, likewise rendered in both the desktop bar and the sheet.
-   "About" used to point at the separate kibadvisors.com WordPress site, because
-   this repo had no about page. It has one now (app/about-us), so the link stays
-   on this subdomain. kibadvisors.com/about-us/ is untouched and still the
-   indexable copy - see CLAUDE.md "Scope boundary". */
+/* Top-level links, likewise rendered in both the desktop bar and the sheet. */
 const NAV_LINKS = [
   { href: '/about-us', label: 'About' },
   { href: '/meet-our-team', label: 'Team' },
   { href: '/referral-partners', label: 'Partners' },
   { href: '/blog', label: 'Blog' },
-  /* Was '#talk'. There's a real Contact page now (app/contact-us), which is
-     what kibadvisors.com links to as well; the on-page #talk anchor is still
-     what the "Let's Talk" button targets. */
+  /* Was '#talk'. There's a real Contact page now (app/contact-us); the
+     on-page #talk anchor is still what the "Let's Talk" button targets. */
   { href: '/contact-us', label: 'Contact' }
 ];
 
@@ -220,7 +215,7 @@ export default function SiteNav() {
   const onSheetLinkClick = () => closeMobile(false);
 
   return (
-    <nav id="siteNav" className={scrolled ? 'nav-scrolled' : undefined}><div className="nav-inner"><a className="logo-mark" href="https://kibadvisors.com" aria-label="Kingdom Impact Business Advisors home"><img src="/img/kiba-logo.png" alt="Kingdom Impact Business Advisors" width="263" height="120" /></a><div className="nav-menu" id="navMenu">
+    <nav id="siteNav" className={scrolled ? 'nav-scrolled' : undefined}><div className="nav-inner"><a className="logo-mark" href="/" aria-label="Kingdom Impact Business Advisors home"><img src="/img/kiba-logo.png" alt="Kingdom Impact Business Advisors" width="263" height="120" /></a><div className="nav-menu" id="navMenu">
       <div
         className={solutionsOpen ? 'nav-menu-item is-open' : 'nav-menu-item'}
         id="solutionsItem"

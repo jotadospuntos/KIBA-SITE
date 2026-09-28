@@ -2,8 +2,9 @@
  * The homepage FAQ, copied VERBATIM from kibadvisors.com's homepage.
  *
  * These are answers about fees, timelines and required documents — i.e. things
- * a client may rely on. Don't reword them here; if the business changes an
- * answer, change it on the WordPress page and re-copy.
+ * a client may rely on. Don't reword them here. The WordPress page they were
+ * copied from is retired, so this file is the source now: if the business
+ * changes an answer, it supplies the new wording and it goes in here verbatim.
  */
 
 export type FaqItem = {
