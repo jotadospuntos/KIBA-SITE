@@ -8,12 +8,17 @@
  * The named attributions won - they're the stronger and more specific version,
  * and they're what the majority of pages were already showing.
  *
- * THERE ARE ONLY FOUR REAL TESTIMONIALS. That is a content fact, not an
- * oversight, and it drives the column layout in
- * components/ui/testimonials-columns-1.tsx: the block splits into two columns
- * at this length and will use three automatically once there are six. Do NOT
- * pad this array to fill the layout - inventing client quotes for a financial
+ * EVERY ENTRY IS A REAL TESTIMONIAL, supplied by the business. There are six;
+ * that count drives the column layout in components/ui/testimonial-v2.tsx
+ * (three columns on wide screens, two on tablets, one on phones). Do NOT pad
+ * this array to fill the layout - inventing client quotes for a financial
  * advisory firm is not a design decision.
+ *
+ * Quotes are verbatim. A blank line ("\n\n") in `quote` is a paragraph break
+ * from the original, and the card renders each paragraph separately.
+ *
+ * `anonymous: true` means the client asked not to be named. `name` is then a
+ * placeholder, and the avatar is a generic icon rather than initials of it.
  *
  * NO PHOTOS EITHER. We have no images of these clients, and the reference
  * component's avatar slot is filled with a generated monogram rather than a
@@ -28,9 +33,30 @@ export type Testimonial = {
   role: string;
   /* Optional real photo. Falls back to an initials monogram when absent. */
   image?: string;
+  /* The client asked not to be named; `name` is a placeholder. */
+  anonymous?: boolean;
 };
 
+/* Order matters: the columns are filled round-robin, so the two long quotes
+   sit first and second to land in different columns at both 2 and 3 columns. */
 export const TESTIMONIALS: Testimonial[] = [
+  {
+    quote:
+      'Michael has been great to work with. Communication is always quick, and he genuinely looks out for my best interests rather than just trying to make a quick buck.\n\n' +
+      'I talked with several other bankers before working with Michael, and most of them immediately pushed short-term loans and MCAs with high fees and aggressive payback terms. Michael took a completely different approach. He helped me find the funding I actually needed and guided me through the SBA process.\n\n' +
+      'I expected the SBA process to be long and complicated, but Michael made it surprisingly smooth and moved things along much faster than I expected. He stayed on top of everything, communicated throughout the process, and kept things moving from start to finish.\n\n' +
+      'It is hard to find a banker who takes the time to understand your situation and focuses on what is actually best for you. I highly recommend Michael to any business owner looking for financing.',
+    name: 'Business Owner',
+    role: 'SBA Loan Client',
+    anonymous: true
+  },
+  {
+    quote:
+      'I recently worked with Michael and his team at Kingdom Impact Business Advisors to secure a new SBA loan, and the entire experience was excellent. The process was simple, and straightforward from start to finish. Michael was easy to work with, communicated clearly, and made what can normally be a stressful and complicated process feel effortless.\n\n' +
+      'Everything moved along smoothly, and I always knew where things stood. I would highly recommend Michael and Kingdom Impact Business Advisors to any business owner looking for financing or help navigating the SBA loan process. Great experience all around!',
+    name: 'Russell J.',
+    role: 'SBA Loan Client'
+  },
   {
     quote:
       'Michael worked tirelessly with us to obtain our SBA loan and helped us understand the process throughout. He made an otherwise stressful process easy and successful! Highly recommend his services!',

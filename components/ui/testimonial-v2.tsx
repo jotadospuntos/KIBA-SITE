@@ -42,10 +42,12 @@
 
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { UserRound } from 'lucide-react';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 import { TESTIMONIALS, initialsOf, type Testimonial } from '@/lib/testimonials';
 
-/* At least this many cards per column, so a column never loops one card. */
+/* At least this many cards per column, so a column never loops one card.
+   Anything below MAX_COLUMNS is capped by the caller per breakpoint. */
 const MIN_PER_COLUMN = 2;
 const MAX_COLUMNS = 3;
 
@@ -57,6 +59,18 @@ export function splitIntoColumns(items: Testimonial[], maxColumns = MAX_COLUMNS)
 }
 
 function Avatar({ testimonial }: { testimonial: Testimonial }) {
+  /* Anonymous clients get a generic icon: initials of a placeholder name
+     would read as someone's real initials. */
+  if (testimonial.anonymous) {
+    return (
+      <div
+        aria-hidden="true"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ivory text-navy-soft ring-2 ring-ivory transition-all duration-300 ease-in-out group-hover:ring-blue/30"
+      >
+        <UserRound className="h-5 w-5" strokeWidth={1.75} />
+      </div>
+    );
+  }
   if (testimonial.image) {
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
@@ -130,9 +144,15 @@ export const TestimonialsColumn = (props: {
               >
                 <blockquote className="m-0! p-0!">
                   <div className="mb-4 font-serif text-[42px] leading-[0.5] text-blue opacity-30" aria-hidden="true">&ldquo;</div>
-                  <p className="m-0! font-serif text-[17px] font-normal leading-[1.5] text-ink">
-                    {testimonial.quote}
-                  </p>
+                  {/* "\n\n" in a quote is a paragraph break from the original. */}
+                  {testimonial.quote.split('\n\n').map((paragraph, i) => (
+                    <p
+                      key={i}
+                      className={`m-0! font-serif text-[17px] font-normal leading-[1.5] text-ink${i > 0 ? ' mt-3!' : ''}`}
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
                   {/* bg/padding carry `!` because home.css styles the SITE footer with
                       a bare element selector - `footer{ background:var(--navy-soft);
                       padding:64px 0 40px }` - and unlayered CSS beats Tailwind's
@@ -160,9 +180,18 @@ export const TestimonialsColumn = (props: {
   );
 };
 
-/* Per-column durations, so the columns drift out of sync instead of scrolling
-   as one block. Indexed by column. */
-const DURATIONS = [15, 19, 17];
+/* Scroll duration scales with how much text a column holds, so every column
+   moves at a readable speed - a fixed duration would send a column of long
+   quotes past several times faster than a column of short ones. The small
+   per-column jitter keeps the columns drifting out of sync. */
+const SECONDS_PER_CHAR = 0.028;
+const MIN_DURATION = 15;
+const JITTER = [0, 2, 1];
+
+function durationFor(column: Testimonial[], index: number) {
+  const chars = column.reduce((sum, t) => sum + t.quote.length + 120, 0);
+  return Math.max(MIN_DURATION, chars * SECONDS_PER_CHAR) + JITTER[index % JITTER.length];
+}
 
 export function TestimonialsSection({
   badge = 'Testimonials',
@@ -184,7 +213,10 @@ export function TestimonialsSection({
   const { forceMotion } = useMotionPreference();
   const animate = !prefersReduced || forceMotion;
 
-  const columns = splitIntoColumns(testimonials);
+  /* Two separate splits: two columns on tablets, three from lg. Hiding the
+     third column below lg instead would hide a third of the quotes there. */
+  const tabletColumns = splitIntoColumns(testimonials, 2);
+  const desktopColumns = splitIntoColumns(testimonials, 3);
 
   const trackClass =
     'mx-auto justify-center gap-6 ' +
@@ -227,7 +259,7 @@ export function TestimonialsSection({
           ) : null}
         </div>
 
-        {/* TWO RENDERS, NOT ONE. Hiding the 2nd/3rd column below md (what the
+        {/* THREE RENDERS, NOT ONE (phone / tablet / desktop). Hiding the 2nd/3rd column below md (what the
             block does) would hide half the testimonials on a phone, because the
             split is round-robin. Phones get a single column containing ALL of
             them, and the split columns start at md. Only one is ever displayed,
@@ -235,21 +267,20 @@ export function TestimonialsSection({
         <div className={trackClass + ' flex md:hidden'} role="region" aria-label="Scrolling testimonials">
           <TestimonialsColumn
             testimonials={testimonials}
-            duration={DURATIONS[0] + testimonials.length * 2}
+            duration={durationFor(testimonials, 0)}
             animate={animate}
           />
         </div>
 
-        <div className={trackClass + ' hidden md:flex'} role="region" aria-label="Scrolling testimonials">
-          {columns.map((column, i) => (
-            <TestimonialsColumn
-              key={i}
-              testimonials={column}
-              duration={DURATIONS[i % DURATIONS.length]}
-              animate={animate}
-              /* A third column only appears where there is room for it. */
-              className={i === 2 ? 'hidden lg:block' : undefined}
-            />
+        <div className={trackClass + ' hidden md:flex lg:hidden'} role="region" aria-label="Scrolling testimonials">
+          {tabletColumns.map((column, i) => (
+            <TestimonialsColumn key={i} testimonials={column} duration={durationFor(column, i)} animate={animate} />
+          ))}
+        </div>
+
+        <div className={trackClass + ' hidden lg:flex'} role="region" aria-label="Scrolling testimonials">
+          {desktopColumns.map((column, i) => (
+            <TestimonialsColumn key={i} testimonials={column} duration={durationFor(column, i)} animate={animate} />
           ))}
         </div>
       </motion.div>

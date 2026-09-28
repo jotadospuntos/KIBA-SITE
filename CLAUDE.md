@@ -343,10 +343,16 @@ rule, and unlayered CSS beats Tailwind's layered utilities:
 
 - **`lib/testimonials.ts` is the single source of truth.** It used to be duplicated into every
   legacy HTML file; since the migration there is one copy.
-- **There are only FOUR real testimonials.** That drives the layout: `splitIntoColumns` keeps at
-  least two cards per column, so four render as two columns and it becomes three by itself at six.
+- **There are SIX real testimonials, all supplied by the business.** Layout: one column on phones,
+  two from `md`, three from `lg` — each breakpoint has its own round-robin split, so no quote is
+  ever hidden (hiding a third column below `lg` would drop two of them on tablets). Scroll speed
+  scales with each column's text length, so long quotes move at reading pace.
   **Do not pad the array to fill the grid.** Inventing client quotes for a financial advisory firm
   is not a design decision.
+- **Quotes are verbatim; `\n\n` in a `quote` is a paragraph break** and renders as separate `<p>`s.
+- **One client asked not to be named.** That entry has `anonymous: true` and the placeholder name
+  "Business Owner"; the avatar is a generic icon rather than initials of a placeholder. Don't
+  "fix" it with a real-looking name.
 - **Avatars are initials monograms, not photos**, for the same reason — we have no images of these
   clients, and a stock face beside a real named quote is a fabrication. Add a real `image` to an
   entry and both implementations will use it.
@@ -624,7 +630,7 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │   └── hero-mashups.py           ← rebuilds the composite hero images (not part of the build)
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
-│   ├── testimonials.ts           ← the four real client testimonials (single source)
+│   ├── testimonials.ts           ← the six real client testimonials (single source)
 │   ├── faq.ts                    ← the five homepage FAQ answers (verbatim from WordPress)
 │   ├── what-to-expect.ts         ← the six "what to expect" cards + the trust stat row
 │   ├── ghl.ts                    ← GoHighLevel embed IDs + the resize-script loader
