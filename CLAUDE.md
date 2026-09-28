@@ -654,7 +654,8 @@ follow. Consider whether they also belong in `app/meet-our-team/team-data.ts`.
 **A new referral partner** — add an entry to `PARTNERS` in `app/partners/partners-data.ts`:
 `slug`, `name`, `shortName`, `logo`, `ogImage`, **that partner's own `ghlFormId`** and
 `ghlFormName`. Then set that GHL form's **On Submit → Redirect** to
-`https://go.kibadvisors.com/thank-you`.
+`https://kibadvisors.com/thank-you`. Older forms still say `go.kibadvisors.com/thank-you`, which
+works through the 301.
 
 > **`logo` and `ogImage` are different images.** `public/partners/img/<slug>.png` is the 1200x630
 > share card; the co-brand badge logo is `<slug>-logo.png`. Using the share card as the badge
@@ -936,7 +937,12 @@ Until the launch this repo served only `go.kibadvisors.com`, and the WordPress s
   and `/v2`. Those are booking-flow, campaign or partner-specific pages. Add a new page to
   both places or neither.
 - **DNS is Cloudflare; email is Google Workspace MX on the same zone.** Only the apex and `www`
-  records point at Vercel (DNS-only, not proxied). `portal.kibadvisors.com` is a separate record
+  records point at Vercel: both are CNAMEs (Cloudflare flattens the apex one), DNS-only, not
+  proxied. **In Vercel, `kibadvisors.com` serves Production and `www` 308s to it.** Vercel
+  defaulted to the reverse (apex → www) at launch and it had to be flipped. The canonicals and
+  the go.* redirect both assume the apex, which is also what WordPress used. Rollback values: both
+  records were `A 88.223.85.3` (Hostinger), proxied. Mailgun (`info.`/`mail.`), Postmark
+  (`pm-bounces`) and `portal.` (LaunchBay) are on the same zone too. `portal.kibadvisors.com` is a separate record
   and a separate app. Never touch the MX, SPF or verification TXT records.
 - **Content copied from WordPress is now the only copy.** Files that say "verbatim from
   kibadvisors.com/…" (`team-data.ts`, `lib/faq.ts`, `posts.ts`, `solutions-data.ts`) describe where
