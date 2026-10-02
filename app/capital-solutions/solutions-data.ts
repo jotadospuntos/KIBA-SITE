@@ -31,8 +31,10 @@ import {
   CalendarClock,
   FileCheck,
   Handshake,
+  HardHat,
   KeyRound,
   Landmark,
+  Layers,
   PiggyBank,
   Repeat,
   Scale,
@@ -298,8 +300,100 @@ export const PROGRAMS: Program[] = [
   }
 ];
 
+/*
+ * UNLISTED PROGRAMS - live pages at /capital-solutions/<slug>, reachable only
+ * by direct link while they're reviewed. Deliberately NOT in PROGRAMS, so they
+ * stay out of the nav dropdown, the footer column, the sitemap, the hub and the
+ * other program pages' cross-links, and [slug]/page.tsx marks them noindex.
+ * To publish one, move its entry into PROGRAMS above; everything follows.
+ *
+ * Neither program exists on the WordPress site, so unlike PROGRAMS NOTHING
+ * here is verbatim from kibadvisors.com. `summary` is the card copy the human
+ * approved for the RivenWay page (deliverables/rivenway); everything else was
+ * written for this layout. Same no-numbers rule as above.
+ */
+export const UNLISTED_PROGRAMS: Program[] = [
+  {
+    slug: 'project-financing',
+    navTitle: 'Project Financing',
+    navDesc: 'Repayment that lines up with when the work pays.',
+    icon: HardHat,
+    name: 'Project Financing',
+    headline: 'Funding timed to\nwhen the work pays.',
+    heroSub:
+      'Capital for a specific job, build-out or expansion. We look at what the project costs, when it starts paying, and what happens if it runs late — before the money is committed.',
+    heroBullets: [
+      'Repayment timed to when the project actually pays.',
+      'We plan for delays and overruns, not just the budget.'
+    ],
+    /* Supplied by the business. Cropped from the right of the original so the
+       plans and hard hat sit nearer the middle of the panel. */
+    heroImage: '/img/hero/floor-plans-hard-hat.webp',
+    heroImageAlt: 'Architectural floor plans, a set of keys, a spirit level and a hard hat on a concrete floor',
+    summary:
+      'Capital for a specific job, build-out or expansion. The project has to carry its own weight, and repayment has to line up with when the work actually pays, not just when it starts.',
+    expand:
+      'Every project has a stretch in the middle where money is going out and nothing is coming back yet, and that stretch is where most of them get into trouble. We look at the whole timeline — how the money goes out as the work progresses, how much room there is for delays and overruns, and when the revenue realistically starts — and structure the financing around it.',
+    usedFor: [
+      'Build-outs and tenant improvements',
+      'Construction and development projects',
+      'Fulfilling a large contract or order',
+      'Expansions with a defined scope and finish line'
+    ],
+    fit: [
+      { label: 'A defined scope', point: 'The project has a clear scope, budget and finish line', icon: Target },
+      { label: 'It pays for itself', point: 'The finished project produces revenue or savings that cover its cost', icon: TrendingUp },
+      { label: 'The timing is mapped', point: 'You know when the money goes out and when it starts coming back', icon: CalendarClock },
+      { label: 'Room for the unexpected', point: 'The plan still holds if the work runs late or over budget', icon: ShieldCheck }
+    ],
+    caution: 'If the project only works when everything runs to schedule, build in more room before you borrow.',
+    metaDescription:
+      'Project financing for build-outs, construction and expansion. KIBA structures repayment around when the project actually pays, with room for delays and overruns.'
+  },
+  {
+    slug: 'debt-restructuring',
+    navTitle: 'Debt Restructuring',
+    navDesc: 'Payments the business can carry, not more debt on top.',
+    icon: Layers,
+    name: 'Debt Restructuring',
+    headline: 'Room to breathe,\nnot more debt on top.',
+    heroSub:
+      'When existing payments are squeezing cash flow, another loan on top rarely fixes it. We start with what you already owe and work toward a structure the business can carry.',
+    heroBullets: [
+      'Every obligation on one page before we suggest anything.',
+      'If the business needs a harder change, we will say so.'
+    ],
+    /* Supplied by the business. */
+    heroImage: '/img/hero/receipts-calculator-desk.webp',
+    heroImageAlt: 'A business owner working through receipts and cash with a calculator',
+    summary:
+      'When existing debt is squeezing cash flow, the fix is rarely another loan on top. Restructuring looks at what you already owe and works toward payments the business can carry in an ordinary month.',
+    expand:
+      'Businesses rarely get here through one bad decision. It is usually a stack: short-term funding taken to cover a gap, then more to cover the first, each with its own schedule pulling from the same account. Restructuring starts by putting all of it on one page — who is owed, how much, how often and what it really costs — because the right answer depends on the whole picture, not on any one balance.',
+    usedFor: [
+      'Consolidating several payments into fewer, longer ones',
+      'Refinancing high-cost, short-term funding',
+      'Untangling stacked obligations on the same account',
+      'Freeing up cash flow to stabilize operations'
+    ],
+    fit: [
+      { label: 'Payments crowd out operations', point: 'Debt payments are taking cash the business needs to operate', icon: Banknote },
+      { label: 'More than one obligation', point: "You're carrying several debts with different terms and schedules", icon: Layers },
+      { label: 'The business itself is sound', point: 'The underlying business is viable once the payments are restructured', icon: ShieldCheck },
+      { label: 'Everything on the table', point: "You're willing to lay out everything you owe, not just the worst of it", icon: FileCheck }
+    ],
+    caution: 'If the business is losing money before debt payments, restructuring only buys time. The operating problem has to be fixed first.',
+    metaDescription:
+      'Debt restructuring for businesses whose existing payments are squeezing cash flow. KIBA maps everything you owe and works toward payments the business can actually carry.'
+  }
+];
+
 export function getProgram(slug: string): Program | undefined {
-  return PROGRAMS.find((p) => p.slug === slug);
+  return [...PROGRAMS, ...UNLISTED_PROGRAMS].find((p) => p.slug === slug);
+}
+
+export function isUnlisted(slug: string): boolean {
+  return UNLISTED_PROGRAMS.some((p) => p.slug === slug);
 }
 
 /* Shared across every program page and the hub. VERBATIM from the source

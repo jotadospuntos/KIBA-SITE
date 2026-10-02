@@ -51,7 +51,7 @@ const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ss
    angles - and the split is live on SBA loans only while it's reviewed.
    To roll it out: add the other slugs, or replace the Set with `true` and
    delete the legacy branch in DecisionFramework below. */
-const SPLIT_STRAIGHT_TALK = new Set(['sba-loans']);
+const SPLIT_STRAIGHT_TALK = new Set(['sba-loans', 'project-financing', 'debt-restructuring']);
 
 /* Card tints for the "may make sense if" carousel, by position. Cool tints
    only, matching .section-alt's soft blue-grey band underneath them. */
@@ -91,7 +91,9 @@ export default function ProgramPage({ slug }: { slug: string }) {
   const prefersReduced = useReducedMotion();
   const animateCaution = !prefersReduced || forceMotion;
 
-  /* The other five programs, in their canonical order, for the cross-links. */
+  /* The other listed programs, in their canonical order, for the cross-links.
+     PROGRAMS only, so unlisted pages never get linked from a listed one; an
+     unlisted page shows all six. */
   const others = PROGRAMS.filter((p) => p.slug !== program.slug);
 
   return (
@@ -311,7 +313,7 @@ export default function ProgramPage({ slug }: { slug: string }) {
                   href={`/capital-solutions/${other.slug}`}
                   cta="Explore this program"
                   Icon={other.icon}
-                  className={i === 3 ? 'md:col-span-2' : undefined}
+                  className={i === 3 && others.length === 5 ? 'md:col-span-2' : undefined}
                   background={
                     <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue/10 blur-3xl transition-opacity duration-300 group-hover:opacity-150" />
                   }

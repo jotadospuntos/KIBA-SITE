@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProgramPage from '../ProgramPage';
-import { PROGRAMS, getProgram } from '../solutions-data';
+import { PROGRAMS, UNLISTED_PROGRAMS, getProgram, isUnlisted } from '../solutions-data';
 
 /*
  * /capital-solutions/<program> — one dynamic route serving all six program
@@ -19,7 +19,7 @@ import { PROGRAMS, getProgram } from '../solutions-data';
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return PROGRAMS.map((program) => ({ slug: program.slug }));
+  return [...PROGRAMS, ...UNLISTED_PROGRAMS].map((program) => ({ slug: program.slug }));
 }
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
@@ -33,6 +33,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
     title,
     description: program.metaDescription,
     alternates: { canonical: url },
+    /* Unlisted programs are review-by-direct-link only. Keep in step with
+       app/sitemap.ts, which only lists PROGRAMS. */
+    ...(isUnlisted(program.slug) ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       type: 'website',
       url,
