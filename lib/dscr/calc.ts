@@ -7,15 +7,19 @@
  *     ('Profile and Summary'!F30). Gross Revenue sits in the same block but is
  *     NOT in the sum; the calculator collects it for reference only.
  *   - Annual Debt Service = total monthly payments x 12 ('Business Debt'!O12).
- *   - DSCR = EBITDA / Annual Debt Service ('Profile and Summary'!J17).
+ *   - DSCR = EBITDA / (Annual Debt Service x 1.25) ('Profile and Summary'!J17).
  *
- * PLAIN DSCR, NOT x1.2 (decided). The workbook labels its debt-service cell
- * "Annual Debt Service (x 1.2)", but nothing multiplies by 1.2; that cell is
- * typed in by hand. The public calculator uses the plain ratio.
+ * THE x1.25 (decided by the business). Debt service is padded by 25% before
+ * dividing, so a 1.00x here means earnings cover the payments plus a 25%
+ * cushion. The workbook's label says "x 1.2" and applies nothing (that cell is
+ * typed by hand); the business chose 1.25 for the calculator. Don't change it
+ * to 1.2 to match the label, and don't drop it.
  *
  * MCA CONVERSION (decided): daily x 22, weekly x 4. Round numbers on purpose;
  * they're the business's figures, not 21.67 / 4.33. Don't "correct" them.
  */
+
+export const DEBT_SERVICE_FACTOR = 1.25;
 
 export const MCA_MULTIPLIER = { daily: 22, weekly: 4 } as const;
 export type McaFrequency = keyof typeof MCA_MULTIPLIER;
@@ -60,14 +64,20 @@ export function totalMonthlyPayments(d: DebtInput): number {
   );
 }
 
+/* Plain annual debt service, the workbook's 'Business Debt'!O12. */
 export function annualDebtService(d: DebtInput): number {
   return totalMonthlyPayments(d) * 12;
 }
 
+/* What DSCR divides by: annual debt service with the 25% cushion. */
+export function adjustedDebtService(d: DebtInput): number {
+  return annualDebtService(d) * DEBT_SERVICE_FACTOR;
+}
+
 /* null when there is no debt service to divide by: "no DSCR", not Infinity. */
-export function dscr(ebitdaValue: number, annualDebtServiceValue: number): number | null {
-  if (!(annualDebtServiceValue > 0)) return null;
-  return ebitdaValue / annualDebtServiceValue;
+export function dscr(ebitdaValue: number, adjustedDebtServiceValue: number): number | null {
+  if (!(adjustedDebtServiceValue > 0)) return null;
+  return ebitdaValue / adjustedDebtServiceValue;
 }
 
 /*

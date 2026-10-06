@@ -40,7 +40,9 @@ import {
   X
 } from 'lucide-react';
 import {
+  DEBT_SERVICE_FACTOR,
   MCA_MULTIPLIER,
+  adjustedDebtService,
   annualDebtService,
   dscr,
   ebitda,
@@ -373,7 +375,8 @@ export default function DscrCalculator({
   );
   const monthlyTotal = totalMonthlyPayments(debts);
   const annualDS = annualDebtService(debts);
-  const dscrValue = dscr(ebitdaValue, annualDS);
+  const adjustedDS = adjustedDebtService(debts);
+  const dscrValue = dscr(ebitdaValue, adjustedDS);
   const mcaPerMonth = mcaMonthly(debts.mca, debts.mcaFrequency);
 
   const shown = (key: string, error?: string) => (touched.has(key) ? error : undefined);
@@ -662,11 +665,12 @@ export default function DscrCalculator({
 
             {/* Result */}
             <div className="mt-7 overflow-hidden rounded-[16px] bg-navy-deep text-white" aria-live="polite">
-              <dl className="m-0 grid grid-cols-3 gap-px bg-white/10">
+              <dl className="m-0 grid grid-cols-2 gap-px bg-white/10">
                 {[
                   { label: 'EBITDA', value: money(ebitdaValue) },
                   { label: 'Monthly payments', value: money(monthlyTotal) },
-                  { label: 'Annual debt service', value: money(annualDS) }
+                  { label: 'Annual debt service', value: money(annualDS) },
+                  { label: `Debt service \u00d7 ${DEBT_SERVICE_FACTOR}`, value: money(adjustedDS) }
                 ].map((s) => (
                   <div key={s.label} className="bg-navy-deep px-3 py-3 sm:px-4">
                     <dt className="font-mono text-[10.5px] uppercase leading-tight tracking-[0.1em] text-blue-soft">{s.label}</dt>
@@ -690,9 +694,9 @@ export default function DscrCalculator({
                       {ebitdaValue <= 0
                         ? 'With EBITDA at or below zero, your earnings don’t cover your debt payments.'
                         : dscrValue >= 1
-                          ? `Your earnings cover your annual debt payments ${dscrValue.toFixed(2)} times over.`
-                          : `Your earnings cover ${Math.round(dscrValue * 100)}% of your annual debt payments.`}{' '}
-                      EBITDA &divide; annual debt service.
+                          ? `With a 25% cushion on your annual debt payments, your earnings cover them ${dscrValue.toFixed(2)} times.`
+                          : `With a 25% cushion on your annual debt payments, your earnings cover ${Math.round(dscrValue * 100)}% of them.`}{' '}
+                      EBITDA &divide; (annual debt service &times; {DEBT_SERVICE_FACTOR}).
                     </p>
                     <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
                       <a href={advisorHref} className={primaryBtn}>

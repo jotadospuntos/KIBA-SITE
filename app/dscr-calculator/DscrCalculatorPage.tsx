@@ -34,7 +34,7 @@ function Check() {
 const EXPLAINERS = [
   {
     title: 'What DSCR measures',
-    body: 'Debt service coverage ratio compares what your business earns to what it owes in loan payments each year. A 1.00x means earnings exactly cover the payments.'
+    body: 'Debt service coverage ratio compares what your business earns to what it owes in loan payments each year, with a 25% cushion on the payments. A 1.00x means earnings cover the payments plus that cushion.'
   },
   {
     title: 'Why EBITDA',
@@ -42,7 +42,7 @@ const EXPLAINERS = [
   },
   {
     title: 'Why the payments',
-    body: 'Annual debt service is every monthly loan payment added up and multiplied by twelve. Daily and weekly MCA debits are converted to a monthly figure first.'
+    body: 'Annual debt service is every monthly loan payment added up and multiplied by twelve, then by 1.25 for the cushion. Daily and weekly MCA debits are converted to a monthly figure first.'
   }
 ];
 
