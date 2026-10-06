@@ -331,7 +331,7 @@ animation). There is no second style — use `<TestimonialsSection />`, overridi
 and `intro` per page.
 
 Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-solutions`, all six
-`/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, `/book-rr`, `/thank-you`,
+`/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, `/book-rr`, `/dscr-calculator`, `/thank-you`,
 `/ty-cal`, `/referral-partners`, `/business-acquisitions`, all three `/advisors/*` and both
 `/partners/*`. In other words every route except the two legal pages (`/privacy-policy`, `/terms-and-conditions`) and
 `/debt-schedule` (above).
@@ -533,6 +533,34 @@ that submission's Blob folder for replay.
 - **The template must be traced into the function**: `next.config.js`'s
   `outputFileTracingIncludes` does it. Without it the route 500s on Vercel (ENOENT) but works locally.
 - `scripts/test-fill-pdf.ts` writes 3/10/14-debt sample PDFs to `scripts/out/` (gitignored).
+
+## `/dscr-calculator` (PROTOTYPE, in review)
+
+A two-slide DSCR calculator, meant to drive traffic and opt-ins. **Noindex, not in the sitemap, not
+in the nav** until the business signs it off.
+
+- **The math is `lib/dscr/calc.ts`**, taken from the advisors' workbook ("Summary Template.xlsx"):
+  EBITDA = Net Income + Interest + Depreciation (**Gross Revenue is collected but NOT in the sum**),
+  annual debt service = monthly payments x 12, DSCR = EBITDA / annual debt service. Checked by
+  `npx tsx scripts/test-dscr.ts`.
+- **Decided by the business, don't "correct":** plain DSCR (the workbook's "x 1.2" label is NOT
+  applied); MCA daily x **22**, weekly x **4** (round numbers on purpose); one tax year only; one
+  field per debt type (EIDL, SBA, Equipment, LOC, MCA) plus named "Other business loans" rows.
+- **No lender thresholds in the result** ("lenders want 1.25x"). That's a lending claim; the result
+  copy only states the arithmetic until the business supplies bands.
+- **"Need help?"** (slide 2) is a Base UI Popover that opens on hover AND on click/tap/Enter. Three
+  options: check your statements, build the debt schedule first (`/debt-schedule`, new tab), have an
+  advisor help (`/book-rr`). Inputs autosave to localStorage (`kiba-dscr-calculator`) so the
+  debt-schedule detour loses nothing.
+- **Nothing is sent anywhere yet**, and the hero says so. When the opt-in/GHL step is added, change
+  that line. Not built yet: the opt-in, the debt schedule handing its payment totals back, and the
+  `/embed` route.
+- **`components/dscr/DscrCalculator.tsx` is built to be embedded**: self-contained Tailwind card,
+  no dependency on `home.css` (but `!`-overrides on its buttons/headings so it survives it).
+- The tool sits in the hero's right column, like `/book-rr`'s calendar, so on step 2 the hero runs
+  taller than 880px (min-height, same as the booking pages).
+
+---
 
 ## Legal pages
 
