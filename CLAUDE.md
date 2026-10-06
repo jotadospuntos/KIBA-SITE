@@ -541,10 +541,11 @@ in the nav** until the business signs it off.
 
 - **The math is `lib/dscr/calc.ts`**, taken from the advisors' workbook ("Summary Template.xlsx"):
   EBITDA = Net Income + Interest + Depreciation (**Gross Revenue is collected but NOT in the sum**),
-  annual debt service = monthly payments x 12, DSCR = EBITDA / (annual debt service x **1.25**). Checked by
+  annual debt service = monthly payments x 12, DSCR = EBITDA / annual debt service (the **plain** figure). Checked by
   `npx tsx scripts/test-dscr.ts`.
-- **Decided by the business, don't "correct":** debt service is padded **x 1.25** before dividing
-  (the workbook's label says "x 1.2" but applies nothing; the business chose 1.25); MCA daily x **22**, weekly x **4** (round numbers on purpose); one tax year only; one
+- **Decided by the business, don't "correct":** annual debt service **x 1.25** is SHOWN in the
+  result but DSCR divides by the plain figure, as the workbook does (it was briefly the divisor; that
+  was reverted); MCA daily x **22**, weekly x **4** (round numbers on purpose); one tax year only; one
   field per debt type (EIDL, SBA, Equipment, LOC, MCA) plus named "Other business loans" rows.
 - **No lender thresholds in the result** ("lenders want 1.25x"). That's a lending claim; the result
   copy only states the arithmetic until the business supplies bands.

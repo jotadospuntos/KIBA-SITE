@@ -7,13 +7,13 @@
  *     ('Profile and Summary'!F30). Gross Revenue sits in the same block but is
  *     NOT in the sum; the calculator collects it for reference only.
  *   - Annual Debt Service = total monthly payments x 12 ('Business Debt'!O12).
- *   - DSCR = EBITDA / (Annual Debt Service x 1.25) ('Profile and Summary'!J17).
+ *   - DSCR = EBITDA / Annual Debt Service, the PLAIN figure, not the x1.25
+ *     one ('Profile and Summary'!J17).
  *
- * THE x1.25 (decided by the business). Debt service is padded by 25% before
- * dividing, so a 1.00x here means earnings cover the payments plus a 25%
- * cushion. The workbook's label says "x 1.2" and applies nothing (that cell is
- * typed by hand); the business chose 1.25 for the calculator. Don't change it
- * to 1.2 to match the label, and don't drop it.
+ * THE x1.25 IS DISPLAY ONLY (decided by the business, after a round where it
+ * was the divisor). The calculator shows annual debt service x 1.25 beside the
+ * plain figure, as the workbook shows its "Annual Debt Service (x 1.2)" cell,
+ * but DSCR divides by the plain annual debt service. Don't divide by it.
  *
  * MCA CONVERSION (decided): daily x 22, weekly x 4. Round numbers on purpose;
  * they're the business's figures, not 21.67 / 4.33. Don't "correct" them.
@@ -69,15 +69,15 @@ export function annualDebtService(d: DebtInput): number {
   return totalMonthlyPayments(d) * 12;
 }
 
-/* What DSCR divides by: annual debt service with the 25% cushion. */
+/* Annual debt service x 1.25. Shown in the result; NOT what DSCR divides by. */
 export function adjustedDebtService(d: DebtInput): number {
   return annualDebtService(d) * DEBT_SERVICE_FACTOR;
 }
 
 /* null when there is no debt service to divide by: "no DSCR", not Infinity. */
-export function dscr(ebitdaValue: number, adjustedDebtServiceValue: number): number | null {
-  if (!(adjustedDebtServiceValue > 0)) return null;
-  return ebitdaValue / adjustedDebtServiceValue;
+export function dscr(ebitdaValue: number, annualDebtServiceValue: number): number | null {
+  if (!(annualDebtServiceValue > 0)) return null;
+  return ebitdaValue / annualDebtServiceValue;
 }
 
 /*

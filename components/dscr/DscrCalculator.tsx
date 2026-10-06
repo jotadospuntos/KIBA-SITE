@@ -376,7 +376,7 @@ export default function DscrCalculator({
   const monthlyTotal = totalMonthlyPayments(debts);
   const annualDS = annualDebtService(debts);
   const adjustedDS = adjustedDebtService(debts);
-  const dscrValue = dscr(ebitdaValue, adjustedDS);
+  const dscrValue = dscr(ebitdaValue, annualDS);
   const mcaPerMonth = mcaMonthly(debts.mca, debts.mcaFrequency);
 
   const shown = (key: string, error?: string) => (touched.has(key) ? error : undefined);
@@ -396,9 +396,15 @@ export default function DscrCalculator({
      AnimatePresence mode="wait" the new slide only mounts after the old one has
      finished leaving). Focus the heading so screen readers announce it and
      keyboard users start at the top, and bring the card's top back into view on
-     phones, where Next sits a long way below it. Skipped on first load. */
+     phones, where Next sits a long way below it. Skipped on first load.
+
+     ONE-SHOT, and that matters: this is an inline function, so React calls it
+     again on every re-render, i.e. on every keystroke. Without clearing
+     `moved` here it re-focused the heading after each character, stealing
+     focus from whatever field was being typed in. */
   function onHeadingMount(el: HTMLHeadingElement | null) {
     if (!el || !moved.current) return;
+    moved.current = false;
     el.focus({ preventScroll: true });
     const top = cardRef.current?.getBoundingClientRect().top ?? 0;
     if (top < 0) cardRef.current?.scrollIntoView({ behavior: animate ? 'smooth' : 'auto', block: 'start' });
@@ -694,9 +700,9 @@ export default function DscrCalculator({
                       {ebitdaValue <= 0
                         ? 'With EBITDA at or below zero, your earnings don’t cover your debt payments.'
                         : dscrValue >= 1
-                          ? `With a 25% cushion on your annual debt payments, your earnings cover them ${dscrValue.toFixed(2)} times.`
-                          : `With a 25% cushion on your annual debt payments, your earnings cover ${Math.round(dscrValue * 100)}% of them.`}{' '}
-                      EBITDA &divide; (annual debt service &times; {DEBT_SERVICE_FACTOR}).
+                          ? `Your earnings cover your annual debt payments ${dscrValue.toFixed(2)} times over.`
+                          : `Your earnings cover ${Math.round(dscrValue * 100)}% of your annual debt payments.`}{' '}
+                      EBITDA &divide; annual debt service.
                     </p>
                     <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
                       <a href={advisorHref} className={primaryBtn}>
