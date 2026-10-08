@@ -25,7 +25,7 @@ import type { Application } from './fields';
  *
  * NEVER LOG A REQUEST OR RESPONSE BODY. Requests carry SSNs, and SignWell's
  * error bodies can echo field values back. Errors carry the HTTP status and,
- * for a 422, the NAMES of the offending keys - enough to spot a template API
+ * for a 400/422, the NAMES of the offending keys - enough to spot a template API
  * ID mismatch, and nothing a client typed.
  */
 
@@ -49,8 +49,10 @@ function headers() {
 /* Key names only, from a 422 body - never values. */
 async function errorKeys(res: Response): Promise<string> {
   try {
-    const body = (await res.json()) as { errors?: unknown; meta?: { messages?: unknown } };
+    const body = (await res.json()) as { errors?: { invalid_keys?: unknown } };
     const errors = body.errors;
+    /* 400s list the bad keys in errors.invalid_keys; 422s key errors by field. */
+    if (Array.isArray(errors?.invalid_keys)) return errors.invalid_keys.map(String).join(', ');
     if (errors && typeof errors === 'object') return Object.keys(errors).join(', ');
   } catch {
     /* not JSON */
@@ -74,6 +76,7 @@ export async function createApplicationDocument(
 
   const v = app.values;
   const signer = `${v.owner1_first_name} ${v.owner1_last_name}`.trim();
+  const cc = SIGNWELL_CC.filter((c) => c.email.toLowerCase() !== v.owner1_email.toLowerCase());
   const res = await fetch(`${BASE}/document_templates/documents`, {
     method: 'POST',
     headers: headers(),
@@ -95,10 +98,16 @@ export async function createApplicationDocument(
         }
       ],
       template_fields: templateFields(app),
-      copied_contacts: SIGNWELL_CC
+      /* SignWell rejects a CC who is also the signer (422 "is already a
+         recipient" - e.g. a KIBA staffer testing with their own email) and an
+         empty CC list (400), so the signer is filtered out and an empty list
+         is left off entirely. */
+      ...(cc.length ? { copied_contacts: cc } : {})
     })
   });
-  if (!res.ok) throw new SignwellError('create', res.status, res.status === 422 ? await errorKeys(res) : '');
+  if (!res.ok) {
+    throw new SignwellError('create', res.status, res.status === 400 || res.status === 422 ? await errorKeys(res) : '');
+  }
 
   const doc = (await res.json()) as { id?: string; recipients?: { id?: string; embedded_signing_url?: string | null }[] };
   const signingUrl = doc.recipients?.find((r) => r.id === '1')?.embedded_signing_url ?? doc.recipients?.[0]?.embedded_signing_url;
