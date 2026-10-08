@@ -4,7 +4,6 @@
  */
 import assert from 'node:assert/strict';
 import {
-  adjustedDebtService,
   annualDebtService,
   dscr,
   ebitda,
@@ -37,8 +36,7 @@ const debts: DebtInput = {
 assert.equal(totalMonthlyPayments(debts), 700 + 2_000 + 1_100 + 400 + 400 + 600 + 200);
 assert.equal(annualDebtService(debts), 5_400 * 12);
 
-// DSCR divides by the PLAIN annual debt service; x1.25 is display only.
-assert.equal(adjustedDebtService(debts), 5_400 * 12 * 1.25);
+// DSCR divides by the plain annual debt service (no x1.25).
 assert.equal(dscr(120_000, annualDebtService({ ...none, sba: 100_000 / 12 })), 1.2);
 assert.equal(dscr(120_000, annualDebtService(none)), null);
 assert.equal(dscr(-5_000, 10_000), -0.5);

@@ -40,9 +40,7 @@ import {
   X
 } from 'lucide-react';
 import {
-  DEBT_SERVICE_FACTOR,
   MCA_MULTIPLIER,
-  adjustedDebtService,
   annualDebtService,
   dscr,
   ebitda,
@@ -375,7 +373,6 @@ export default function DscrCalculator({
   );
   const monthlyTotal = totalMonthlyPayments(debts);
   const annualDS = annualDebtService(debts);
-  const adjustedDS = adjustedDebtService(debts);
   const dscrValue = dscr(ebitdaValue, annualDS);
   const mcaPerMonth = mcaMonthly(debts.mca, debts.mcaFrequency);
 
@@ -671,12 +668,11 @@ export default function DscrCalculator({
 
             {/* Result */}
             <div className="mt-7 overflow-hidden rounded-[16px] bg-navy-deep text-white" aria-live="polite">
-              <dl className="m-0 grid grid-cols-2 gap-px bg-white/10">
+              <dl className="m-0 grid grid-cols-3 gap-px bg-white/10">
                 {[
                   { label: 'EBITDA', value: money(ebitdaValue) },
                   { label: 'Monthly payments', value: money(monthlyTotal) },
-                  { label: 'Annual debt service', value: money(annualDS) },
-                  { label: `Debt service \u00d7 ${DEBT_SERVICE_FACTOR}`, value: money(adjustedDS) }
+                  { label: 'Annual debt service', value: money(annualDS) }
                 ].map((s) => (
                   <div key={s.label} className="bg-navy-deep px-3 py-3 sm:px-4">
                     <dt className="font-mono text-[10.5px] uppercase leading-tight tracking-[0.1em] text-blue-soft">{s.label}</dt>

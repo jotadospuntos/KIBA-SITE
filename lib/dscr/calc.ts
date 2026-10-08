@@ -7,19 +7,16 @@
  *     ('Profile and Summary'!F30). Gross Revenue sits in the same block but is
  *     NOT in the sum; the calculator collects it for reference only.
  *   - Annual Debt Service = total monthly payments x 12 ('Business Debt'!O12).
- *   - DSCR = EBITDA / Annual Debt Service, the PLAIN figure, not the x1.25
- *     one ('Profile and Summary'!J17).
+ *   - DSCR = EBITDA / Annual Debt Service ('Profile and Summary'!J17).
  *
- * THE x1.25 IS DISPLAY ONLY (decided by the business, after a round where it
- * was the divisor). The calculator shows annual debt service x 1.25 beside the
- * plain figure, as the workbook shows its "Annual Debt Service (x 1.2)" cell,
- * but DSCR divides by the plain annual debt service. Don't divide by it.
+ * NO x1.25 (or x1.2). The workbook labels a cell "Annual Debt Service (x 1.2)"
+ * but its DSCR uses the plain figure. The business tried dividing by x1.25,
+ * then showing it as an extra figure, and settled on neither: plain DSCR, and
+ * no padded figure on screen. Don't reintroduce it.
  *
  * MCA CONVERSION (decided): daily x 22, weekly x 4. Round numbers on purpose;
  * they're the business's figures, not 21.67 / 4.33. Don't "correct" them.
  */
-
-export const DEBT_SERVICE_FACTOR = 1.25;
 
 export const MCA_MULTIPLIER = { daily: 22, weekly: 4 } as const;
 export type McaFrequency = keyof typeof MCA_MULTIPLIER;
@@ -67,11 +64,6 @@ export function totalMonthlyPayments(d: DebtInput): number {
 /* Plain annual debt service, the workbook's 'Business Debt'!O12. */
 export function annualDebtService(d: DebtInput): number {
   return totalMonthlyPayments(d) * 12;
-}
-
-/* Annual debt service x 1.25. Shown in the result; NOT what DSCR divides by. */
-export function adjustedDebtService(d: DebtInput): number {
-  return annualDebtService(d) * DEBT_SERVICE_FACTOR;
 }
 
 /* null when there is no debt service to divide by: "no DSCR", not Infinity. */

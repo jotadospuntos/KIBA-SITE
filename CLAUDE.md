@@ -534,18 +534,18 @@ that submission's Blob folder for replay.
   `outputFileTracingIncludes` does it. Without it the route 500s on Vercel (ENOENT) but works locally.
 - `scripts/test-fill-pdf.ts` writes 3/10/14-debt sample PDFs to `scripts/out/` (gitignored).
 
-## `/dscr-calculator` (PROTOTYPE, in review)
+## `/dscr-calculator` (final; still unlisted)
 
-A two-slide DSCR calculator, meant to drive traffic and opt-ins. **Noindex, not in the sitemap, not
-in the nav** until the business signs it off.
+A two-slide DSCR calculator, meant to drive traffic and opt-ins. Signed off as final. **Noindex, not in the sitemap, not
+in the nav** until the human decides to list it (add it to `robots`, `app/sitemap.ts` and the nav together).
 
 - **The math is `lib/dscr/calc.ts`**, taken from the advisors' workbook ("Summary Template.xlsx"):
   EBITDA = Net Income + Interest + Depreciation (**Gross Revenue is collected but NOT in the sum**),
   annual debt service = monthly payments x 12, DSCR = EBITDA / annual debt service (the **plain** figure). Checked by
   `npx tsx scripts/test-dscr.ts`.
-- **Decided by the business, don't "correct":** annual debt service **x 1.25** is SHOWN in the
-  result but DSCR divides by the plain figure, as the workbook does (it was briefly the divisor; that
-  was reverted); MCA daily x **22**, weekly x **4** (round numbers on purpose); one tax year only; one
+- **Decided by the business, don't "correct":** plain DSCR with **no x1.25 anywhere**, neither as
+  the divisor nor as a displayed figure (both were tried and removed; the workbook's "x 1.2" label is
+  not applied either); MCA daily x **22**, weekly x **4** (round numbers on purpose); one tax year only; one
   field per debt type (EIDL, SBA, Equipment, LOC, MCA) plus named "Other business loans" rows.
 - **No lender thresholds in the result** ("lenders want 1.25x"). That's a lending claim; the result
   copy only states the arithmetic until the business supplies bands.

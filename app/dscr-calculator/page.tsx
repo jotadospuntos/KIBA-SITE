@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import DscrCalculatorPage from './DscrCalculatorPage';
 
 /*
- * /dscr-calculator — PROTOTYPE, in review. NOINDEX and absent from
- * app/sitemap.ts and the nav until the business signs it off; then flip
+ * /dscr-calculator — final, but still unlisted: NOINDEX and absent from
+ * app/sitemap.ts and the nav until the business decides to list it; then flip
  * `robots`, add it to the sitemap, and decide where it's linked from.
  */
 export const metadata: Metadata = {
