@@ -64,3 +64,70 @@ export const auditLog = pgTable(
 ).enableRLS();
 
 export type AuditEntry = typeof auditLog.$inferSelect;
+
+/* ---------------------------------------------------------------- blog --- */
+
+/* Managed in /admin/blog/categories (admins). Deleting one that a post uses is
+   refused rather than cascading, so a post never silently loses its category. */
+export const blogCategories = pgTable('blog_categories', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull().unique(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+}).enableRLS();
+
+export type BlogCategory = typeof blogCategories.$inferSelect;
+
+/* draft = never public. published = public from `publish_at` on, so a
+   published post with a future publish_at is "scheduled" — there is no third
+   status to keep in sync. */
+export const blogPostStatus = pgEnum('blog_post_status', ['draft', 'published']);
+
+export const blogPosts = pgTable(
+  'blog_posts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /* The URL: /blog/<slug>. The three posts moved from WordPress keep their
+       original slugs, which next.config.js's redirects depend on. */
+    slug: text('slug').notNull().unique(),
+    title: text('title').notNull(),
+    /* Card text on /blog and the "More from the blog" grid. */
+    excerpt: text('excerpt').notNull().default(''),
+    /* Search-result description; falls back to the excerpt when empty. */
+    searchDescription: text('search_description').notNull().default(''),
+    categoryId: uuid('category_id').references(() => blogCategories.id, { onDelete: 'restrict' }),
+    /* A team member's display name (app/meet-our-team/team-data.ts). Stored as
+       text so a post keeps its byline if someone later leaves the team page. */
+    author: text('author').notNull(),
+    /* Social-share image (og:image). Optional; the site default is used without. */
+    coverImageUrl: text('cover_image_url'),
+    coverImageAlt: text('cover_image_alt').notNull().default(''),
+    /* Tiptap / ProseMirror JSON. Sanitized to an allowlist on every save
+       (lib/blog/doc.ts) and rendered by our own renderer, never as raw HTML. */
+    body: jsonb('body').notNull(),
+    status: blogPostStatus('status').notNull().default('draft'),
+    publishAt: timestamp('publish_at', { withTimezone: true }),
+    createdBy: text('created_by').notNull(),
+    updatedBy: text('updated_by').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+  },
+  (t) => [index('blog_posts_public_idx').on(t.status, t.publishAt.desc())]
+).enableRLS();
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+
+/* A full snapshot on every save, so any earlier version can be restored from
+   the editor. Deleted with the post. */
+export const blogPostRevisions = pgTable(
+  'blog_post_revisions',
+  {
+    id: bigint('id', { mode: 'number' }).primaryKey().generatedAlwaysAsIdentity(),
+    postId: uuid('post_id')
+      .notNull()
+      .references(() => blogPosts.id, { onDelete: 'cascade' }),
+    savedAt: timestamp('saved_at', { withTimezone: true }).notNull().defaultNow(),
+    savedBy: text('saved_by').notNull(),
+    snapshot: jsonb('snapshot').notNull()
+  },
+  (t) => [index('blog_post_revisions_post_idx').on(t.postId, t.savedAt.desc())]
+).enableRLS();

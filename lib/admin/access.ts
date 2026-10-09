@@ -23,3 +23,13 @@ export async function requireAdminUser(need: AdminRole = 'editor'): Promise<Admi
   if (need === 'admin' && user.role !== 'admin') notFound();
   return user;
 }
+
+/* The same check for route handlers (e.g. the image upload), which answer with
+   a status code instead of redirecting. Null = not allowed. */
+export async function getAdminUserForApi(need: AdminRole = 'editor'): Promise<AdminUser | null> {
+  const email = (await auth())?.user?.email;
+  if (!email) return null;
+  const user = await findActiveUser(email);
+  if (!user || (need === 'admin' && user.role !== 'admin')) return null;
+  return user;
+}

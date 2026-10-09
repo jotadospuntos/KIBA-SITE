@@ -1,10 +1,17 @@
 import type { Metadata } from 'next';
 import BlogIndexPage from './BlogIndexPage';
+import { BLOG_REVALIDATE_SECONDS, listPublishedPosts } from '@/lib/blog/queries';
 
 /*
- * /blog — post index. Server component for the metadata; the page itself is a
- * client component for the animation hooks. Same split as every other route.
+ * /blog — post index. Server component for the metadata and the data; the page
+ * itself is a client component for the animation hooks. Same split as every
+ * other route.
+ *
+ * Static, refreshed by the dashboard on every save (revalidateBlog) and every
+ * five minutes regardless, which is what lets a scheduled post appear on time.
  */
+export const revalidate = BLOG_REVALIDATE_SECONDS;
+
 export const metadata: Metadata = {
   title: 'Blog — Kingdom Impact Business Advisors',
   description:
@@ -19,6 +26,6 @@ export const metadata: Metadata = {
   }
 };
 
-export default function Page() {
-  return <BlogIndexPage />;
+export default async function Page() {
+  return <BlogIndexPage posts={await listPublishedPosts()} />;
 }

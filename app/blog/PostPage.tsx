@@ -9,11 +9,11 @@
  * editorial payoff. It keeps the navy band, the watermark and the SplitText
  * headline, so it still reads as the same site.
  *
- * Body text comes from the `Block` union in posts.ts rather than raw HTML, so
- * the typography is applied here in one place and the content stays portable.
+ * The body is the post's structured document (lib/blog/doc.ts), rendered by
+ * lib/blog/render.tsx — never raw HTML — so the typography lives in one place.
+ * Also used by the dashboard's live preview, which passes `preview`.
  */
 
-import { Fragment } from 'react';
 import dynamic from 'next/dynamic';
 import '../home.css';
 import SiteNav from '@/components/SiteNav/SiteNav';
@@ -22,61 +22,37 @@ import Reveal from '@/components/Reveal/Reveal';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { useMotionPreference } from '@/lib/useMotionPreference';
-import { POSTS, getPost, readingTime, type Block } from './posts';
+import { PostBody } from '@/lib/blog/render';
+import type { PostSummary, PublicPost } from '@/lib/blog/queries';
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
-function BlockView({ block }: { block: Block }) {
-  switch (block.type) {
-    case 'lead':
-      return (
-        <p className="mb-6! font-serif text-[21px] leading-[1.5] text-navy-deep">{block.text}</p>
-      );
-    case 'h2':
-      return (
-        <h2 className="mb-4! mt-12! font-heading text-[clamp(21px,2.4vw,27px)] font-semibold tracking-tight text-ink">
-          {block.text}
-        </h2>
-      );
-    case 'h3':
-      return (
-        <h3 className="mb-3! mt-8! font-heading text-[17.5px] font-semibold text-ink">
-          {block.text}
-        </h3>
-      );
-    case 'ul':
-      return (
-        <ul className="klist mb-6! mt-2!">
-          {block.items.map((item) => (
-            <li key={item}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>
-              {item}
-            </li>
-          ))}
-        </ul>
-      );
-    default:
-      return <p className="mb-5! text-[16.5px] leading-[1.75] text-slate">{block.text}</p>;
-  }
-}
-
-export default function PostPage({ slug }: { slug: string }) {
+export default function PostPage({
+  post,
+  others,
+  preview
+}: {
+  post: PublicPost;
+  others: PostSummary[];
+  /* Dashboard preview: a banner on top, so nobody mistakes it for the live page. */
+  preview?: string;
+}) {
   const { forceMotion } = useMotionPreference();
-
-  const post = getPost(slug);
-  if (!post) throw new Error(`Unknown blog post: ${slug}`);
-
-  const others = POSTS.filter((p) => p.slug !== post.slug);
 
   return (
     <>
+      {preview && (
+        <div className="sticky top-0 z-[100] bg-amber-400 px-4 py-2 text-center text-[14px] font-semibold text-ink">
+          {preview}
+        </div>
+      )}
       <SiteNav />
 
       <header className="hero" style={{ padding: '76px 0 72px' }}>
         <svg className="hero-watermark" viewBox="0 0 152 172" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#2563eb" d="M76 0 L152 172 H0 Z" /></svg>
         <div className="wrap">
           <div style={{ position: 'relative', zIndex: 1, maxWidth: '820px' }}>
-            <div className="eyebrow hero-eyebrow">{post.category}</div>
+            {post.category && <div className="eyebrow hero-eyebrow">{post.category}</div>}
             <SplitText
               tag="h1"
               splitType="words, chars"
@@ -95,9 +71,9 @@ export default function PostPage({ slug }: { slug: string }) {
             >
               <span className="text-white">{post.author}</span>
               <span aria-hidden="true">&middot;</span>
-              <time dateTime={post.date}>{post.dateLabel}</time>
+              <time dateTime={post.publishedAt}>{post.dateLabel}</time>
               <span aria-hidden="true">&middot;</span>
-              <span>{readingTime(post)} min read</span>
+              <span>{post.readingMinutes} min read</span>
             </Reveal>
           </div>
         </div>
@@ -107,11 +83,7 @@ export default function PostPage({ slug }: { slug: string }) {
         <div className="wrap">
           <Reveal className="reveal mx-auto max-w-[760px]">
             <article>
-              {post.blocks.map((block, i) => (
-                <Fragment key={i}>
-                  <BlockView block={block} />
-                </Fragment>
-              ))}
+              <PostBody doc={post.body} />
             </article>
 
             <div className="mt-14 rounded-[16px] bg-[#f2f4f7] p-8 ring-1 ring-line sm:p-10">
@@ -144,9 +116,11 @@ export default function PostPage({ slug }: { slug: string }) {
                   style={{ textDecoration: 'none', display: 'block' }}
                   key={other.slug}
                 >
-                  <div className="mb-4! inline-block rounded-full bg-[#f2f4f7] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-navy-soft ring-1 ring-line">
-                    {other.category}
-                  </div>
+                  {other.category && (
+                    <div className="mb-4! inline-block rounded-full bg-[#f2f4f7] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-navy-soft ring-1 ring-line">
+                      {other.category}
+                    </div>
+                  )}
                   <h3>{other.title}</h3>
                   <p>{other.excerpt}</p>
                 </Reveal>

@@ -15,6 +15,20 @@
       "when": 1791486518738,
       "tag": "0001_seed_initial_admins",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791579970596,
+      "tag": "0002_blog",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791580089833,
+      "tag": "0003_import_wordpress_posts",
+      "breakpoints": true
     }
   ]
 }

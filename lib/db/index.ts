@@ -25,7 +25,9 @@ export function db(): Db {
   if (globalForDb.kibaDb) return globalForDb.kibaDb;
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error('Missing environment variable DATABASE_URL');
-  const client = postgres(url, { prepare: false, max: 5 });
+  /* DATABASE_POOL_MAX is for local testing against a single-connection
+     stand-in database; unset (5) everywhere real. */
+  const client = postgres(url, { prepare: false, max: Number(process.env.DATABASE_POOL_MAX) || 5 });
   globalForDb.kibaDb = drizzle(client, { schema });
   return globalForDb.kibaDb;
 }

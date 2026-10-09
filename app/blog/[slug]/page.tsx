@@ -1,48 +1,53 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import PostPage from '../PostPage';
-import { POSTS, getPost } from '../posts';
+import { BLOG_REVALIDATE_SECONDS, getPublishedPost, listPublishedPosts } from '@/lib/blog/queries';
 
 /*
- * /blog/<slug> — one dynamic route for every article, the same pattern as
- * /capital-solutions/[slug]. generateStaticParams emits them as static pages
- * and dynamicParams=false 404s an unknown slug.
+ * /blog/<slug> — one dynamic route for every article. Posts come from the
+ * database (written in /admin/blog). Those that exist at build time are
+ * prerendered; a post published later renders on its first visit and is then
+ * cached like the rest. Every save in the dashboard refreshes them, and the
+ * five-minute revalidate is what brings a scheduled post out on time.
  *
- * Passes the SLUG, not the Post object: PostPage is a client component, and
- * while Post happens to be serializable today, the capital-solutions route
- * learned the hard way what happens when a non-serializable field is added
- * later. Looking it up client-side also keeps the body text out of the RSC
- * payload, so it isn't shipped twice.
+ * An unknown, draft or not-yet-due slug 404s.
  */
 
-export const dynamicParams = false;
+export const revalidate = BLOG_REVALIDATE_SECONDS;
 
-export function generateStaticParams() {
-  return POSTS.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  return (await listPublishedPosts()).map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const post = getPost(params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = await getPublishedPost(params.slug);
   if (!post) return {};
 
   const url = `/blog/${post.slug}`;
+  const description = post.searchDescription || post.excerpt;
+  const image = post.coverImageUrl
+    ? { url: post.coverImageUrl, alt: post.coverImageAlt }
+    : { url: '/img/v2-preview.png', width: 1200, height: 630 };
   return {
     title: `${post.title} — Kingdom Impact Business Advisors`,
-    description: post.excerpt,
+    description,
     alternates: { canonical: url },
     openGraph: {
       type: 'article',
       url,
       title: post.title,
-      description: post.excerpt,
-      publishedTime: post.date,
+      description,
+      publishedTime: post.publishedAt,
       authors: [post.author],
-      images: [{ url: '/img/v2-preview.png', width: 1200, height: 630 }]
+      images: [image]
     }
   };
 }
 
-export default function Page({ params }: { params: { slug: string } }) {
-  if (!getPost(params.slug)) notFound();
-  return <PostPage slug={params.slug} />;
+export default async function Page({ params }: { params: { slug: string } }) {
+  const post = await getPublishedPost(params.slug);
+  if (!post) notFound();
+  /* "More from the blog": the four most recent others. */
+  const others = (await listPublishedPosts()).filter((p) => p.slug !== post.slug).slice(0, 4);
+  return <PostPage post={post} others={others} />;
 }

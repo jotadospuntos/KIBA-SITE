@@ -1,13 +1,11 @@
 import { requireAdminUser } from '@/lib/admin/access';
 
-/* /admin — the landing page. Tiles for the sections that exist; the blog and
-   submissions arrive in later steps and are shown as "coming next" so nobody
-   wonders where they are. */
+/* /admin — the landing page. One tile per section the signed-in person can use. */
 export default async function AdminHome() {
   const user = await requireAdminUser();
 
   const tiles = [
-    { title: 'Blog', body: 'Write, schedule and publish posts.', href: null },
+    { title: 'Blog', body: 'Write, schedule and publish posts.', href: '/admin/blog' as string | null },
     ...(user.role === 'admin'
       ? [
           { title: 'Users', body: 'Who can sign in, and what they can do.', href: '/admin/users' },

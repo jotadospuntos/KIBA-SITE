@@ -457,17 +457,15 @@ fills exactly instead of reading as a 3+2 with a hole in it.
 These two existed on kibadvisors.com and had no equivalent here. Both are built the same way as
 every other route: shared nav/footer/Reveal, the homepage hero, a testimonial section.
 
-**`/blog`** — index plus `[slug]` for the three published articles. **The body text is verbatim**
-from the WordPress posts; `app/blog/posts.ts` holds them as a `Block` union (`p` / `lead` / `h2` /
-`h3` / `ul`) rather than raw HTML, so typography lives in `PostPage.tsx` and the content stays
-portable. **Slugs match the WordPress URLs exactly**, including the third one
-(`why-you-need-business-credit-and-how-to-build-it`) whose slug doesn't match its title.
+**`/blog`** — index plus `[slug]`. **Posts live in the database and are written in `/admin/blog`**
+(see "The blog editor" under `/admin`); `app/blog/posts.ts` is gone. The three original articles
+were imported verbatim from it by `drizzle/0003_import_wordpress_posts.sql`. **Their slugs match the
+WordPress URLs exactly**, including `why-you-need-business-credit-and-how-to-build-it`, whose slug
+doesn't match its title — `next.config.js` redirects the old root-level URLs to them, so never
+change those three addresses.
 
 - The article hero is deliberately **not** the two-column image hero — a post needs its title,
   byline and date above the fold, and the photo panel would push all of it down for nothing.
-- *Why a TS file and not MDX or a CMS:* three short posts, and adding an MDX pipeline is a
-  build-tooling decision that shouldn't be made in passing. Revisit when editing TypeScript
-  becomes the bottleneck; the structured blocks make that a data migration, not a rewrite.
 
 **`/contact-us`** — the repo previously had only a `#talk` anchor. Copy is verbatim from the
 WordPress contact page, including the **office hours (Mon–Fri, 8:30 AM – 5:00 PM)**, which appeared
@@ -607,12 +605,11 @@ in the nav** until the human decides to list it (add it to `robots`, `app/sitema
 
 ---
 
-## `/admin` + the database (step 1 of 4: foundation)
+## `/admin` + the database (steps 1–2 of 4 built)
 
 A staff dashboard on a real database. Built in steps: (1) **foundation** — database, login,
-roles, audit log — done; (2) the **blog editor** (drafts, scheduling, images in the body), which
-replaces `app/blog/posts.ts`; (3) the funding application writes a **submission index** row; (4)
-optionally, the debt schedule does too. **Decided by the human:** no hosted CMS, and not GitHub as
+roles, audit log — done; (2) the **blog editor** — done, see below; (3) the funding application
+writes a **submission index** row; (4) optionally, the debt schedule does too. **Decided by the human:** no hosted CMS, and not GitHub as
 storage.
 
 - **Database: Supabase Postgres, used ONLY as a database.** Drizzle ORM; tables in
@@ -649,6 +646,51 @@ storage.
   OAuth client needs `https://kibadvisors.com/api/auth/callback/google` (and
   `http://localhost:3000/...` for dev) as redirect URIs. **Sign-in does not work on Vercel preview
   URLs** — Google needs exact redirect URIs; fixing that is a later decision.
+
+### The blog editor (`/admin/blog`)
+
+Editors and admins write, schedule and publish posts; admins also manage categories
+(`/admin/blog/categories`). Decided by the human: **managed category list** (case-insensitive
+unique; a category in use can be renamed but not deleted), **author picked from the team**
+(`lib/blog/authors.ts` reads `team-data.ts`, Michael first), drafts + scheduling, **no approval
+step**, images in the body.
+
+- **Body format: Tiptap/ProseMirror JSON, allowlisted** — paragraph, intro ("lead"), h2, h3, bullet
+  and numbered lists, bold, italic, links, images. `lib/blog/doc.ts` defines it and `sanitizeDoc()`
+  rebuilds every saved body from the allowlist (links: http(s)/mailto/tel/site paths only; images:
+  our Blob store or `/img/` only). `lib/blog/render.tsx` renders it with the exact classes the old
+  `Block` union used; **nothing is ever rendered as raw HTML.** To add a format (say, quotes), it
+  goes in all three places: the editor extensions, `doc.ts`, `render.tsx`.
+- **Status model:** `draft` | `published`. A published post with a future `publish_at` is
+  *scheduled* — there's no third status. All times are Central (`lib/blog/time.ts`).
+- **How public pages update:** `lib/blog/queries.ts` caches under the `blog` tag with a 5-minute
+  revalidate. Every save that touches a live post calls `revalidateBlog()`, so publishing is
+  immediate; the 5-minute revalidate is what brings a **scheduled** post out on time (up to ~5 min
+  late) — no cron. `/blog`, `/blog/[slug]` and `sitemap.xml` all read from it.
+- **The build reads the database** (to prerender `/blog` and the posts). With no `DATABASE_URL`
+  (Preview) the blog renders empty rather than failing. **Run `npm run db:migrate` BEFORE
+  deploying anything that adds tables** — a production build against a database without them fails
+  (Vercel then keeps the previous deploy, so the live site is safe, but the deploy doesn't ship).
+- **"New post" creates the draft up front** (`createDraft`) and opens `/admin/blog/<id>`, so the
+  editor's URL never changes while someone types (a client-side URL change made Next re-render the
+  page and could drop text typed right after the first save). Untouched empty drafts older than an
+  hour are cleared the next time that person clicks "New post".
+- **Saves are optimistic-locked** on `updated_at`: if someone else saved since you opened the post,
+  your save is refused with their name and time. Edits made *while* a save is in flight are kept
+  and stay "unsaved". Every save writes a full snapshot to `blog_post_revisions` (Version history →
+  Restore loads it into the form; nothing changes until saved).
+- **Preview** is live and needs no save: the editor writes its state to localStorage
+  (`kiba-blog-preview`) and `/admin/preview` renders it with the real `PostPage`.
+- **Publishing requires** a title, category, summary, body text, and alt text for every image (the
+  editor outlines images missing it in red). Drafts can be saved incomplete.
+- **Images:** the browser shrinks each to ≤2000px wide and WebP (`components/admin/blog/upload.ts`),
+  then `/api/admin/blog/image` stores it in the **public** Blob store `kiba-blog-images`
+  (`BLOG_BLOB_READ_WRITE_TOKEN` — a different store and token from the debt schedule's private
+  one). Removing an image from a post does not delete the file.
+- **Toolbar buttons don't take focus** (`onMouseDown` preventDefault in `RichTextEditor`). Without it
+  keystrokes typed right after a click landed on the button — a space even re-pressed it and undid
+  a list. Re-test by typing immediately after clicking if you touch the toolbar.
+- `DATABASE_POOL_MAX` exists only for local testing against a single-connection stand-in database.
 
 
 ---
@@ -751,7 +793,8 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │   ├── home.css                  ← v2.html's <style> block, minus the glow + one divergence
 │   ├── meet-our-team/            ← "/meet-our-team": page.tsx + MeetOurTeamPage.tsx + team-data.ts
 │   ├── about-us/                 ← "/about-us": page.tsx + AboutUsPage.tsx + about-content.ts
-│   ├── blog/                     ← "/blog" index + "/blog/<slug>" (posts.ts holds the articles)
+│   ├── blog/                     ← "/blog" index + "/blog/<slug>" (posts come from the database)
+│   ├── admin/                    ← staff dashboard: login, users, audit log, blog editor
 │   ├── contact-us/               ← "/contact-us"
 │   ├── advisors/                 ← "/advisors/<slug>" (advisors-data.ts, 3 pages)
 │   ├── partners/                 ← "/partners/<slug>" (partners-data.ts, 2 pages)
@@ -1100,7 +1143,8 @@ Until the launch this repo served only `go.kibadvisors.com`, and the WordPress s
   (`pm-bounces`) and `portal.` (LaunchBay) are on the same zone too. `portal.kibadvisors.com` is a separate record
   and a separate app. Never touch the MX, SPF or verification TXT records.
 - **Content copied from WordPress is now the only copy.** Files that say "verbatim from
-  kibadvisors.com/…" (`team-data.ts`, `lib/faq.ts`, `posts.ts`, `solutions-data.ts`) describe where
+  kibadvisors.com/…" (`team-data.ts`, `lib/faq.ts`, `solutions-data.ts`; the blog posts now live
+  in the database) describe where
   the text came from. They are the source now; changes come from the business as new text.
 
 ---

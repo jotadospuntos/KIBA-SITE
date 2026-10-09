@@ -15,6 +15,7 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
 
   const links = [
     { href: '/admin', label: 'Dashboard' },
+    { href: '/admin/blog', label: 'Blog' },
     ...(user.role === 'admin'
       ? [
           { href: '/admin/users', label: 'Users' },

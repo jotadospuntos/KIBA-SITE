@@ -4,6 +4,9 @@
  * /blog — the post index. Same construction as every other route here: shared
  * nav/footer/Reveal, the homepage hero, and the site's testimonial section
  * (every page carries one — see CLAUDE.md "Testimonials").
+ *
+ * Posts come from the database via app/blog/page.tsx (lib/blog/queries.ts),
+ * newest first. Written and scheduled in /admin/blog.
  */
 
 import dynamic from 'next/dynamic';
@@ -16,7 +19,7 @@ import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import HeroReveal from '@/components/HeroReveal/HeroReveal';
 import { TestimonialsSection } from '@/components/ui/testimonial-v2';
 import { useMotionPreference } from '@/lib/useMotionPreference';
-import { POSTS, readingTime } from './posts';
+import type { PostSummary } from '@/lib/blog/queries';
 
 const SplitText = dynamic(() => import('@/components/SplitText/SplitText'), { ssr: true });
 
@@ -31,7 +34,7 @@ function Check() {
   );
 }
 
-export default function BlogIndexPage() {
+export default function BlogIndexPage({ posts }: { posts: PostSummary[] }) {
   const { forceMotion } = useMotionPreference();
 
   return (
@@ -83,28 +86,36 @@ export default function BlogIndexPage() {
             <p>Short reads on cash flow, business credit and financing readiness.</p>
           </Reveal>
 
-          <div className="benefits-grid">
-            {POSTS.map((post) => (
-              <Reveal
-                as="a"
-                href={`/blog/${post.slug}`}
-                className="benefit-card reveal"
-                style={{ textDecoration: 'none', display: 'block' }}
-                key={post.slug}
-              >
-                <div className="mb-4! inline-block rounded-full bg-[#f2f4f7] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-navy-soft ring-1 ring-line">
-                  {post.category}
-                </div>
-                <h3>{post.title}</h3>
-                <p>{post.excerpt}</p>
-                <div className="mt-5! flex items-center gap-2 text-[13px] text-slate">
-                  <time dateTime={post.date}>{post.dateLabel}</time>
-                  <span aria-hidden="true">&middot;</span>
-                  <span>{readingTime(post)} min read</span>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          {posts.length ? (
+            <div className="benefits-grid">
+              {posts.map((post) => (
+                <Reveal
+                  as="a"
+                  href={`/blog/${post.slug}`}
+                  className="benefit-card reveal"
+                  style={{ textDecoration: 'none', display: 'block' }}
+                  key={post.slug}
+                >
+                  {post.category && (
+                    <div className="mb-4! inline-block rounded-full bg-[#f2f4f7] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-navy-soft ring-1 ring-line">
+                      {post.category}
+                    </div>
+                  )}
+                  <h3>{post.title}</h3>
+                  <p>{post.excerpt}</p>
+                  <div className="mt-5! flex items-center gap-2 text-[13px] text-slate">
+                    <time dateTime={post.publishedAt}>{post.dateLabel}</time>
+                    <span aria-hidden="true">&middot;</span>
+                    <span>{post.readingMinutes} min read</span>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <Reveal as="p" className="reveal text-center text-slate">
+              New articles are on the way. Check back soon.
+            </Reveal>
+          )}
         </div>
       </section>
 

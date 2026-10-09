@@ -11,7 +11,17 @@ export type AuditAction =
   | 'user.create'
   | 'user.role_change'
   | 'user.deactivate'
-  | 'user.reactivate';
+  | 'user.reactivate'
+  | 'blog.create'
+  | 'blog.update'
+  | 'blog.publish'
+  | 'blog.schedule'
+  | 'blog.unpublish'
+  | 'blog.delete'
+  | 'blog.image_upload'
+  | 'blog.category_create'
+  | 'blog.category_rename'
+  | 'blog.category_delete';
 
 /* Awaited, and allowed to throw: an action we couldn't record is an action
    that shouldn't silently succeed. `detail` must never hold form contents or
