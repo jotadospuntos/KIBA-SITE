@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Node, mergeAttributes } from '@tiptap/core';
-import { EditorContent, useEditor, useEditorState, type Editor } from '@tiptap/react';
+import { EditorContent, ReactNodeViewRenderer, useEditor, useEditorState, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import { Placeholder } from '@tiptap/extensions';
@@ -20,7 +20,16 @@ import {
   Redo2,
   Undo2
 } from 'lucide-react';
-import { isSafeHref, sanitizeDoc, type Doc, type ImageAlign, type ImageSize } from '@/lib/blog/doc';
+import {
+  ARTICLE_WIDTH,
+  PX_PER_CM,
+  clampImageWidth,
+  isSafeHref,
+  sanitizeDoc,
+  type Doc,
+  type ImageAlign
+} from '@/lib/blog/doc';
+import ImageView, { formatCm, imageBoxAttrs } from './ImageView';
 import { uploadBlogImage } from './upload';
 
 /*
@@ -41,24 +50,30 @@ const Lead = Node.create({
   renderHTML: ({ HTMLAttributes }) => ['p', mergeAttributes(HTMLAttributes, { 'data-lead': '' }), 0]
 });
 
-/* The stock image node plus our two layout attributes (see IMAGE_SIZES in
-   lib/blog/doc.ts). Shown in the editor through data-size / data-align, which
-   .kiba-prose styles in globals.css to match the published layout. */
+/* The stock image node with a width in published pixels and a position, shown
+   through our own node view (./ImageView: drag handles, size readout). */
 const BlogImage = Image.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
-      size: {
-        default: 'full',
-        parseHTML: (el) => el.getAttribute('data-size') ?? 'full',
-        renderHTML: (a) => ({ 'data-size': a.size })
+      width: {
+        default: ARTICLE_WIDTH,
+        parseHTML: (el) => clampImageWidth(Number(el.getAttribute('data-width')) || ARTICLE_WIDTH),
+        renderHTML: (a) => ({ 'data-width': String(a.width) })
       },
+      height: { default: null, renderHTML: () => ({}) },
       align: {
         default: 'center',
         parseHTML: (el) => el.getAttribute('data-align') ?? 'center',
         renderHTML: (a) => ({ 'data-align': a.align })
       }
     };
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageView, {
+      className: 'kiba-img',
+      attrs: ({ node }) => imageBoxAttrs(node.attrs)
+    });
   }
 });
 
@@ -87,6 +102,11 @@ const extensions = [
 const btn =
   'inline-flex h-9 min-w-9 items-center justify-center gap-1.5 rounded-md px-2 text-sm text-ink hover:bg-ivory disabled:opacity-40 aria-pressed:bg-navy-deep aria-pressed:text-white';
 
+function naturalRatio(e: Editor): number {
+  const img = (e.view.nodeDOM(e.state.selection.from) as HTMLElement | null)?.querySelector('img');
+  return img && img.naturalWidth ? img.naturalHeight / img.naturalWidth : 0;
+}
+
 const IDLE = {
   block: 'p',
   bold: false,
@@ -96,7 +116,8 @@ const IDLE = {
   ordered: false,
   image: false,
   imageAlt: '',
-  imageSize: 'full',
+  imageWidth: ARTICLE_WIDTH,
+  imageRatio: 0,
   imageAlign: 'center',
   canUndo: false,
   canRedo: false
@@ -125,7 +146,9 @@ function useToolbarState(editor: Editor | null) {
             ordered: e.isActive('orderedList'),
             image: e.isActive('image'),
             imageAlt: (e.getAttributes('image').alt as string | undefined) ?? '',
-            imageSize: (e.getAttributes('image').size as string | undefined) ?? 'full',
+            imageWidth: Number(e.getAttributes('image').width) || ARTICLE_WIDTH,
+            /* height / width of the actual picture, for the height readout */
+            imageRatio: e.isActive('image') ? naturalRatio(e) : 0,
             imageAlign: (e.getAttributes('image').align as string | undefined) ?? 'center',
             canUndo: e.can().undo(),
             canRedo: e.can().redo()
@@ -154,7 +177,7 @@ export default function RichTextEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'kiba-prose min-h-[420px] px-6 py-5 focus:outline-none',
+        class: 'kiba-prose mx-auto min-h-[420px] max-w-[808px] px-6 py-5 focus:outline-none',
         'aria-label': 'Post body',
         role: 'textbox',
         'aria-multiline': 'true'
@@ -189,14 +212,16 @@ export default function RichTextEditor({
     if ((e.target as HTMLElement).closest('button')) e.preventDefault();
   };
 
-  const setImage = (attrs: { size?: ImageSize; align?: ImageAlign }) =>
+  const setImage = (attrs: { width?: number; align?: ImageAlign }) =>
     editor.chain().focus().updateAttributes('image', attrs).run();
-  const sizes: { id: ImageSize; label: string }[] = [
-    { id: 'small', label: 'Small' },
-    { id: 'medium', label: 'Medium' },
-    { id: 'large', label: 'Large' },
-    { id: 'full', label: 'Full width' }
+  /* One-click shortcuts; any width in between comes from dragging or typing. */
+  const sizes: { width: number; label: string }[] = [
+    { width: 253, label: 'Small' },
+    { width: 380, label: 'Medium' },
+    { width: 570, label: 'Large' },
+    { width: ARTICLE_WIDTH, label: 'Full width' }
   ];
+  const full = state.imageWidth >= ARTICLE_WIDTH;
   const aligns: { id: ImageAlign; label: string; Icon: typeof AlignLeft }[] = [
     { id: 'left', label: 'Left, text wraps on the right', Icon: AlignLeft },
     { id: 'center', label: 'Centered', Icon: AlignCenter },
@@ -362,25 +387,31 @@ export default function RichTextEditor({
           <div className="flex rounded-md bg-white ring-1 ring-line" role="group" aria-label="Image size">
             {sizes.map((o) => (
               <button
-                key={o.id}
+                key={o.width}
                 type="button"
-                aria-pressed={state.imageSize === o.id}
-                onClick={() => setImage({ size: o.id })}
+                aria-pressed={state.imageWidth === o.width}
+                onClick={() => setImage({ width: o.width })}
                 className={`${btn} rounded-none px-3 first:rounded-l-md last:rounded-r-md`}
               >
                 {o.label}
               </button>
             ))}
           </div>
+          <ImageWidthFields
+            key={state.imageWidth}
+            width={state.imageWidth}
+            ratio={state.imageRatio}
+            onCommit={(width) => setImage({ width })}
+          />
           <div className="flex rounded-md bg-white ring-1 ring-line" role="group" aria-label="Image position">
             {aligns.map(({ id, label, Icon }) => (
               <button
                 key={id}
                 type="button"
                 aria-label={label}
-                title={state.imageSize === 'full' ? 'Pick a smaller size to place the image left or right' : label}
-                aria-pressed={state.imageSize !== 'full' && state.imageAlign === id}
-                disabled={state.imageSize === 'full'}
+                title={full ? 'Make the image narrower than full width to place it left or right' : label}
+                aria-pressed={!full && state.imageAlign === id}
+                disabled={full}
                 onClick={() => setImage({ align: id })}
                 className={`${btn} rounded-none first:rounded-l-md last:rounded-r-md`}
               >
@@ -406,6 +437,39 @@ export default function RichTextEditor({
       {uploadError && <p role="alert" className="border-b border-line bg-red-50 px-4 py-2 text-sm text-red-800">{uploadError}</p>}
 
       <EditorContent editor={editor} />
+    </div>
+  );
+}
+
+/*
+ * Exact width in px or cm. Typing doesn't touch the document until Enter or
+ * leaving the box, so a half-typed "3" never shrinks the image to the minimum.
+ * Re-keyed on every width change (drag, preset), which resets both boxes.
+ */
+function ImageWidthFields({ width, ratio, onCommit }: { width: number; ratio: number; onCommit: (w: number) => void }) {
+  const [px, setPx] = useState(String(width));
+  const [cm, setCm] = useState(formatCm(width));
+  const commit = (value: number) => {
+    if (Number.isFinite(value) && value > 0 && clampImageWidth(value) !== width) onCommit(clampImageWidth(value));
+    else { setPx(String(width)); setCm(formatCm(width)); }
+  };
+  const keys = (value: () => number) => (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') { e.preventDefault(); commit(value()); }
+  };
+  const box = 'w-[4.5rem] rounded-md bg-white px-2 py-1.5 text-right text-sm ring-1 ring-line focus:outline-2 focus:outline-blue';
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 text-sm text-slate">
+      <label htmlFor="image-px">Width</label>
+      <input id="image-px" inputMode="numeric" value={px} onChange={(e) => setPx(e.target.value)} onBlur={() => commit(Number(px))} onKeyDown={keys(() => Number(px))} className={box} />
+      <span>px</span>
+      <span aria-hidden="true">=</span>
+      <input id="image-cm" aria-label="Width in centimetres" inputMode="decimal" value={cm} onChange={(e) => setCm(e.target.value)} onBlur={() => commit(Number(cm.replace(',', '.')) * PX_PER_CM)} onKeyDown={keys(() => Number(cm.replace(',', '.')) * PX_PER_CM)} className={box} />
+      <span>cm</span>
+      {ratio > 0 && (
+        <span className="ml-1 whitespace-nowrap" title="Height follows from the width; the picture is never stretched">
+          · height {Math.round(width * ratio)} px ≈ {formatCm(width * ratio)} cm
+        </span>
+      )}
     </div>
   );
 }

@@ -25,14 +25,25 @@ export type Heading = { type: 'heading'; attrs: { level: 2 | 3 }; content?: Inli
 export type ListItem = { type: 'listItem'; content: (Paragraph | BulletList | OrderedList)[] };
 export type BulletList = { type: 'bulletList'; content: ListItem[] };
 export type OrderedList = { type: 'orderedList'; attrs?: { start?: number }; content: ListItem[] };
-/* Size is a share of the article column, so it looks the same on every screen
-   (pixels measured in the editor would not). Left/right let text wrap around
-   the image; on phones every image is full width regardless. */
-export const IMAGE_SIZES = { small: '33%', medium: '50%', large: '75%', full: '100%' } as const;
-export type ImageSize = keyof typeof IMAGE_SIZES;
+/* Image width is stored in PUBLISHED pixels: the article column is 760px wide
+   on desktop, so width 380 means exactly 380px there, whatever screen the
+   editor was on (the editor converts its own pixels when you drag). Narrower
+   screens scale it down; phones always show images full width. Left/right let
+   text wrap around the image. */
+export const ARTICLE_WIDTH = 760;
+export const IMAGE_MIN_WIDTH = 80;
+/* CSS's fixed ratio (96px = 1in = 2.54cm). Physical size on a real screen
+   varies with its resolution, so cm is always shown as approximate. */
+export const PX_PER_CM = 96 / 2.54;
 export const IMAGE_ALIGNS = ['left', 'center', 'right'] as const;
 export type ImageAlign = (typeof IMAGE_ALIGNS)[number];
-export type Image = { type: 'image'; attrs: { src: string; alt: string; size?: ImageSize; align?: ImageAlign } };
+export type Image = { type: 'image'; attrs: { src: string; alt: string; width?: number; align?: ImageAlign } };
+
+export const clampImageWidth = (w: number) =>
+  Math.min(ARTICLE_WIDTH, Math.max(IMAGE_MIN_WIDTH, Math.round(w)));
+
+/* Posts saved before pixel widths stored a preset name instead. */
+const LEGACY_SIZES: Record<string, number> = { small: 253, medium: 380, large: 570, full: ARTICLE_WIDTH };
 
 export type Block = Paragraph | Lead | Heading | BulletList | OrderedList | Image;
 export type Doc = { type: 'doc'; content: Block[] };
@@ -142,9 +153,12 @@ export function sanitizeDoc(input: unknown): Doc {
         const a = isObj(n.attrs) ? n.attrs : {};
         const src = typeof a.src === 'string' ? a.src : '';
         const alt = typeof a.alt === 'string' ? a.alt.trim() : '';
-        const size: ImageSize = typeof a.size === 'string' && a.size in IMAGE_SIZES ? (a.size as ImageSize) : 'full';
+        const raw = Number(a.width);
+        const width = Number.isFinite(raw) && raw > 0
+          ? clampImageWidth(raw)
+          : typeof a.size === 'string' && a.size in LEGACY_SIZES ? LEGACY_SIZES[a.size] : ARTICLE_WIDTH;
         const align: ImageAlign = IMAGE_ALIGNS.includes(a.align as ImageAlign) ? (a.align as ImageAlign) : 'center';
-        if (isAllowedImageSrc(src)) blocks.push({ type: 'image', attrs: { src, alt, size, align } });
+        if (isAllowedImageSrc(src)) blocks.push({ type: 'image', attrs: { src, alt, width, align } });
         break;
       }
     }

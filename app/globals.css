@@ -133,19 +133,21 @@
   .kiba-prose li > * + * { margin-top: 0.3em; }
   .kiba-prose a { color: var(--color-blue); text-decoration: underline; text-underline-offset: 2px; }
   .kiba-prose strong { color: var(--color-ink); font-weight: 600; }
-  .kiba-prose img { max-width: 100%; height: auto; border-radius: 12px; margin-left: auto; margin-right: auto; }
-  /* Mirrors the published layout (lib/blog/render.tsx): size as a share of the
-     column, left/right floated with text wrapping. */
-  .kiba-prose img[data-size="small"] { width: 33%; }
-  .kiba-prose img[data-size="medium"] { width: 50%; }
-  .kiba-prose img[data-size="large"] { width: 75%; }
-  .kiba-prose img[data-size="full"] { width: 100%; }
-  .kiba-prose img[data-align="left"]:not([data-size="full"]) { float: left; margin: 0.3em 1.5em 0.75em 0; }
-  .kiba-prose img[data-align="right"]:not([data-size="full"]) { float: right; margin: 0.3em 0 0.75em 1.5em; }
+  /* Images: .kiba-img is the node view's outer box (components/admin/blog/
+     ImageView.tsx), sized and floated like the published figure. */
+  .kiba-prose .kiba-img { position: relative; margin-left: auto; margin-right: auto; max-width: 100%; }
+  .kiba-prose .kiba-img img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .kiba-prose .kiba-img[data-full="false"][data-align="left"] { float: left; margin: 0.3em 1.5em 0.75em 0; }
+  .kiba-prose .kiba-img[data-full="false"][data-align="right"] { float: right; margin: 0.3em 0 0.75em 1.5em; }
+  .kiba-prose .kiba-img.ProseMirror-selectednode img,
+  .kiba-prose .kiba-img-inner[data-selected] img { outline: 3px solid var(--color-blue); outline-offset: 3px; }
+  .kiba-img-handle { position: absolute; top: 50%; z-index: 2; width: 12px; height: 48px; margin-top: -24px; border-radius: 6px; background: var(--color-blue); border: 2px solid #fff; box-shadow: 0 1px 4px rgb(0 0 0 / 0.3); cursor: ew-resize; touch-action: none; }
+  .kiba-img-handle[data-side="left"] { left: -9px; }
+  .kiba-img-handle[data-side="right"] { right: -9px; }
+  .kiba-img-size { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); padding: 2px 8px; border-radius: 999px; background: rgb(13 11 46 / 0.8); color: #fff; font-size: 12px; white-space: nowrap; pointer-events: none; }
   .kiba-prose h2, .kiba-prose h3 { clear: both; }
   .kiba-prose ul, .kiba-prose ol { display: flow-root; }
   .kiba-prose::after { content: ''; display: block; clear: both; }
-  .kiba-prose img.ProseMirror-selectednode { outline: 3px solid var(--color-blue); outline-offset: 3px; }
   /* An image still missing its description: flagged until it has one. */
   .kiba-prose img[alt=""], .kiba-prose img:not([alt]) { outline: 3px dashed #dc2626; outline-offset: 3px; }
   .kiba-prose p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--color-slate-light); float: left; height: 0; pointer-events: none; }

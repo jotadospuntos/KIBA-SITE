@@ -1,5 +1,5 @@
 import { Fragment, type CSSProperties, type ReactNode } from 'react';
-import { IMAGE_SIZES, isAllowedImageSrc, isSafeHref, type Block, type Doc, type Inline, type ListItem } from './doc';
+import { ARTICLE_WIDTH, isAllowedImageSrc, isSafeHref, type Block, type Doc, type Inline, type ListItem } from './doc';
 
 /*
  * Renders a post body (lib/blog/doc.ts) as the article markup. The styles are
@@ -106,23 +106,25 @@ function renderBlock(block: Block, key: number, nested = false): ReactNode {
       );
     case 'image': {
       if (!isAllowedImageSrc(block.attrs.src)) return null;
-      const size = block.attrs.size ?? 'full';
-      const align = size === 'full' ? 'center' : block.attrs.align ?? 'center';
-      /* Phones: always full width, never wrapped. From `sm` up: the chosen
-         share of the column, centered or floated with the text wrapping. */
-      const place =
-        size === 'full'
-          ? 'my-9!'
-          : align === 'left'
-            ? 'my-7! sm:float-left sm:mb-4! sm:mr-7! sm:mt-1! sm:w-[var(--img-w)]'
-            : align === 'right'
-              ? 'my-7! sm:float-right sm:mb-4! sm:ml-7! sm:mt-1! sm:w-[var(--img-w)]'
-              : 'my-9! sm:mx-auto! sm:w-[var(--img-w)]';
+      const width = block.attrs.width ?? ARTICLE_WIDTH;
+      const full = width >= ARTICLE_WIDTH;
+      const align = full ? 'center' : block.attrs.align ?? 'center';
+      /* Phones: always full width, never wrapped. From `sm` up: the stored
+         width in px (capped at the column), centered or floated with the
+         text wrapping. */
+      const sized = 'sm:w-[min(var(--img-w),100%)]';
+      const place = full
+        ? 'my-9!'
+        : align === 'left'
+          ? `my-7! sm:float-left sm:mb-4! sm:mr-7! sm:mt-1! ${sized}`
+          : align === 'right'
+            ? `my-7! sm:float-right sm:mb-4! sm:ml-7! sm:mt-1! ${sized}`
+            : `my-9! sm:mx-auto! ${sized}`;
       return (
         <figure
           key={key}
           className={`w-full ${place}`}
-          style={size === 'full' ? undefined : ({ '--img-w': IMAGE_SIZES[size] } as CSSProperties)}
+          style={full ? undefined : ({ '--img-w': `${width}px` } as CSSProperties)}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
