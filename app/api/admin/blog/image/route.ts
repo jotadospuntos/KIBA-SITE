@@ -5,7 +5,7 @@ import { audit } from '@/lib/admin/audit';
 
 /*
  * POST /api/admin/blog/image — one image from the blog editor, into the PUBLIC
- * Blob store `kiba-blog-images` (env BLOG_BLOB_READ_WRITE_TOKEN). That is a
+ * Blob store `kiba-blog-images` (env BLOG_READ_WRITE_TOKEN). That is a
  * different store from the debt schedule's private one, on purpose: these
  * images are meant to be public, those files never are.
  *
@@ -23,9 +23,9 @@ export async function POST(request: Request) {
   const user = await getAdminUserForApi('editor');
   if (!user) return Response.json({ error: 'Not signed in.' }, { status: 401 });
 
-  const token = process.env.BLOG_BLOB_READ_WRITE_TOKEN;
+  const token = process.env.BLOG_READ_WRITE_TOKEN;
   if (!token) {
-    console.error('[blog image] Missing environment variable BLOG_BLOB_READ_WRITE_TOKEN');
+    console.error('[blog image] Missing environment variable BLOG_READ_WRITE_TOKEN');
     return Response.json({ error: 'Image uploads are not set up yet.' }, { status: 500 });
   }
 

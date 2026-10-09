@@ -685,7 +685,7 @@ step**, images in the body.
   editor outlines images missing it in red). Drafts can be saved incomplete.
 - **Images:** the browser shrinks each to ≤2000px wide and WebP (`components/admin/blog/upload.ts`),
   then `/api/admin/blog/image` stores it in the **public** Blob store `kiba-blog-images`
-  (`BLOG_BLOB_READ_WRITE_TOKEN` — a different store and token from the debt schedule's private
+  (`BLOG_READ_WRITE_TOKEN` — a different store and token from the debt schedule's private
   one). Removing an image from a post does not delete the file.
 - **Toolbar buttons don't take focus** (`onMouseDown` preventDefault in `RichTextEditor`). Without it
   keystrokes typed right after a click landed on the button — a space even re-pressed it and undid
