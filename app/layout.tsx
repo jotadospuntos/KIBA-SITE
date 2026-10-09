@@ -41,10 +41,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             A single PageView is correct because every internal link on this
             site is a real <a href>, so each navigation is a full document load.
             If anything is ever moved to client-side routing, this needs a
-            route-change listener or those views stop being counted. */}
+            route-change listener or those views stop being counted.
+
+            Wrapped in a /admin check (the only change from the legacy tag): the
+            staff dashboard is not marketing traffic, and its URLs and visits
+            have no business going to Meta. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `!function(f,b,e,v,n,t,s)
+            __html: `if(!location.pathname.startsWith('/admin')){!function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
 if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
@@ -53,7 +57,7 @@ t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '${META_PIXEL_ID}');
-fbq('track', 'PageView');`
+fbq('track', 'PageView');}`
           }}
         />
         <noscript

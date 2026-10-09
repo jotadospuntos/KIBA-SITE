@@ -607,6 +607,52 @@ in the nav** until the human decides to list it (add it to `robots`, `app/sitema
 
 ---
 
+## `/admin` + the database (step 1 of 4: foundation)
+
+A staff dashboard on a real database. Built in steps: (1) **foundation** — database, login,
+roles, audit log — done; (2) the **blog editor** (drafts, scheduling, images in the body), which
+replaces `app/blog/posts.ts`; (3) the funding application writes a **submission index** row; (4)
+optionally, the debt schedule does too. **Decided by the human:** no hosted CMS, and not GitHub as
+storage.
+
+- **Database: Supabase Postgres, used ONLY as a database.** Drizzle ORM; tables in
+  `lib/db/schema.ts`, migrations in `drizzle/` (`npm run db:generate`, then `npm run db:migrate`
+  from your machine — never part of the build). Supabase's Data API should be **switched off**;
+  every table also has RLS on with no policies, and the anon/authenticated roles are revoked, so
+  the public API gets nothing even if it's switched back on. Use the Pro plan (the free tier pauses).
+  Login stays in Auth.js and images in Blob, so Supabase can be swapped for any Postgres.
+- **NO SSNs, dates of birth or bank details in the database (decided).** They stay in SignWell and
+  the expiring Blob files. Submissions will be an *index* (who, status, a document reference).
+  Storing full applications is a separate decision: field encryption, retention, compliance.
+- **Login: Auth.js v5 + Google, `@kibadvisors.com` only.** The `hd` param is just a hint; the real
+  check is server-side in `lib/auth/index.ts` (verified email + `hd` claim + an active
+  `admin_users` row). Sessions are JWT cookies (12h), but **`requireAdminUser()`
+  (`lib/admin/access.ts`) re-checks the allowlist on every request**, so deactivating someone or
+  changing a role takes effect immediately. **Call it first in every admin page AND every server
+  action** — an action is a public POST endpoint, and the layout's check doesn't cover it.
+- **Roles:** `admin` (everything) and `editor` (blog only). Editors get a 404 on admin-only pages.
+  An admin can't change or deactivate themselves, so nobody can lock out the last admin. Seeded by
+  `drizzle/0001_seed_initial_admins.sql` (jesus@ = admin, ariel@ = editor); after that, people are
+  managed at `/admin/users`.
+- **Audit log (`lib/admin/audit.ts`)**: sign-ins, refused sign-ins, sign-outs and user changes.
+  `detail` must never hold form contents or anything a client typed. Add new actions to the
+  `AuditAction` union.
+- **Layers:** `middleware.ts` (edge, `/admin/*` + `/api/admin/*`) only proves a session exists;
+  `app/admin/(protected)/layout.tsx` and each page re-check against the database. `/admin/sign-in`
+  sits outside the route group so it can't loop.
+- **The admin is plain Tailwind and does not import `home.css`**, so none of the bare-element traps
+  apply. No motion either: it's a tool, so the motion checklist and the testimonial rule don't
+  apply to it. Noindex, disallowed in `robots.ts`, not in the sitemap. The Meta Pixel in
+  `app/layout.tsx` skips `/admin`.
+- **Env (see `.env.example`):** `DATABASE_URL` (transaction pooler, 6543), `DIRECT_URL` (session
+  pooler, 5432; migrations only), `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`. Google's
+  OAuth client needs `https://kibadvisors.com/api/auth/callback/google` (and
+  `http://localhost:3000/...` for dev) as redirect URIs. **Sign-in does not work on Vercel preview
+  URLs** — Google needs exact redirect URIs; fixing that is a later decision.
+
+
+---
+
 ## Legal pages
 
 `components/LegalPage/LegalPage.tsx` renders a `LegalDoc`; the text lives in one verbatim data file
