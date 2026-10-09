@@ -1,5 +1,5 @@
-import { Fragment, type ReactNode } from 'react';
-import { isAllowedImageSrc, isSafeHref, type Block, type Doc, type Inline, type ListItem } from './doc';
+import { Fragment, type CSSProperties, type ReactNode } from 'react';
+import { IMAGE_SIZES, isAllowedImageSrc, isSafeHref, type Block, type Doc, type Inline, type ListItem } from './doc';
 
 /*
  * Renders a post body (lib/blog/doc.ts) as the article markup. The styles are
@@ -80,17 +80,17 @@ function renderBlock(block: Block, key: number, nested = false): ReactNode {
     case 'heading':
       if (isEmpty(block.content)) return null;
       return block.attrs.level === 3 ? (
-        <h3 key={key} className="mb-3! mt-8! font-heading text-[17.5px] font-semibold text-ink">
+        <h3 key={key} className="clear-both mb-3! mt-8! font-heading text-[17.5px] font-semibold text-ink">
           {renderInline(block.content)}
         </h3>
       ) : (
-        <h2 key={key} className="mb-4! mt-12! font-heading text-[clamp(21px,2.4vw,27px)] font-semibold tracking-tight text-ink">
+        <h2 key={key} className="clear-both mb-4! mt-12! font-heading text-[clamp(21px,2.4vw,27px)] font-semibold tracking-tight text-ink">
           {renderInline(block.content)}
         </h2>
       );
     case 'bulletList':
       return (
-        <ul key={key} className={nested ? 'klist mt-2!' : 'klist mb-6! mt-2!'}>
+        <ul key={key} className={nested ? 'klist mt-2!' : 'klist mb-6! mt-2! flow-root'}>
           {block.content.map((item, i) => renderListItem(item, i, true))}
         </ul>
       );
@@ -99,15 +99,31 @@ function renderBlock(block: Block, key: number, nested = false): ReactNode {
         <ol
           key={key}
           start={block.attrs?.start}
-          className={`${nested ? 'mt-2!' : 'mb-6! mt-2!'} list-decimal! pl-6! text-[16.5px] leading-[1.75] text-slate [&>li]:mb-2 [&>li]:pl-1`}
+          className={`${nested ? 'mt-2!' : 'mb-6! mt-2! flow-root'} list-decimal! pl-6! text-[16.5px] leading-[1.75] text-slate [&>li]:mb-2 [&>li]:pl-1`}
         >
           {block.content.map((item, i) => renderListItem(item, i, false))}
         </ol>
       );
-    case 'image':
+    case 'image': {
       if (!isAllowedImageSrc(block.attrs.src)) return null;
+      const size = block.attrs.size ?? 'full';
+      const align = size === 'full' ? 'center' : block.attrs.align ?? 'center';
+      /* Phones: always full width, never wrapped. From `sm` up: the chosen
+         share of the column, centered or floated with the text wrapping. */
+      const place =
+        size === 'full'
+          ? 'my-9!'
+          : align === 'left'
+            ? 'my-7! sm:float-left sm:mb-4! sm:mr-7! sm:mt-1! sm:w-[var(--img-w)]'
+            : align === 'right'
+              ? 'my-7! sm:float-right sm:mb-4! sm:ml-7! sm:mt-1! sm:w-[var(--img-w)]'
+              : 'my-9! sm:mx-auto! sm:w-[var(--img-w)]';
       return (
-        <figure key={key} className="my-9!">
+        <figure
+          key={key}
+          className={`w-full ${place}`}
+          style={size === 'full' ? undefined : ({ '--img-w': IMAGE_SIZES[size] } as CSSProperties)}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={block.attrs.src}
@@ -117,6 +133,7 @@ function renderBlock(block: Block, key: number, nested = false): ReactNode {
           />
         </figure>
       );
+    }
     case 'paragraph':
     default:
       if (isEmpty(block.content)) return null;

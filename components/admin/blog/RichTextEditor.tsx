@@ -7,6 +7,9 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import { Placeholder } from '@tiptap/extensions';
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
   ImagePlus,
   Italic,
@@ -17,7 +20,7 @@ import {
   Redo2,
   Undo2
 } from 'lucide-react';
-import { isSafeHref, sanitizeDoc, type Doc } from '@/lib/blog/doc';
+import { isSafeHref, sanitizeDoc, type Doc, type ImageAlign, type ImageSize } from '@/lib/blog/doc';
 import { uploadBlogImage } from './upload';
 
 /*
@@ -38,6 +41,27 @@ const Lead = Node.create({
   renderHTML: ({ HTMLAttributes }) => ['p', mergeAttributes(HTMLAttributes, { 'data-lead': '' }), 0]
 });
 
+/* The stock image node plus our two layout attributes (see IMAGE_SIZES in
+   lib/blog/doc.ts). Shown in the editor through data-size / data-align, which
+   .kiba-prose styles in globals.css to match the published layout. */
+const BlogImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      size: {
+        default: 'full',
+        parseHTML: (el) => el.getAttribute('data-size') ?? 'full',
+        renderHTML: (a) => ({ 'data-size': a.size })
+      },
+      align: {
+        default: 'center',
+        parseHTML: (el) => el.getAttribute('data-align') ?? 'center',
+        renderHTML: (a) => ({ 'data-align': a.align })
+      }
+    };
+  }
+});
+
 const extensions = [
   StarterKit.configure({
     heading: { levels: [2, 3] },
@@ -56,7 +80,7 @@ const extensions = [
     }
   }),
   Lead,
-  Image.configure({ inline: false, allowBase64: false }),
+  BlogImage.configure({ inline: false, allowBase64: false }),
   Placeholder.configure({ placeholder: 'Start writing the post…' })
 ];
 
@@ -72,6 +96,8 @@ const IDLE = {
   ordered: false,
   image: false,
   imageAlt: '',
+  imageSize: 'full',
+  imageAlign: 'center',
   canUndo: false,
   canRedo: false
 };
@@ -99,6 +125,8 @@ function useToolbarState(editor: Editor | null) {
             ordered: e.isActive('orderedList'),
             image: e.isActive('image'),
             imageAlt: (e.getAttributes('image').alt as string | undefined) ?? '',
+            imageSize: (e.getAttributes('image').size as string | undefined) ?? 'full',
+            imageAlign: (e.getAttributes('image').align as string | undefined) ?? 'center',
             canUndo: e.can().undo(),
             canRedo: e.can().redo()
           }
@@ -160,6 +188,20 @@ export default function RichTextEditor({
   const keepFocus = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('button')) e.preventDefault();
   };
+
+  const setImage = (attrs: { size?: ImageSize; align?: ImageAlign }) =>
+    editor.chain().focus().updateAttributes('image', attrs).run();
+  const sizes: { id: ImageSize; label: string }[] = [
+    { id: 'small', label: 'Small' },
+    { id: 'medium', label: 'Medium' },
+    { id: 'large', label: 'Large' },
+    { id: 'full', label: 'Full width' }
+  ];
+  const aligns: { id: ImageAlign; label: string; Icon: typeof AlignLeft }[] = [
+    { id: 'left', label: 'Left, text wraps on the right', Icon: AlignLeft },
+    { id: 'center', label: 'Centered', Icon: AlignCenter },
+    { id: 'right', label: 'Right, text wraps on the left', Icon: AlignRight }
+  ];
 
   const setBlock = (block: string) => {
     const c = editor.chain().focus();
@@ -234,12 +276,15 @@ export default function RichTextEditor({
         }}
         className="sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-t-xl border-b border-line bg-white/95 px-2 py-1.5 backdrop-blur"
       >
+        {/* Text styles and lists are off while an image is selected: applied to
+            an image node they replaced it. */}
         <div className="flex rounded-md ring-1 ring-line" role="group" aria-label="Paragraph style">
           {blocks.map((b) => (
             <button
               key={b.id}
               type="button"
-              aria-pressed={state.block === b.id}
+              aria-pressed={!state.image && state.block === b.id}
+              disabled={state.image}
               onClick={() => setBlock(b.id)}
               className={`${btn} rounded-none px-3 first:rounded-l-md last:rounded-r-md`}
             >
@@ -258,10 +303,10 @@ export default function RichTextEditor({
           <Link2 className="size-4" />
         </button>
         <span className="mx-1 h-6 w-px bg-line" aria-hidden="true" />
-        <button type="button" className={btn} aria-label="Bulleted list" title="Bulleted list" aria-pressed={state.bullet} onClick={() => editor.chain().focus().toggleBulletList().run()}>
+        <button type="button" className={btn} aria-label="Bulleted list" title="Bulleted list" disabled={state.image} aria-pressed={state.bullet} onClick={() => editor.chain().focus().toggleBulletList().run()}>
           <List className="size-4" />
         </button>
-        <button type="button" className={btn} aria-label="Numbered list" title="Numbered list" aria-pressed={state.ordered} onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+        <button type="button" className={btn} aria-label="Numbered list" title="Numbered list" disabled={state.image} aria-pressed={state.ordered} onClick={() => editor.chain().focus().toggleOrderedList().run()}>
           <ListOrdered className="size-4" />
         </button>
         <span className="mx-1 h-6 w-px bg-line" aria-hidden="true" />
@@ -314,6 +359,36 @@ export default function RichTextEditor({
 
       {state.image && (
         <div className="flex flex-wrap items-center gap-2 border-b border-line bg-ivory/60 px-3 py-2" onMouseDown={keepFocus}>
+          <div className="flex rounded-md bg-white ring-1 ring-line" role="group" aria-label="Image size">
+            {sizes.map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                aria-pressed={state.imageSize === o.id}
+                onClick={() => setImage({ size: o.id })}
+                className={`${btn} rounded-none px-3 first:rounded-l-md last:rounded-r-md`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex rounded-md bg-white ring-1 ring-line" role="group" aria-label="Image position">
+            {aligns.map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                type="button"
+                aria-label={label}
+                title={state.imageSize === 'full' ? 'Pick a smaller size to place the image left or right' : label}
+                aria-pressed={state.imageSize !== 'full' && state.imageAlign === id}
+                disabled={state.imageSize === 'full'}
+                onClick={() => setImage({ align: id })}
+                className={`${btn} rounded-none first:rounded-l-md last:rounded-r-md`}
+              >
+                <Icon className="size-4" />
+              </button>
+            ))}
+          </div>
+          <span className="basis-full" aria-hidden="true" />
           <label className="text-sm text-slate" htmlFor="image-alt">Image description</label>
           <input
             id="image-alt"

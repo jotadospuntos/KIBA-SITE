@@ -25,7 +25,14 @@ export type Heading = { type: 'heading'; attrs: { level: 2 | 3 }; content?: Inli
 export type ListItem = { type: 'listItem'; content: (Paragraph | BulletList | OrderedList)[] };
 export type BulletList = { type: 'bulletList'; content: ListItem[] };
 export type OrderedList = { type: 'orderedList'; attrs?: { start?: number }; content: ListItem[] };
-export type Image = { type: 'image'; attrs: { src: string; alt: string } };
+/* Size is a share of the article column, so it looks the same on every screen
+   (pixels measured in the editor would not). Left/right let text wrap around
+   the image; on phones every image is full width regardless. */
+export const IMAGE_SIZES = { small: '33%', medium: '50%', large: '75%', full: '100%' } as const;
+export type ImageSize = keyof typeof IMAGE_SIZES;
+export const IMAGE_ALIGNS = ['left', 'center', 'right'] as const;
+export type ImageAlign = (typeof IMAGE_ALIGNS)[number];
+export type Image = { type: 'image'; attrs: { src: string; alt: string; size?: ImageSize; align?: ImageAlign } };
 
 export type Block = Paragraph | Lead | Heading | BulletList | OrderedList | Image;
 export type Doc = { type: 'doc'; content: Block[] };
@@ -135,7 +142,9 @@ export function sanitizeDoc(input: unknown): Doc {
         const a = isObj(n.attrs) ? n.attrs : {};
         const src = typeof a.src === 'string' ? a.src : '';
         const alt = typeof a.alt === 'string' ? a.alt.trim() : '';
-        if (isAllowedImageSrc(src)) blocks.push({ type: 'image', attrs: { src, alt } });
+        const size: ImageSize = typeof a.size === 'string' && a.size in IMAGE_SIZES ? (a.size as ImageSize) : 'full';
+        const align: ImageAlign = IMAGE_ALIGNS.includes(a.align as ImageAlign) ? (a.align as ImageAlign) : 'center';
+        if (isAllowedImageSrc(src)) blocks.push({ type: 'image', attrs: { src, alt, size, align } });
         break;
       }
     }

@@ -82,7 +82,7 @@ export default function PostPage({
       <section>
         <div className="wrap">
           <Reveal className="reveal mx-auto max-w-[760px]">
-            <article>
+            <article className="flow-root">
               <PostBody doc={post.body} />
             </article>
 

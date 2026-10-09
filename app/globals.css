@@ -133,7 +133,18 @@
   .kiba-prose li > * + * { margin-top: 0.3em; }
   .kiba-prose a { color: var(--color-blue); text-decoration: underline; text-underline-offset: 2px; }
   .kiba-prose strong { color: var(--color-ink); font-weight: 600; }
-  .kiba-prose img { max-width: 100%; height: auto; border-radius: 12px; }
+  .kiba-prose img { max-width: 100%; height: auto; border-radius: 12px; margin-left: auto; margin-right: auto; }
+  /* Mirrors the published layout (lib/blog/render.tsx): size as a share of the
+     column, left/right floated with text wrapping. */
+  .kiba-prose img[data-size="small"] { width: 33%; }
+  .kiba-prose img[data-size="medium"] { width: 50%; }
+  .kiba-prose img[data-size="large"] { width: 75%; }
+  .kiba-prose img[data-size="full"] { width: 100%; }
+  .kiba-prose img[data-align="left"]:not([data-size="full"]) { float: left; margin: 0.3em 1.5em 0.75em 0; }
+  .kiba-prose img[data-align="right"]:not([data-size="full"]) { float: right; margin: 0.3em 0 0.75em 1.5em; }
+  .kiba-prose h2, .kiba-prose h3 { clear: both; }
+  .kiba-prose ul, .kiba-prose ol { display: flow-root; }
+  .kiba-prose::after { content: ''; display: block; clear: both; }
   .kiba-prose img.ProseMirror-selectednode { outline: 3px solid var(--color-blue); outline-offset: 3px; }
   /* An image still missing its description: flagged until it has one. */
   .kiba-prose img[alt=""], .kiba-prose img:not([alt]) { outline: 3px dashed #dc2626; outline-offset: 3px; }

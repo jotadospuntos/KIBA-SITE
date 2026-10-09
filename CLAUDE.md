@@ -691,6 +691,13 @@ step**, images in the body.
   `BLOG_READ_WRITE_TOKEN` in `.env.local` stands in (the store's `.env.local` snippet calls it
   `BLOB_READ_WRITE_TOKEN` — rename it, that name is the debt schedule's). Removing an image from
   a post does not delete the file.
+- **Image size and position:** Small / Medium / Large / Full width (33 / 50 / 75 / 100% of the
+  article column — stored as a preset, never pixels, so it looks the same on every screen) and
+  Left / Center / Right. Left and right float with the text wrapping; **on phones every image is
+  full width** and unwrapped. Headings clear floats; lists and the article are `flow-root` so the
+  check-mark icons never sit under a float. Drag-to-resize (Tiptap's built-in) was rejected
+  because it stores pixels measured on the editor's screen. Text-style and list buttons are
+  disabled while an image is selected — applied to an image node they replaced it.
 - **Toolbar buttons don't take focus** (`onMouseDown` preventDefault in `RichTextEditor`). Without it
   keystrokes typed right after a click landed on the button — a space even re-pressed it and undid
   a list. Re-test by typing immediately after clicking if you touch the toolbar.
