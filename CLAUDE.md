@@ -653,6 +653,41 @@ storage.
 
 ---
 
+## `deliverables/` — pages that live on OTHER sites
+
+Not part of the Next.js build and not deployed from here. Each file is a hand-off for a partner to
+install on their own site.
+
+- **`deliverables/rivenway/kiba-x-rivenway.html`** — the RivenWay × KIBA co-branded page for
+  **rivenway.com** (WordPress + Elementor Pro). One self-contained file: RivenWay's nav and footer
+  modeled from their live site, their brand guidelines (Montserrat / Source Sans 3, navy `#001548` /
+  `#19305A`, blue `#295BAA`, sky `#52B5E6`), KIBA's white/blue-arrow logo inlined as base64. Install
+  notes are in the file's header comment (Elementor Canvas template + one HTML widget).
+- **A review copy is live at `/preview/rivenway-kiba.html`** (`public/preview/`, noindex, not in
+  the sitemap), so people can see it without a Vercel login. It's a copy: re-copy it from the
+  deliverable after edits (keeping its `noindex` meta), and delete it when review is over. Its GHL
+  form is live, so submissions from it are real leads.
+- **It is not `/partners/rivenway`.** That route stays, KIBA-branded, on this site. Both embed the
+  same GHL form (`REFERRAL - Rivenway`), so the lead routing is identical.
+- **All CSS is scoped under `.kxr` with `kxr-` class names**, so it can't fight Elementor's kit
+  styles. Keep it that way; a bare element selector will leak into the rest of their site.
+- **KIBA copy in it is verbatim** from `lib/what-to-expect.ts`, `lib/faq.ts`, `lib/testimonials.ts`
+  and the program `summary` lines. It's a copy, so it **drifts**: if one of those changes, update the
+  file too. No star ratings on the testimonials (none were given). **Three deliberate edits by the
+  human, on this page only** — don't "restore" them: the form intro says KIBA will "reach out within a
+  couple minutes" (not 24–72 hours), the hero box says "from start to finish", and the KIBA partner
+  card says "from the first call to the closing table". The "What to expect" card keeps the
+  original "from first call to close".
+- **The programs grid has EIGHT cards, not six**: the six `PROGRAMS` plus **Project Financing** and
+  **Debt Restructuring** (added by the human). Those two have no page on kibadvisors.com, so they
+  link to the homepage, and their descriptions were written for this page rather than copied. The
+  grid is four columns on desktop so eight fill two even rows. If either program gets its own
+  page, point the card at it. To match, the FAQ answer "What types of financing can I access?"
+  lists all eight **on this page only** — `lib/faq.ts` still lists the original six.
+- KIBA images and links use `https://kibadvisors.com/...` (switched from go.* after the launch, so
+  nothing takes the redirect hop); RivenWay's images load from their own `wp-content`. If RivenWay changes its menu, the desktop
+  menu and the mobile sheet are two separate lists.
+
 ## Legal pages
 
 `components/LegalPage/LegalPage.tsx` renders a `LegalDoc`; the text lives in one verbatim data file
