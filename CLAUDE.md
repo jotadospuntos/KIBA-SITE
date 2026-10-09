@@ -684,9 +684,13 @@ step**, images in the body.
 - **Publishing requires** a title, category, summary, body text, and alt text for every image (the
   editor outlines images missing it in red). Drafts can be saved incomplete.
 - **Images:** the browser shrinks each to ≤2000px wide and WebP (`components/admin/blog/upload.ts`),
-  then `/api/admin/blog/image` stores it in the **public** Blob store `kiba-blog-images`
-  (`BLOG_READ_WRITE_TOKEN` — a different store and token from the debt schedule's private
-  one). Removing an image from a post does not delete the file.
+  then `/api/admin/blog/image` stores it in the **public** Blob store `kiba-blog-images` — a
+  different store from the debt schedule's private one. **It has no token on Vercel:** it was
+  connected token-less, so Vercel created only `blog_STORE_ID` (lowercase prefix, as typed) and
+  `blog_WEBHOOK_PUBLIC_KEY`; the SDK pairs the store id with the function's OIDC identity. Locally,
+  `BLOG_READ_WRITE_TOKEN` in `.env.local` stands in (the store's `.env.local` snippet calls it
+  `BLOB_READ_WRITE_TOKEN` — rename it, that name is the debt schedule's). Removing an image from
+  a post does not delete the file.
 - **Toolbar buttons don't take focus** (`onMouseDown` preventDefault in `RichTextEditor`). Without it
   keystrokes typed right after a click landed on the button — a space even re-pressed it and undid
   a list. Re-test by typing immediately after clicking if you touch the toolbar.
