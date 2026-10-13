@@ -4,7 +4,7 @@ import type { MutableRefObject, ReactNode } from 'react';
 import Reveal from '@/components/Reveal/Reveal';
 import { formatDate, formatMoney, formatPercent } from '@/lib/debt-schedule/format';
 import type { DebtEntry } from '@/lib/debt-schedule/schema';
-import { debtTypeLabel } from './DebtCard';
+import { debtTypeLabel, mcaDebitLabel } from './DebtCard';
 import Turnstile from './Turnstile';
 import type { TurnstileHandle } from './Turnstile';
 
@@ -97,7 +97,13 @@ export default function ReviewStep(p: Props) {
                   v={`${formatMoney(d.originalAmount)} / ${formatMoney(d.currentBalance)}`}
                   num
                 />
-                <Row k="Rate / payment" v={`${formatPercent(d.interestRate)} / ${formatMoney(d.monthlyPayment)}`} num />
+                <Row
+                  k="Rate / payment"
+                  v={`${formatPercent(d.interestRate)} / ${formatMoney(d.monthlyPayment)}${
+                    mcaDebitLabel(d) ? ` (${mcaDebitLabel(d)})` : ''
+                  }`}
+                  num
+                />
                 <Row
                   k="Open / maturity"
                   v={`${formatDate(d.openDate)} / ${d.noMaturity ? 'revolving' : formatDate(d.maturityDate)}`}

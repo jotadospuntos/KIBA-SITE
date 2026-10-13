@@ -500,6 +500,11 @@ filling with pdf-lib, (3) the API route + GoHighLevel storage.
   "Testimonials" and "One hero height").
 - **"Other" goes on the PDF as plain "Other"**; the "Please specify" text is kept only in the
   submitted data (the template has no field for it).
+- **MCA is a form-only debt type.** The client enters the debit and toggles daily/weekly; the
+  monthly payment is derived (daily x 22, weekly x 4, `MCA_MULTIPLIER` in `lib/dscr/calc.ts`, the
+  same figures as the DSCR calculator) and recomputed by the schema's transform, so the server never
+  trusts a typed monthly figure. The PDF's dropdown has no "MCA", so `fill-pdf.ts` adds the option
+  to that row before selecting it.
 - **One public page, one fixed autosave key** (`kiba-debt-schedule` in localStorage), cleared on
   submit. No per-client links.
 - **Components** are in `components/debt-schedule/`. The per-debt editor is a Base UI Dialog

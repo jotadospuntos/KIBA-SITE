@@ -6,6 +6,7 @@ import { Dialog } from '@base-ui/react/dialog';
 import { X } from 'lucide-react';
 import {
   DEBT_TYPES,
+  DEBT_TYPE_LABELS,
   MAX_COLLATERAL,
   MAX_LENDER,
   MAX_OTHER_TYPE,
@@ -13,12 +14,15 @@ import {
   STATUS
 } from '@/lib/debt-schedule/constants';
 import type { DebtType, PaymentStatus, SecuredStatus } from '@/lib/debt-schedule/constants';
-import { formatMoneyInput, numberToInput, parseNumber } from '@/lib/debt-schedule/format';
+import { formatMoney, formatMoneyInput, numberToInput, parseNumber } from '@/lib/debt-schedule/format';
 import {
   debtEntrySchema,
   debtWarnings,
+  mcaMonthlyCents,
   validateDebt
 } from '@/lib/debt-schedule/schema';
+import { MCA_MULTIPLIER } from '@/lib/dscr/calc';
+import type { McaFrequency } from '@/lib/dscr/calc';
 import type { DebtEntry, DebtErrors, DebtField, DebtWarnings } from '@/lib/debt-schedule/schema';
 import { ADD_DEBT_BUTTON_ID } from './DebtList';
 import { Adorned, Field, GroupLabel, describedBy, inputClass } from './fields';
@@ -46,6 +50,8 @@ type Draft = {
   currentBalance: string;
   interestRate: string;
   monthlyPayment: string;
+  mcaPayment: string;
+  mcaFrequency: McaFrequency;
   openDate: string;
   maturityDate: string;
   noMaturity: boolean;
@@ -62,6 +68,7 @@ const FIELD_ORDER: DebtField[] = [
   'originalAmount',
   'currentBalance',
   'interestRate',
+  'mcaPayment',
   'monthlyPayment',
   'openDate',
   'maturityDate',
@@ -81,6 +88,8 @@ function toDraft(d: DebtEntry | null): Draft {
     currentBalance: numberToInput(d?.currentBalance, true),
     interestRate: numberToInput(d?.interestRate, false),
     monthlyPayment: numberToInput(d?.monthlyPayment, true),
+    mcaPayment: numberToInput(d?.mcaPayment, true),
+    mcaFrequency: d?.mcaFrequency ?? 'daily',
     openDate: d?.openDate ?? '',
     maturityDate: d?.maturityDate ?? '',
     noMaturity: d?.noMaturity ?? false,
@@ -100,7 +109,13 @@ function toCandidate(d: Draft): Partial<DebtEntry> {
     originalAmount: parseNumber(d.originalAmount),
     currentBalance: parseNumber(d.currentBalance),
     interestRate: parseNumber(d.interestRate),
-    monthlyPayment: parseNumber(d.monthlyPayment),
+    /* An MCA's monthly figure is never typed: it's the debit converted. */
+    monthlyPayment:
+      d.typeOfDebt === 'MCA'
+        ? mcaMonthlyCents(parseNumber(d.mcaPayment), d.mcaFrequency)
+        : parseNumber(d.monthlyPayment),
+    mcaPayment: d.typeOfDebt === 'MCA' ? parseNumber(d.mcaPayment) : undefined,
+    mcaFrequency: d.typeOfDebt === 'MCA' ? d.mcaFrequency : undefined,
     openDate: d.openDate,
     maturityDate: d.noMaturity || !d.maturityDate ? undefined : d.maturityDate,
     noMaturity: d.noMaturity,
@@ -215,7 +230,7 @@ function DebtEntryForm({
     setWarnings(debtWarnings(candidate));
   }
 
-  function blurMoney(field: 'originalAmount' | 'currentBalance' | 'monthlyPayment') {
+  function blurMoney(field: 'originalAmount' | 'currentBalance' | 'monthlyPayment' | 'mcaPayment') {
     set(field, formatMoneyInput(draftRef.current[field]));
     blur(field);
   }
@@ -289,7 +304,7 @@ function DebtEntryForm({
               </option>
               {DEBT_TYPES.map((t) => (
                 <option key={t} value={t} className="text-ink">
-                  {t}
+                  {DEBT_TYPE_LABELS[t] ?? t}
                 </option>
               ))}
             </select>
@@ -299,7 +314,7 @@ function DebtEntryForm({
               <input
                 type="text"
                 maxLength={MAX_OTHER_TYPE}
-                placeholder="e.g. Merchant cash advance"
+                placeholder="e.g. Factoring, private loan"
                 className={inputClass}
                 value={draft.otherDebtType}
                 onChange={(e) => set('otherDebtType', e.target.value)}
@@ -353,23 +368,34 @@ function DebtEntryForm({
               />
             </Adorned>
           </Field>
-          <Field
-            id={fieldId('monthlyPayment')}
-            label="Monthly payment"
-            error={err('monthlyPayment')}
-            warning={warnings.monthlyPayment}
-          >
-            <Adorned symbol="$" side="left">
-              <input
-                inputMode="decimal"
-                className={`${inputClass} pl-8 tabular-nums`}
-                value={draft.monthlyPayment}
-                onChange={(e) => set('monthlyPayment', e.target.value)}
-                onBlur={() => blurMoney('monthlyPayment')}
-                {...aria('monthlyPayment', warnings.monthlyPayment)}
-              />
-            </Adorned>
-          </Field>
+          {draft.typeOfDebt === 'MCA' ? (
+            <McaPaymentField
+              draft={draft}
+              error={err('mcaPayment')}
+              inputProps={aria('mcaPayment')}
+              onPaymentChange={(v) => set('mcaPayment', v)}
+              onPaymentBlur={() => blurMoney('mcaPayment')}
+              onFrequencyChange={(f) => set('mcaFrequency', f)}
+            />
+          ) : (
+            <Field
+              id={fieldId('monthlyPayment')}
+              label="Monthly payment"
+              error={err('monthlyPayment')}
+              warning={warnings.monthlyPayment}
+            >
+              <Adorned symbol="$" side="left">
+                <input
+                  inputMode="decimal"
+                  className={`${inputClass} pl-8 tabular-nums`}
+                  value={draft.monthlyPayment}
+                  onChange={(e) => set('monthlyPayment', e.target.value)}
+                  onBlur={() => blurMoney('monthlyPayment')}
+                  {...aria('monthlyPayment', warnings.monthlyPayment)}
+                />
+              </Adorned>
+            </Field>
+          )}
         </div>
 
         <GroupLabel>The dates</GroupLabel>
@@ -501,5 +527,88 @@ function DebtEntryForm({
         </button>
       </div>
     </>
+  );
+}
+
+/*
+ * An MCA is entered the way it comes out of the account - a daily or weekly
+ * debit - and converted to the monthly figure the schedule needs (daily x 22
+ * business days, weekly x 4: the business's figures, shared with the DSCR
+ * calculator). Spans both columns so the toggle sits beside the amount. The
+ * segmented control is the DSCR calculator's.
+ */
+function McaPaymentField({
+  draft,
+  error,
+  inputProps,
+  onPaymentChange,
+  onPaymentBlur,
+  onFrequencyChange
+}: {
+  draft: Draft;
+  error?: string;
+  inputProps: Record<string, unknown>;
+  onPaymentChange: (value: string) => void;
+  onPaymentBlur: () => void;
+  onFrequencyChange: (f: McaFrequency) => void;
+}) {
+  const payment = parseNumber(draft.mcaPayment);
+  const monthly = mcaMonthlyCents(payment, draft.mcaFrequency);
+  const per = draft.mcaFrequency === 'daily' ? 'business days' : 'weeks';
+
+  return (
+    <Field id={fieldId('mcaPayment')} label="Payment amount" error={error} className="sm:col-span-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+        <div className="sm:flex-1">
+          <Adorned symbol="$" side="left">
+            <input
+              inputMode="decimal"
+              className={`${inputClass} pl-8 tabular-nums`}
+              value={draft.mcaPayment}
+              onChange={(e) => onPaymentChange(e.target.value)}
+              onBlur={onPaymentBlur}
+              {...inputProps}
+            />
+          </Adorned>
+        </div>
+        <div
+          role="radiogroup"
+          aria-label="How often it's debited"
+          className="flex h-12 shrink-0 self-start rounded-full bg-paper p-1 ring-1 ring-line"
+        >
+          {(Object.keys(MCA_MULTIPLIER) as McaFrequency[]).map((freq) => (
+            <label
+              key={freq}
+              className={`flex cursor-pointer items-center rounded-full px-4 font-sans text-[14px] font-semibold capitalize transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-blue-soft ${
+                draft.mcaFrequency === freq ? 'bg-white text-blue shadow-sm ring-1 ring-line' : 'text-slate'
+              }`}
+            >
+              <input
+                type="radio"
+                name="debt-mca-frequency"
+                value={freq}
+                className="sr-only"
+                checked={draft.mcaFrequency === freq}
+                onChange={() => onFrequencyChange(freq)}
+              />
+              {freq}
+            </label>
+          ))}
+        </div>
+      </div>
+      {!error && (
+        <p className="mt-1.5 text-[13px] leading-snug text-slate tabular-nums" aria-live="polite">
+          {Number.isFinite(payment) && payment >= 0 ? (
+            <>
+              Monthly payment:{' '}
+              <span className="font-semibold text-ink">{formatMoney(monthly)}</span> ({formatMoney(payment)}{' '}
+              &times; {MCA_MULTIPLIER[draft.mcaFrequency]} {per})
+            </>
+          ) : (
+            `Enter the ${draft.mcaFrequency} debit. We convert it to a monthly payment.`
+          )}
+        </p>
+      )}
+    </Field>
   );
 }

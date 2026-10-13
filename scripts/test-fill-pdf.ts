@@ -14,7 +14,7 @@ import { fillDebtSchedule } from '../lib/debt-schedule/fill-pdf';
 import { debtScheduleSchema } from '../lib/debt-schedule/schema';
 import type { DebtEntry } from '../lib/debt-schedule/schema';
 
-/* A spread that hits every branch: Other, Secured + collateral, revolving,
+/* A spread that hits every branch: Other, MCA (monthly derived by the schema), Secured + collateral, revolving,
    Delinquent, a lender name too long for its cell, $0 card payment. */
 const POOL: DebtEntry[] = [
   { lenderName: 'Live Oak Bank', typeOfDebt: 'SBA 7(a)', originalAmount: 750000, currentBalance: 612430.18, interestRate: 10.25, monthlyPayment: 8912.4, openDate: '2021-06-15', maturityDate: '2031-06-15', noMaturity: false, securedStatus: 'Secured', paymentStatus: 'Current', collateral: 'Business assets, real estate' },
@@ -25,6 +25,7 @@ const POOL: DebtEntry[] = [
   { lenderName: 'Kabbage', typeOfDebt: 'Other', otherDebtType: 'Merchant cash advance', originalAmount: 40000, currentBalance: 12500, interestRate: 32, monthlyPayment: 2400, openDate: '2024-01-20', maturityDate: '2025-01-20', noMaturity: false, securedStatus: 'Unsecured', paymentStatus: 'Delinquent' },
   { lenderName: 'Regions Bank', typeOfDebt: 'Commercial Mortgage', originalAmount: 1200000, currentBalance: 1034211.9, interestRate: 6.875, monthlyPayment: 7883.12, openDate: '2018-04-30', maturityDate: '2043-04-30', noMaturity: false, securedStatus: 'Secured', paymentStatus: 'Current', collateral: '1400 Dauphin St, Mobile AL' },
   { lenderName: 'Chase', typeOfDebt: 'Non-SBA Commercial Loan', originalAmount: 90000, currentBalance: 45000, interestRate: 8.25, monthlyPayment: 1840, openDate: '2023-03-01', maturityDate: '2028-03-01', noMaturity: false, securedStatus: 'Unsecured', paymentStatus: 'Current' },
+  { lenderName: 'Rapid Finance', typeOfDebt: 'MCA', originalAmount: 60000, currentBalance: 31200, interestRate: 0, monthlyPayment: 0, mcaPayment: 389.5, mcaFrequency: 'daily', openDate: '2025-08-04', noMaturity: true, securedStatus: 'Unsecured', paymentStatus: 'Current' },
   { lenderName: 'Bank of America', typeOfDebt: 'PPP', originalAmount: 62000, currentBalance: 0, interestRate: 1, monthlyPayment: 0, openDate: '2020-04-15', maturityDate: '2025-04-15', noMaturity: false, securedStatus: 'Unsecured', paymentStatus: 'Current' }
 ];
 
@@ -42,6 +43,7 @@ async function main() {
     const data = debtScheduleSchema.parse({
       contactName: 'Jane Doe',
       businessName: 'Gulf Coast Fabrication & Welding Services, LLC',
+      email: 'jane@example.com',
       asOfDate: '2026-09-23',
       hasNoDebt: false,
       debts: debts(n)

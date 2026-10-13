@@ -26,6 +26,11 @@ import type { DebtEntry, DebtSchedule } from './schema';
  * "Other" goes onto the PDF as plain "Other"; the "Please specify" text has no
  * cell on the template and stays in the submitted data only (decided by the
  * human).
+ *
+ * 'MCA' isn't in the template's Type of Debt list, so it's added to that one
+ * row's dropdown just before it's selected (the page is flattened right after,
+ * so nothing about the template itself changes). The Monthly Payment cell gets
+ * the converted monthly figure, like every other row.
  */
 
 const TEMPLATE_PATH = path.join(process.cwd(), 'public', 'templates', 'business-debt-schedule.pdf');
@@ -109,6 +114,7 @@ function fillRow(form: PDFForm, row: number, d: DebtEntry, font: PDFFont) {
   for (const [group, value] of choices) {
     const dd = dropdown(form, group, row);
     dd.setFontSize(DROPDOWN_FONT_SIZE);
+    if (!dd.getOptions().includes(value)) dd.addOptions(value);
     dd.select(value);
   }
 }

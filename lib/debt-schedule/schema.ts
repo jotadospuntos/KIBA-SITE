@@ -9,6 +9,8 @@ import {
   STATUS
 } from './constants';
 import { todayISO } from './format';
+import { MCA_MULTIPLIER, mcaMonthly } from '../dscr/calc';
+import type { McaFrequency } from '../dscr/calc';
 
 /*
  * THE ONE SOURCE OF TRUTH for what a debt schedule is. The form validates with
@@ -20,6 +22,8 @@ import { todayISO } from './format';
  */
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+const MCA_FREQUENCIES = Object.keys(MCA_MULTIPLIER) as [McaFrequency, ...McaFrequency[]];
 
 /* Per-field rules only. The cross-field rules live in debtCrossFieldIssues
    below, separately, so the form can run both halves every time: zod skips an
@@ -38,6 +42,14 @@ const debtEntryBase = z.object({
   monthlyPayment: z
     .number({ error: 'Enter a payment (0 is allowed).' })
     .nonnegative('Enter a payment (0 is allowed).'),
+  /* MCAs only: the payment as debited, and how often. monthlyPayment is then
+     derived from them (daily x 22, weekly x 4 - the business's figures, shared
+     with the DSCR calculator), never typed. */
+  mcaPayment: z
+    .number({ error: 'Enter the payment amount.' })
+    .nonnegative('Enter the payment amount.')
+    .optional(),
+  mcaFrequency: z.enum(MCA_FREQUENCIES).optional(),
   openDate: z.string().regex(ISO_DATE, 'Enter the open date.'),
   /* Revolving lines have none; noMaturity records that it was deliberate. */
   maturityDate: z.string().optional(),
@@ -59,6 +71,9 @@ export function debtCrossFieldIssues(d: Partial<DebtEntry>): Issue[] {
   if (d.typeOfDebt === 'Other' && !d.otherDebtType?.trim()) {
     issues.push({ path: 'otherDebtType', message: 'Describe the debt type.' });
   }
+  if (d.typeOfDebt === 'MCA' && d.mcaPayment === undefined) {
+    issues.push({ path: 'mcaPayment', message: 'Enter the payment amount.' });
+  }
   if (d.securedStatus === 'Secured' && !d.collateral?.trim()) {
     issues.push({ path: 'collateral', message: 'Describe the collateral securing this debt.' });
   }
@@ -71,11 +86,26 @@ export function debtCrossFieldIssues(d: Partial<DebtEntry>): Issue[] {
   return issues;
 }
 
-export const debtEntrySchema = debtEntryBase.superRefine((d, ctx) => {
-  for (const issue of debtCrossFieldIssues(d)) {
-    ctx.addIssue({ code: 'custom', path: [issue.path], message: issue.message });
-  }
-});
+/* To the cent, so 123.45 x 22 is 2715.90 rather than 2715.8999999. */
+export function mcaMonthlyCents(payment: number, frequency: McaFrequency): number {
+  return Math.round(mcaMonthly(payment, frequency) * 100) / 100;
+}
+
+/* For an MCA the monthly figure is recomputed here, so the server (and a
+   restored draft) never trusts a monthlyPayment that disagrees with the debit
+   and frequency. Non-MCA debts lose any stray MCA fields. */
+export const debtEntrySchema = debtEntryBase
+  .superRefine((d, ctx) => {
+    for (const issue of debtCrossFieldIssues(d)) {
+      ctx.addIssue({ code: 'custom', path: [issue.path], message: issue.message });
+    }
+  })
+  .transform((d): DebtEntry => {
+    if (d.typeOfDebt !== 'MCA') return { ...d, mcaPayment: undefined, mcaFrequency: undefined };
+    const mcaFrequency = d.mcaFrequency ?? 'daily';
+    const mcaPayment = d.mcaPayment ?? 0;
+    return { ...d, mcaPayment, mcaFrequency, monthlyPayment: mcaMonthlyCents(mcaPayment, mcaFrequency) };
+  });
 
 /* Exported so the form's blur check and the server use the same rule. */
 export const emailSchema = z.string().trim().pipe(z.email('Please enter a valid email address.'));

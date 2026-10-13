@@ -9,6 +9,14 @@ export function debtTypeLabel(d: DebtEntry): string {
   return d.typeOfDebt === 'Other' && d.otherDebtType ? `Other — ${d.otherDebtType}` : d.typeOfDebt;
 }
 
+/* "$123.45 daily" for an MCA, so the debit it was entered as stays visible
+   beside the converted monthly figure. Shared with the review step. */
+export function mcaDebitLabel(d: DebtEntry): string | null {
+  return d.typeOfDebt === 'MCA' && d.mcaPayment != null && d.mcaFrequency
+    ? `${formatMoney(d.mcaPayment)} ${d.mcaFrequency}`
+    : null;
+}
+
 /* Status colours aren't in the @theme token set, so they're Tailwind's own
    muted greens/reds rather than new raw hexes. Delinquent is the one that
    matters, so it uses the destructive token. */
@@ -24,6 +32,7 @@ type Props = {
    Base UI Button note in CLAUDE.md. */
 export default function DebtCard({ debt, onEdit, onDelete }: Props) {
   const rate = formatPercent(debt.interestRate);
+  const debit = mcaDebitLabel(debt);
 
   return (
     <div className="rounded-[16px] bg-white p-5 shadow-soft ring-1 ring-line sm:p-6">
@@ -67,6 +76,7 @@ export default function DebtCard({ debt, onEdit, onDelete }: Props) {
           <div className="mt-0.5 font-heading text-[17px] font-semibold tabular-nums text-ink">
             {formatMoney(debt.monthlyPayment)}
           </div>
+          {debit && <div className="text-[13px] tabular-nums text-slate">{debit}</div>}
         </div>
       </div>
 

@@ -9,6 +9,11 @@
  * "Other" goes onto the PDF as plain "Other". The client's "Please specify"
  * text (otherDebtType) has no field on the template, so it lives only in the
  * submitted data - decided by the human, see docs/debt-schedule-build-spec.md §8.
+ *
+ * ONE EXCEPTION: 'MCA' is not in the template's list. The form needs it because
+ * an MCA is entered differently (a daily or weekly debit, converted to monthly),
+ * so fill-pdf.ts adds it to that row's dropdown before selecting it. Every other
+ * string here must still match the PDF exactly.
  */
 export const DEBT_TYPES = [
   'SBA 7(a)',
@@ -19,8 +24,14 @@ export const DEBT_TYPES = [
   'Commercial Mortgage',
   'EIDL',
   'PPP',
+  'MCA',
   'Other'
 ] as const;
+
+/* The dropdown's visible text, where it differs from the stored value. */
+export const DEBT_TYPE_LABELS: Partial<Record<(typeof DEBT_TYPES)[number], string>> = {
+  MCA: 'MCA (merchant cash advance)'
+};
 
 export const SECURED = ['Secured', 'Unsecured'] as const;
 
