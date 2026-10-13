@@ -334,7 +334,7 @@ and `intro` per page.
 
 Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-solutions`, all six
 `/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, `/book-rr`, `/dscr-calculator`, `/thank-you`,
-`/ty-cal`, `/referral-partners`, `/business-acquisitions`, all three `/advisors/*` and both
+`/ty-cal`, `/funding-application/next-steps`, `/referral-partners`, `/business-acquisitions`, all three `/advisors/*` and both
 `/partners/*`. In other words every route except the two legal pages (`/privacy-policy`, `/terms-and-conditions`) and
 `/debt-schedule` and `/funding-application` (above).
 `v2.html` is the only other page without one, deliberately.
@@ -580,6 +580,12 @@ box pre-filled, and the applicant reviews and signs it in SignWell's embedded mo
   `GHL_PRIVATE_TOKEN`, `DEBT_SCHEDULE_LINK_SECRET`.
 - The authorization paragraph (`authorization.ts`) is **verbatim from the PDF, typos included**.
 - The progress bar is a `div`, not a `nav`: home.css styles every bare `nav` as the site header.
+- **After signing → `/funding-application/next-steps`** (noindex, unlinked): book a call on the
+  round-robin calendar (same embed as `/book-rr`), then the debt schedule as a recommended second
+  step (opens in a new tab, so the calendar isn't lost). Two routes get people there: SignWell's
+  per-document `redirect_url` (covers signing from the emailed link; the embedded modal redirects its
+  parent too) and SigningView's `completed` handler. The path is `NEXT_STEPS_PATH` in `constants.ts`.
+  Unlike the form, this page HAS the testimonial section — nobody is typing financial details there.
 
 ## `/dscr-calculator` (final; still unlisted)
 
@@ -1153,7 +1159,7 @@ Until the launch this repo served only `go.kibadvisors.com`, and the WordPress s
 - **Indexing is per page.** Indexed and listed in `app/sitemap.ts`: `/`, `/about-us`,
   `/meet-our-team`, `/capital-solutions` + the six programs, `/blog` + posts, `/contact-us`,
   `/referral-partners`, both legal pages. **Still `noindex`**, and absent from the sitemap: `/thank-you`,
-  `/ty-cal`, `/book-rr`, `/business-acquisitions`, `/debt-schedule`, `/funding-application`, `/partners/*`, `/advisors/*`
+  `/ty-cal`, `/book-rr`, `/business-acquisitions`, `/debt-schedule`, `/funding-application` (+ `/next-steps`), `/partners/*`, `/advisors/*`
   and `/v2`. Those are booking-flow, campaign or partner-specific pages. Add a new page to
   both places or neither.
 - **DNS is Cloudflare; email is Google Workspace MX on the same zone.** Only the apex and `www`

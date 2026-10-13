@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Check, FileSignature, Mail } from 'lucide-react';
+import { NEXT_STEPS_PATH } from '@/lib/funding-application/constants';
 
 /*
  * After submit: the pre-filled application opens in SignWell's signing modal
@@ -54,7 +55,12 @@ export default function SigningView({ signingUrl, email }: { signingUrl: string;
       url: signingUrl,
       allowDecline: false,
       events: {
-        completed: () => setState('signed'),
+        /* SignWell's redirect_url usually moves the page first; this covers
+           the case where it doesn't. The "signed" view shows meanwhile. */
+        completed: () => {
+          setState('signed');
+          window.location.assign(NEXT_STEPS_PATH);
+        },
         declined: () => setState('declined'),
         error: () => setState('failed')
       }
@@ -86,8 +92,11 @@ export default function SigningView({ signingUrl, email }: { signingUrl: string;
         </div>
         <h2 className="font-heading text-[clamp(26px,3.2vw,34px)] text-ink">Application signed</h2>
         <p className="mx-auto mt-3 max-w-[500px] text-[16px] text-slate">
-          Thank you. Your KIBA advisor has your signed application and will be in touch about next steps.
+          Thank you. Taking you to your next steps: booking your call with an advisor.
         </p>
+        <a className="btn btn-primary mt-8!" href={NEXT_STEPS_PATH}>
+          Continue
+        </a>
       </div>
     );
   }

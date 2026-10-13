@@ -26,6 +26,9 @@ export const SIGNWELL_CC = [{ name: 'KIBA', email: 'jesus@kibadvisors.com' }];
    link, so closing the tab doesn't lose the application. (0-60.) */
 export const SIGNING_EMAIL_DELAY_MIN = 10;
 
+/* Where applicants land after signing: book a call, then the debt schedule. */
+export const NEXT_STEPS_PATH = '/funding-application/next-steps';
+
 /* How long the staff link in the GoHighLevel note works. The document itself
    stays in SignWell after that; this only bounds a URL that opens SSNs. */
 export const STAFF_LINK_DAYS = 45;

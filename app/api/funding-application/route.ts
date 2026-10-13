@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { GhlError } from '@/lib/debt-schedule/ghl';
 import { verifyTurnstile } from '@/lib/debt-schedule/turnstile';
-import { STAFF_LINK_DAYS } from '@/lib/funding-application/constants';
+import { NEXT_STEPS_PATH, STAFF_LINK_DAYS } from '@/lib/funding-application/constants';
 import { missingSubmitSecrets } from '@/lib/funding-application/env';
 import { parseApplication } from '@/lib/funding-application/fields';
 import { addApplicationNote, upsertApplicant } from '@/lib/funding-application/ghl';
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
   let documentId: string;
   let signingUrl: string;
   try {
-    ({ documentId, signingUrl } = await createApplicationDocument(app));
+    ({ documentId, signingUrl } = await createApplicationDocument(app, `${req.nextUrl.origin}${NEXT_STEPS_PATH}`));
   } catch (e) {
     logError('signwell', e);
     return fail(500, 'server', 'We couldn’t prepare your application for signing.');

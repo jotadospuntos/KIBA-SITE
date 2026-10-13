@@ -16,7 +16,9 @@ import type { Application } from './fields';
  *     One document from the template, every box pre-filled by API ID, sent
  *     straight to signing (draft: false). Embedded signing, so the applicant
  *     signs on our page; send_email + a delay means SignWell also emails them
- *     the link if they haven't finished by then. embedded_signing_notifications
+ *     the link if they haven't finished by then. redirect_url sends them to
+ *     /funding-application/next-steps after signing, whichever way they sign
+ *     (the embedded modal redirects its parent page). embedded_signing_notifications
  *     is what makes SignWell send the completed copy to the CC list - without
  *     it, embedded documents notify nobody.
  *
@@ -70,7 +72,8 @@ export function templateFields(app: Application) {
 }
 
 export async function createApplicationDocument(
-  app: Application
+  app: Application,
+  redirectUrl: string
 ): Promise<{ documentId: string; signingUrl: string }> {
   if (!SIGNWELL_TEMPLATE_ID) throw new Error('SIGNWELL_TEMPLATE_ID is not set in lib/funding-application/constants.ts');
 
@@ -85,6 +88,7 @@ export async function createApplicationDocument(
       template_id: SIGNWELL_TEMPLATE_ID,
       name: `KIBA Lending Application — ${v.business_legal_name}`,
       draft: false,
+      redirect_url: redirectUrl,
       embedded_signing: true,
       embedded_signing_notifications: true,
       recipients: [
