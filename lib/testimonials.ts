@@ -8,7 +8,7 @@
  * The named attributions won - they're the stronger and more specific version,
  * and they're what the majority of pages were already showing.
  *
- * EVERY ENTRY IS A REAL TESTIMONIAL, supplied by the business. There are six;
+ * EVERY ENTRY IS A REAL TESTIMONIAL, supplied by the business. There are seven;
  * that count drives the column layout in components/ui/testimonial-v2.tsx
  * (three columns on wide screens, two on tablets, one on phones). Do NOT pad
  * this array to fill the layout - inventing client quotes for a financial
@@ -37,8 +37,8 @@ export type Testimonial = {
   anonymous?: boolean;
 };
 
-/* Order matters: the columns are filled round-robin, so the two long quotes
-   sit first and second to land in different columns at both 2 and 3 columns. */
+/* Order matters: the columns are filled round-robin, so the three long quotes
+   sit first, second and third to land in different columns at 3 columns. */
 export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
@@ -55,6 +55,12 @@ export const TESTIMONIALS: Testimonial[] = [
       'I recently worked with Michael and his team at Kingdom Impact Business Advisors to secure a new SBA loan, and the entire experience was excellent. The process was simple, and straightforward from start to finish. Michael was easy to work with, communicated clearly, and made what can normally be a stressful and complicated process feel effortless.\n\n' +
       'Everything moved along smoothly, and I always knew where things stood. I would highly recommend Michael and Kingdom Impact Business Advisors to any business owner looking for financing or help navigating the SBA loan process. Great experience all around!',
     name: 'Russell J.',
+    role: 'SBA Loan Client'
+  },
+  {
+    quote:
+      'Working with Michael was one of the best decisions we made during our SBA loan process. He was incredibly thorough, communicative, and persistent. He guided us step by step, was always available with updates and explanations, and made sure we understood exactly what the lender needed. He verified every detail before anything went to the bank, saving us time and headaches. Thanks to his persistence and expertise, we secured the financing we were looking for. I would STRONGLY recommend him to any business owner looking for a smooth, well-managed funding process.',
+    name: 'Michael T.',
     role: 'SBA Loan Client'
   },
   {

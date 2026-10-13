@@ -347,7 +347,7 @@ rule, and unlayered CSS beats Tailwind's layered utilities:
 
 - **`lib/testimonials.ts` is the single source of truth.** It used to be duplicated into every
   legacy HTML file; since the migration there is one copy.
-- **There are SIX real testimonials, all supplied by the business.** Layout: one column on phones,
+- **There are SEVEN real testimonials, all supplied by the business.** Layout: one column on phones,
   two from `md`, three from `lg` — each breakpoint has its own round-robin split, so no quote is
   ever hidden (hiding a third column below `lg` would drop two of them on tablets). Scroll speed
   scales with each column's text length, so long quotes move at reading pace.
@@ -844,7 +844,7 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │   └── hero-mashups.py           ← rebuilds the composite hero images (not part of the build)
 ├── lib/
 │   ├── utils.ts                  ← cn() helper
-│   ├── testimonials.ts           ← the six real client testimonials (single source)
+│   ├── testimonials.ts           ← the seven real client testimonials (single source)
 │   ├── faq.ts                    ← the five homepage FAQ answers (verbatim from WordPress)
 │   ├── what-to-expect.ts         ← the six "what to expect" cards + the trust stat row
 │   ├── ghl.ts                    ← GoHighLevel embed IDs + the resize-script loader
