@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     page('/blog'),
     ...(await listPublishedPosts()).map((p) => page(`/blog/${p.slug}`, p.publishedAt)),
     page('/contact-us'),
+    page('/dscr-calculator'),
     page('/referral-partners'),
     page('/privacy-policy'),
     page('/terms-and-conditions')

@@ -36,6 +36,7 @@ import { FaqAccordion } from '@/components/ui/faq-accordion';
 import GradientBlob from '@/components/GradientBlob/GradientBlob';
 import HeroBlobs from '@/components/HeroBlobs/HeroBlobs';
 import TrustMarquee from '@/components/TrustMarquee/TrustMarquee';
+import DscrPromo from '@/components/DscrPromo/DscrPromo';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import { useMotionPreference } from '@/lib/useMotionPreference';
 
@@ -279,7 +280,8 @@ export default function HomePage() {
             <Reveal className="benefit-card reveal"><div className="benefit-icon"><span style={{ fontFamily: "'General Sans','Instrument Sans',sans-serif", fontWeight: '700', fontSize: '19px', color: '#fff' }}>3</span></div><h3>Get matched &amp; funded</h3><p>We connect you with the right lender and stay with you through closing &mdash; start to finish.</p></Reveal>
           </div>
         </div>
-      </section><section>
+      </section>{/* Not in /v2: added after the port to drive traffic to the
+          DSCR calculator. See CLAUDE.md's divergence list. */}<DscrPromo /><section>
         <div className="wrap">
           <Reveal className="section-head reveal">
             <div className="eyebrow">Who We Work With</div>

@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { PROGRAMS } from '@/app/capital-solutions/solutions-data';
+import { TOOLS } from '@/lib/tools';
 
 /*
- * Shared site nav: sticky bar, desktop "Capital Solutions" dropdown, mobile sheet with
+ * Shared site nav: sticky bar, desktop "Capital Solutions" and "Tools & Solutions"
+ * dropdowns (lib/tools.ts holds the tools list), mobile sheet with
  * accordion. Reused by every migrated route, so the markup lives here once
  * rather than being copy-pasted the way the legacy public/legacy/*.html pages
  * copy their headers (see CLAUDE.md "Golden rules").
@@ -87,37 +89,30 @@ function Caret() {
   );
 }
 
-export default function SiteNav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [solutionsOpen, setSolutionsOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
+type MenuEntry = { href: string; title: string; desc: string };
 
-  const solutionsItemRef = useRef<HTMLDivElement | null>(null);
-  const solutionsTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const solutionsPanelRef = useRef<HTMLDivElement | null>(null);
-  const navToggleRef = useRef<HTMLButtonElement | null>(null);
-  const sheetRef = useRef<HTMLDivElement | null>(null);
+/* One desktop dropdown: "Capital Solutions" and "Tools & Solutions" are both
+   this, so the keyboard behavior described above exists once. Each instance
+   owns its open state, so opening one never involves the other except through
+   click-outside / blur, which close it. `idPrefix` keeps the original ids
+   (solutionsItem, solutionsTrigger, solutionsPanel) for the /v2 diff. */
+function NavDropdown({ idPrefix, label, items }: { idPrefix: string; label: string; items: MenuEntry[] }) {
+  const [open, setOpen] = useState(false);
 
-  /* ---------- sticky nav shrink-on-scroll ---------- */
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > SCROLLED_AT);
-    document.addEventListener('scroll', onScroll, { passive: true });
-    onScroll(); // in case the page loads already scrolled (reload, or a #anchor)
-    return () => document.removeEventListener('scroll', onScroll);
-  }, []);
+  const itemRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
 
-  /* ---------- desktop Capital Solutions dropdown ---------- */
-  const closeSolutions = useCallback((restoreFocus: boolean) => {
-    setSolutionsOpen(false);
-    if (restoreFocus) solutionsTriggerRef.current?.focus();
+  const close = useCallback((restoreFocus: boolean) => {
+    setOpen(false);
+    if (restoreFocus) triggerRef.current?.focus();
   }, []);
 
   /* Focus the nth dropdown link, wrapping (so -1 is the last one). Read from the
      DOM rather than a ref array: it's transient focus movement, not state. */
-  const focusSolutionsLink = useCallback((index: number) => {
+  const focusLink = useCallback((index: number) => {
     const links = Array.from(
-      solutionsPanelRef.current?.querySelectorAll<HTMLAnchorElement>('a[href]') ?? []
+      panelRef.current?.querySelectorAll<HTMLAnchorElement>('a[href]') ?? []
     );
     if (!links.length) return;
     links[(index + links.length) % links.length].focus();
@@ -128,14 +123,14 @@ export default function SiteNav() {
        that never reach this component. The trigger's own click is excluded by
        the contains() check, so no stopPropagation is needed. */
     const onDocClick = (e: MouseEvent) => {
-      if (!solutionsItemRef.current?.contains(e.target as Node)) setSolutionsOpen(false);
+      if (!itemRef.current?.contains(e.target as Node)) setOpen(false);
     };
     const onDocKeyDown = (e: KeyboardEvent) => {
-      /* Guarded on solutionsOpen, as the vanilla version was: an unguarded
-         Escape handler would yank focus to the Capital Solutions trigger from anywhere
-         on the page - including while the mobile sheet is closing, which has
-         its own focus restore. */
-      if (e.key === 'Escape' && solutionsOpen) closeSolutions(true);
+      /* Guarded on `open`, as the vanilla version was: an unguarded Escape
+         handler would yank focus to this trigger from anywhere on the page -
+         including while the mobile sheet is closing, which has its own focus
+         restore. */
+      if (e.key === 'Escape' && open) close(true);
     };
     document.addEventListener('click', onDocClick);
     document.addEventListener('keydown', onDocKeyDown);
@@ -143,7 +138,93 @@ export default function SiteNav() {
       document.removeEventListener('click', onDocClick);
       document.removeEventListener('keydown', onDocKeyDown);
     };
-  }, [closeSolutions, solutionsOpen]);
+  }, [close, open]);
+
+  return (
+    <div
+      className={open ? 'nav-menu-item is-open' : 'nav-menu-item'}
+      id={`${idPrefix}Item`}
+      ref={itemRef}
+      onBlur={(e) => {
+        /* Tabbing or clicking out closes it. No focus restore - focus has
+           already moved somewhere deliberate. */
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+    >
+      <button
+        className="nav-menu-trigger"
+        id={`${idPrefix}Trigger`}
+        type="button"
+        aria-expanded={open}
+        aria-controls={`${idPrefix}Panel`}
+        ref={triggerRef}
+        onClick={() => setOpen((o) => !o)}
+        onKeyDown={(e) => {
+          if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+          e.preventDefault();
+          setOpen(true);
+          focusLink(e.key === 'ArrowDown' ? 0 : -1);
+        }}
+      >{label}<Caret /></button>
+      <div
+        className="nav-dropdown"
+        id={`${idPrefix}Panel`}
+        ref={panelRef}
+        onKeyDown={(e) => {
+          const links = Array.from(
+            panelRef.current?.querySelectorAll<HTMLAnchorElement>('a[href]') ?? []
+          );
+          const i = links.indexOf(document.activeElement as HTMLAnchorElement);
+          if (e.key === 'ArrowDown') { e.preventDefault(); focusLink(i + 1); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); focusLink(i - 1); }
+          else if (e.key === 'Home') { e.preventDefault(); focusLink(0); }
+          else if (e.key === 'End') { e.preventDefault(); focusLink(-1); }
+        }}
+      >
+        {items.map((item) => (
+          <a className="nav-dropdown-item" href={item.href} key={item.href}><span className="nav-dropdown-title">{item.title}</span><span className="nav-dropdown-desc">{item.desc}</span></a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* The mobile sheet's counterpart: one accordion per dropdown. */
+function MobileAccordion({ idPrefix, label, items, onLinkClick }: { idPrefix: string; label: string; items: MenuEntry[]; onLinkClick: () => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        className={open ? 'mobile-accordion-trigger is-open' : 'mobile-accordion-trigger'}
+        id={`${idPrefix}Trigger`}
+        type="button"
+        aria-expanded={open}
+        aria-controls={`${idPrefix}Panel`}
+        onClick={() => setOpen((o) => !o)}
+      >{label}<Caret /></button>
+      <div className="mobile-accordion-panel" id={`${idPrefix}Panel`} hidden={!open}>
+        {items.map((item) => (
+          <a href={item.href} key={item.href} onClick={onLinkClick}><span className="nav-dropdown-title">{item.title}</span><span className="nav-dropdown-desc">{item.desc}</span></a>
+        ))}
+      </div>
+    </>
+  );
+}
+
+export default function SiteNav() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navToggleRef = useRef<HTMLButtonElement | null>(null);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+
+  /* ---------- sticky nav shrink-on-scroll ---------- */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > SCROLLED_AT);
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // in case the page loads already scrolled (reload, or a #anchor)
+    return () => document.removeEventListener('scroll', onScroll);
+  }, []);
 
   /* ---------- mobile sheet ---------- */
 
@@ -216,59 +297,22 @@ export default function SiteNav() {
 
   return (
     <nav id="siteNav" className={scrolled ? 'nav-scrolled' : undefined}><div className="nav-inner"><a className="logo-mark" href="/" aria-label="Kingdom Impact Business Advisors home"><img src="/img/kiba-logo.png" alt="Kingdom Impact Business Advisors" width="263" height="120" /></a><div className="nav-menu" id="navMenu">
-      <div
-        className={solutionsOpen ? 'nav-menu-item is-open' : 'nav-menu-item'}
-        id="solutionsItem"
-        ref={solutionsItemRef}
-        onBlur={(e) => {
-          /* Tabbing or clicking out closes it. No focus restore - focus has
-             already moved somewhere deliberate. */
-          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setSolutionsOpen(false);
-        }}
-      >
-        <button
-          className="nav-menu-trigger"
-          id="solutionsTrigger"
-          type="button"
-          aria-expanded={solutionsOpen}
-          aria-controls="solutionsPanel"
-          ref={solutionsTriggerRef}
-          onClick={() => setSolutionsOpen((open) => !open)}
-          onKeyDown={(e) => {
-            if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-            e.preventDefault();
-            setSolutionsOpen(true);
-            focusSolutionsLink(e.key === 'ArrowDown' ? 0 : -1);
-          }}
-        >Capital Solutions<Caret /></button>
-        <div
-          className="nav-dropdown"
-          id="solutionsPanel"
-          ref={solutionsPanelRef}
-          onKeyDown={(e) => {
-            const links = Array.from(
-              solutionsPanelRef.current?.querySelectorAll<HTMLAnchorElement>('a[href]') ?? []
-            );
-            const i = links.indexOf(document.activeElement as HTMLAnchorElement);
-            if (e.key === 'ArrowDown') { e.preventDefault(); focusSolutionsLink(i + 1); }
-            else if (e.key === 'ArrowUp') { e.preventDefault(); focusSolutionsLink(i - 1); }
-            else if (e.key === 'Home') { e.preventDefault(); focusSolutionsLink(0); }
-            else if (e.key === 'End') { e.preventDefault(); focusSolutionsLink(-1); }
-          }}
-        >
-          {SOLUTIONS.map((item) => (
-            <a className="nav-dropdown-item" href={item.href} key={item.href}><span className="nav-dropdown-title">{item.title}</span><span className="nav-dropdown-desc">{item.desc}</span></a>
-          ))}
-        </div>
-      </div>
+      <NavDropdown idPrefix="solutions" label="Capital Solutions" items={SOLUTIONS} />
+      <NavDropdown idPrefix="tools" label="Tools & Solutions" items={TOOLS} />
       {NAV_LINKS.map((link) => (
         <a className="nav-menu-link" href={link.href} key={link.href}>{link.label}</a>
       ))}
     </div>
     <div className="nav-right">
-      {/* The phone number steps aside across the whole desktop bar until
-          1280px so everything else fits on one row. It's still in every CTA
-          band and the footer.
+      {/* The phone number is hidden across the WHOLE desktop bar (>=1000px)
+          so everything else fits on one row. It's still in the bar at
+          640-999px, in the mobile sheet, in every CTA band and the footer.
+
+          It used to come back at 1280px. Adding the "Tools & Solutions"
+          dropdown (~154px) ended that: .nav-inner is capped at 1180px, so
+          wider screens never gain room, and with the phone the row needed
+          ~1280px of content in a 1116px box - two rows (101px) at every
+          width from 1280 up.
 
           THIS GREW ONCE, and so did the desktop breakpoint. Both were 960px
           when the CTA read "Let's Talk" (~110px wide). "Start the
@@ -281,7 +325,7 @@ export default function SiteNav() {
           lost there. If the CTA text changes again, re-measure at
           960/1000/1024/1060/1100/1180/1280 - .nav-inner must stay 78px. */}
       <a
-        className="nav-phone min-[1000px]:max-[1279px]:hidden!"
+        className="nav-phone min-[1000px]:hidden!"
         href={PHONE_HREF}
       >{PHONE_LABEL}</a>
       {/* Desktop only: below 1000px the mobile sheet carries this, and keeping
@@ -317,19 +361,8 @@ export default function SiteNav() {
     </div>
     <div className="mobile-menu" id="mobileMenu" hidden={!mobileOpen} ref={sheetRef}>
       <div className="mobile-menu-inner">
-        <button
-          className={mobileSolutionsOpen ? 'mobile-accordion-trigger is-open' : 'mobile-accordion-trigger'}
-          id="mobileSolutionsTrigger"
-          type="button"
-          aria-expanded={mobileSolutionsOpen}
-          aria-controls="mobileSolutionsPanel"
-          onClick={() => setMobileSolutionsOpen((open) => !open)}
-        >Capital Solutions<Caret /></button>
-        <div className="mobile-accordion-panel" id="mobileSolutionsPanel" hidden={!mobileSolutionsOpen}>
-          {SOLUTIONS.map((item) => (
-            <a href={item.href} key={item.href} onClick={onSheetLinkClick}><span className="nav-dropdown-title">{item.title}</span><span className="nav-dropdown-desc">{item.desc}</span></a>
-          ))}
-        </div>
+        <MobileAccordion idPrefix="mobileSolutions" label="Capital Solutions" items={SOLUTIONS} onLinkClick={onSheetLinkClick} />
+        <MobileAccordion idPrefix="mobileTools" label="Tools & Solutions" items={TOOLS} onLinkClick={onSheetLinkClick} />
         {NAV_LINKS.map((link) => (
           <a className="mobile-menu-link" href={link.href} key={link.href} onClick={onSheetLinkClick}>{link.label}</a>
         ))}

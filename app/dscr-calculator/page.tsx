@@ -2,15 +2,13 @@ import type { Metadata } from 'next';
 import DscrCalculatorPage from './DscrCalculatorPage';
 
 /*
- * /dscr-calculator — final, but still unlisted: NOINDEX and absent from
- * app/sitemap.ts and the nav until the business decides to list it; then flip
- * `robots`, add it to the sitemap, and decide where it's linked from.
+ * /dscr-calculator — listed: indexed, in app/sitemap.ts, linked from the nav's
+ * "Tools & Solutions" dropdown (lib/tools.ts) and the homepage's DscrPromo band.
  */
 export const metadata: Metadata = {
   title: 'DSCR Calculator — Kingdom Impact Business Advisors',
   description:
     'Work out your debt service coverage ratio in two steps: EBITDA from your latest tax return, then your monthly debt payments.',
-  robots: { index: false, follow: false },
   alternates: { canonical: '/dscr-calculator' }
 };
 

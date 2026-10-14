@@ -78,6 +78,11 @@ migration bug):
 4. **Dead data attributes dropped.** `data-count-to`/`data-prefix`/`data-suffix` on the stats and
    `data-depth` on the hero blobs existed only so the vanilla `querySelectorAll` could read config
    off the DOM. That config is props now. No CSS selected on them.
+5. **A DSCR calculator band** (`components/DscrPromo`) sits between "How It Works" and "Who We
+   Work With". It's new content, not in `/v2`, so skip that band in the diff. It's Tailwind (a
+   navy panel inside a plain white `section`), not `home.css`. Its result card is an **example**,
+   labelled as one, and its figures follow `lib/dscr/calc.ts` exactly (314,000 / 220,800 = 1.42x)
+   — keep them consistent if the math ever changes, and no lender thresholds.
 
 The promotion is **done**. What's left of it: `/v2` and its rewrite stay until the human retires
 them (see above).
@@ -587,10 +592,17 @@ box pre-filled, and the applicant reviews and signs it in SignWell's embedded mo
   parent too) and SigningView's `completed` handler. The path is `NEXT_STEPS_PATH` in `constants.ts`.
   Unlike the form, this page HAS the testimonial section — nobody is typing financial details there.
 
-## `/dscr-calculator` (final; still unlisted)
+## `/dscr-calculator` (final; listed)
 
-A two-slide DSCR calculator, meant to drive traffic and opt-ins. Signed off as final. **Noindex, not in the sitemap, not
-in the nav** until the human decides to list it (add it to `robots`, `app/sitemap.ts` and the nav together).
+A two-slide DSCR calculator, meant to drive traffic and opt-ins. Signed off as final. **Listed** (the
+human's decision): indexed, in `app/sitemap.ts`, in the nav's **"Tools & Solutions"** dropdown, and
+promoted on the homepage by `components/DscrPromo`.
+
+- **"Tools & Solutions" is a nav dropdown fed by `lib/tools.ts`.** More tools are planned; adding
+  one is one entry there (desktop dropdown and mobile accordion both follow). A listed tool should
+  be indexable too — drop its `robots` noindex and add it to the sitemap in the same change. Both
+  nav dropdowns are the same `NavDropdown` / `MobileAccordion` components inside `SiteNav`, so the
+  keyboard behavior exists once.
 
 - **The math is `lib/dscr/calc.ts`**, taken from the advisors' workbook ("Summary Template.xlsx"):
   EBITDA = Net Income + Interest + Depreciation (**Gross Revenue is collected but NOT in the sum**),
@@ -844,6 +856,7 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │   ├── Reveal/ · Counter/        ← scroll reveal, animated stat counters
 │   ├── TestimonialCarousel/ · TrustMarquee/
 │   ├── HeroBlobs/ · GradientBlob/ ← hero cursor parallax, WebGL CTA gradient
+│   ├── DscrPromo/                ← homepage band promoting /dscr-calculator
 │   └── ui/                       ← shadcn primitives: button.tsx, badge.tsx, card.tsx
 │       ├── team-section-block-shadcnui.tsx  ← props-driven team grid (/meet-our-team)
 │       ├── testimonial-v2.tsx               ← THE testimonial treatment, whole site
@@ -859,6 +872,7 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │   ├── faq.ts                    ← the five homepage FAQ answers (verbatim from WordPress)
 │   ├── what-to-expect.ts         ← the six "what to expect" cards + the trust stat row
 │   ├── ghl.ts                    ← GoHighLevel embed IDs + the resize-script loader
+│   ├── tools.ts                  ← the nav's "Tools & Solutions" dropdown entries
 │   └── useMotionPreference.ts    ← ?motion=1 override for previewing animations
 └── public/
     ├── img/ · partners/img/ · advisors/img/ · favicons   ← original public paths, unchanged
@@ -924,7 +938,7 @@ These used to be duplicated across eleven HTML files and drifted. They are now s
 | "What to expect" cards, trust stats | `lib/what-to-expect.ts` |
 | Design tokens | `app/globals.css` (`@theme`) + `app/home.css` |
 
-**Nav right-hand cluster:** phone → **Client Portal** (ghost button,
+**Nav right-hand cluster:** phone (below 1000px only) → **Client Portal** (ghost button,
 `https://portal.kibadvisors.com/client`, new tab — a separate app for existing clients) → **Start
 the Conversation** (primary CTA). Fitting all of this on one row took three concessions, all
 driven by that CTA being 208px wide:
@@ -933,7 +947,11 @@ driven by that CTA being 208px wide:
   over. At 960–999 there was no combination of paddings that fitted the full menu, the portal
   button and a 208px pill without cramming. The sheet carries every link plus the portal, so
   nothing is unreachable there.
-- **The phone number is hidden from 1000 to 1279px.** It's still in every CTA band and the footer.
+- **The phone number is hidden across the whole desktop bar (≥1000px).** It used to return at
+  1280px; the "Tools & Solutions" dropdown (~154px) ended that. `.nav-inner` is capped at 1180px,
+  so wider screens never gain room, and with the phone the row needed ~1280px of content in a
+  1116px box — two rows at every width from 1280 up. It's still in the bar at 640–999px, in the
+  mobile sheet, every CTA band and the footer.
 - **1000–1099px tightens the menu** — link padding 14px → 9px, `.nav-right` gap 24px → 14px (in
   `home.css`, "THE TIGHT BAND"). Nothing is dropped, only tightened.
 - **`white-space:nowrap` on the nav links, the portal button and the CTA.** The bar going to 100px
@@ -1158,7 +1176,7 @@ Until the launch this repo served only `go.kibadvisors.com`, and the WordPress s
   files → `/sitemap.xml`.
 - **Indexing is per page.** Indexed and listed in `app/sitemap.ts`: `/`, `/about-us`,
   `/meet-our-team`, `/capital-solutions` + the six programs, `/blog` + posts, `/contact-us`,
-  `/referral-partners`, both legal pages. **Still `noindex`**, and absent from the sitemap: `/thank-you`,
+  `/referral-partners`, `/dscr-calculator`, both legal pages. **Still `noindex`**, and absent from the sitemap: `/thank-you`,
   `/ty-cal`, `/book-rr`, `/business-acquisitions`, `/debt-schedule`, `/funding-application` (+ `/next-steps`), `/partners/*`, `/advisors/*`
   and `/v2`. Those are booking-flow, campaign or partner-specific pages. Add a new page to
   both places or neither.
