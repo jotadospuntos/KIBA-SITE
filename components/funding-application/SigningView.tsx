@@ -45,6 +45,19 @@ function loadScript(): Promise<void> {
 
 type State = 'loading' | 'ready' | 'signed' | 'declined' | 'failed';
 
+/*
+ * SignWell's modal root (#SignWell-Modal-Embedded, created by embedded.js) is
+ * position:fixed with NO z-index, so it stacks at level 0 and the site's
+ * sticky nav (z-index 50) paints over it. That hid the top of the signing
+ * window - on phones the whole SignWell header bar, with its actions - so
+ * applicants couldn't finish. This lifts the modal above everything.
+ *
+ * It depends on SignWell's element id. If they rename it the nav covers the
+ * modal again with no error; the sturdier fallback is embedded.js's
+ * `containerId` option with a full-screen container of our own.
+ */
+const MODAL_ABOVE_NAV = <style>{'#SignWell-Modal-Embedded{z-index:2147483000}'}</style>;
+
 export default function SigningView({ signingUrl, email }: { signingUrl: string; email: string }) {
   const [state, setState] = useState<State>('loading');
   const opened = useRef(false);
@@ -87,6 +100,7 @@ export default function SigningView({ signingUrl, email }: { signingUrl: string;
   if (state === 'signed') {
     return (
       <div className="py-10 text-center" role="status">
+        {MODAL_ABOVE_NAV}
         <div className="mx-auto mb-6 grid size-16 place-items-center rounded-full bg-blue text-white shadow-soft">
           <Check className="size-8" strokeWidth={2.4} />
         </div>
@@ -103,6 +117,7 @@ export default function SigningView({ signingUrl, email }: { signingUrl: string;
 
   return (
     <div className="py-10 text-center" role="status">
+      {MODAL_ABOVE_NAV}
       <div className="mx-auto mb-6 grid size-16 place-items-center rounded-full bg-blue text-white shadow-soft">
         <FileSignature className="size-8" strokeWidth={2} />
       </div>
