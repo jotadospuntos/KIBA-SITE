@@ -324,7 +324,7 @@ a standing requirement, like the animations.
 **The exception is legal pages** (`components/LegalPage`). A scrolling wall of client praise in the
 middle of a privacy policy undercuts the document and reads as a marketing insert on something
 people come to for compliance information. Legal pages keep the CTA band — and specifically its
-`id="talk"`, or the nav's "Let's Talk" button is dead there — but not the testimonials.
+`id="talk"` (the anchor the in-page CTAs target) — but not the testimonials.
 
 **The second exception is `/debt-schedule`** (decided by the human). It's an intake form: a wall of
 client praise in the middle of someone entering their debts reads wrong, for the same reason it
@@ -478,7 +478,7 @@ nowhere in this repo before. It embeds the same GoHighLevel calendar as the home
 and booking are one page; that needs `form_embed.js`, which the page loads itself.
 
 **Nav and footer changed with them:** "Blog" is a new top-level nav item, "Contact" now points at
-`/contact-us` instead of `#talk` (the `#talk` anchor is still what "Let's Talk" targets), the
+`/contact-us` instead of `#talk` (the nav's primary CTA now goes to `/funding-application`; see "Nav right-hand cluster"), the
 footer gained a Blog link, and **Instagram was added to the footer socials** — the live site lists
 Facebook, Instagram and LinkedIn, and this footer only had two.
 
@@ -549,7 +549,9 @@ that submission's Blob folder for replay.
 The online "KIBA Lending Application v6" (a one-page PDF with no fillable fields). The applicant
 fills in a four-step form (Business → Financials → About you → Review); the server creates a **SignWell document from a template** with every
 box pre-filled, and the applicant reviews and signs it in SignWell's embedded modal on the same page.
-**Unlinked and noindex**: reached only by a direct link.
+**Noindex, but linked from the nav's primary CTA** ("Start the Conversation", `CTA_HREF` in
+`SiteNav`, by request), so it gets real traffic from every page — including while SignWell is in
+test mode.
 
 - **`lib/funding-application/fields.ts` is the one source of truth.** Every PDF box is one entry,
   and its `key` IS the SignWell field API ID (case sensitive; a mismatch fails silently — the box
@@ -940,7 +942,7 @@ These used to be duplicated across eleven HTML files and drifted. They are now s
 
 **Nav right-hand cluster:** phone (below 1000px only) → **Client Portal** (ghost button,
 `https://portal.kibadvisors.com/client`, new tab — a separate app for existing clients) → **Start
-the Conversation** (primary CTA). Fitting all of this on one row took three concessions, all
+the Conversation** (primary CTA, links to `/funding-application`). Fitting all of this on one row took three concessions, all
 driven by that CTA being 208px wide:
 
 - **The desktop bar starts at 1000px, not 960.** Below it the hamburger and mobile sheet take

@@ -70,6 +70,11 @@ const NAV_LINKS = [
   { href: '/contact-us', label: 'Contact' }
 ];
 
+/* The primary CTA ("Start the Conversation", desktop bar + mobile sheet).
+   Was '#talk', the page's own CTA band (a booking calendar on most pages).
+   Points at the online funding application by request. */
+const CTA_HREF = '/funding-application';
+
 const PHONE_HREF = 'tel:2512108445';
 const PHONE_LABEL = '251-210-8445';
 
@@ -343,7 +348,7 @@ export default function SiteNav() {
       {/* nowrap: at ~1100px the label broke onto two lines inside the pill,
           which is what actually made the bar 100px tall rather than the row
           wrapping. */}
-      <a className="btn btn-primary whitespace-nowrap" href="#talk" style={{ padding: '11px 22px', fontSize: '14.5px' }}>Start the Conversation</a>
+      <a className="btn btn-primary whitespace-nowrap" href={CTA_HREF} style={{ padding: '11px 22px', fontSize: '14.5px' }}>Start the Conversation</a>
       <button
         className={mobileOpen ? 'nav-toggle is-open' : 'nav-toggle'}
         id="navToggle"
@@ -378,7 +383,7 @@ export default function SiteNav() {
             <span className="sr-only"> (opens in a new tab)</span>
           </a>
           <a className="btn btn-ghost" href={PHONE_HREF} onClick={onSheetLinkClick}>{PHONE_LABEL}</a>
-          <a className="btn btn-primary" href="#talk" onClick={onSheetLinkClick}>Start the Conversation</a>
+          <a className="btn btn-primary" href={CTA_HREF} onClick={onSheetLinkClick}>Start the Conversation</a>
         </div>
       </div>
     </div>
