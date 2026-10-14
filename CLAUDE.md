@@ -587,6 +587,12 @@ test mode.
   `GHL_PRIVATE_TOKEN`, `DEBT_SCHEDULE_LINK_SECRET`.
 - The authorization paragraph (`authorization.ts`) is **verbatim from the PDF, typos included**.
 - The progress bar is a `div`, not a `nav`: home.css styles every bare `nav` as the site header.
+- **`SigningView` raises SignWell's modal above the site nav** (`#SignWell-Modal-Embedded{z-index:…}`,
+  rendered as a `<style>` in the component). SignWell's `embedded.js` makes that root
+  `position:fixed` with no z-index, so the sticky nav (z-index 50) painted over the signing window
+  and, on phones, hid SignWell's whole header bar — applicants couldn't finish. Don't remove it as
+  stray CSS. It depends on SignWell's element id: if they rename it, the bug returns silently, and
+  the sturdier fix is `embedded.js`'s `containerId` option with a full-screen container of our own.
 - **After signing → `/funding-application/next-steps`** (noindex, unlinked): book a call on the
   round-robin calendar (same embed as `/book-rr`), then the debt schedule as a recommended second
   step (opens in a new tab, so the calendar isn't lost). Two routes get people there: SignWell's
