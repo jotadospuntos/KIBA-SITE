@@ -533,14 +533,24 @@ filling with pdf-lib, (3) the API route + GoHighLevel storage.
 - **Components** are in `components/debt-schedule/`. The per-debt editor is a Base UI Dialog
   (full-screen below `sm`). Every button in it is plain `<button>`/`.btn`, and each non-`.btn`
   button overrides `home.css`'s bare `button` rule with `!`. The dialog's action row is a `<div>`,
-  because `home.css` makes any bare `footer` navy.
+  because `home.css` makes any bare `footer` navy. A click outside never closes it
+  (`disablePointerDismissal`), and Esc / X / Cancel ask before discarding a changed draft.
 
 **The submit path** (`app/api/debt-schedule/route.ts`, Node runtime), in a deliberate order:
 Turnstile → re-validate with the shared schema → fill the PDF → **save PDF + raw JSON to private
 Vercel Blob** → GoHighLevel (upsert contact by email with five custom fields, add tag, add note) →
 return a signed download link. Blob is written *before* GHL so a GHL outage can't lose a
 submission; if GHL fails, the client still succeeds and a `ghl-failed.json` marker is written in
-that submission's Blob folder for replay.
+that submission's Blob folder. **Admins see those on `/admin/failed-syncs`** (plus a banner on
+`/admin`), with Download PDF and **Retry sync**, which re-runs `syncToGhl()` — the same function
+the route uses — from the saved `submission.json`.
+
+- **Every outside call has a time limit** (Turnstile and each GHL call 5s, SignWell document
+  creation 12s; `AbortSignal.timeout`). Without them a hung GHL let the 30s function limit kill the
+  request *after* the save, so the client saw an error and resubmitted. Keep the sum under
+  `maxDuration` if you add a call.
+- **Staff links stored in GHL use `SITE_URL`**, never the request origin (a preview URL there is a
+  dead link). The client's own download link and SignWell's `redirect_url` follow the request.
 
 - **Private Blob, signed links (decided).** PDFs are never reachable by storage URL. Every link is
   `/api/debt-schedule/file?id&exp&sig` (HMAC, `lib/debt-schedule/signed-link.ts`): the client's
@@ -594,13 +604,17 @@ test mode.
   (create from template, `embedded_signing` + `send_email` with a delay, so the link is also
   emailed if they don't sign in time; `embedded_signing_notifications` so the CC actually gets the
   completed copy) → GoHighLevel (upsert owner 1 by email + phone, note with the application link)
-  → return the signing URL. A GHL failure is logged by SignWell document id and doesn't block signing.
+  → return the signing URL. A GHL failure doesn't block signing: it's logged and marked by SignWell
+  document id for `/admin/failed-syncs` (see the debt schedule's submit path).
 - **The "application link" in the GHL note** is `/api/funding-application/document?id&exp&sig`, an
   HMAC link (`STAFF_LINK_DAYS`, 45) that streams the signed PDF from SignWell with our key; before
   signing it answers "not signed yet". It reuses `DEBT_SCHEDULE_LINK_SECRET` with a prefixed payload.
-- **Sensitive data:** SSNs and DOBs are never autosaved to localStorage (a restored draft asks for
-  them again), are masked on the review screen, and never go to GHL (nor do EIN, revenue or scores).
-  Nothing is stored on our side — SignWell holds the document. Never log the body.
+- **Sensitive data:** SSNs, DOBs, the EIN and credit scores are never autosaved to localStorage
+  (`SENSITIVE` in `fields.ts`; a restored draft asks for them again), and a draft untouched for 7
+  days (`DRAFT_TTL_MS`) is discarded. SSNs and DOBs are masked on the review screen, and never go to
+  GHL (nor do EIN, revenue or scores). Nothing is stored on our side — SignWell holds the document —
+  except a failed-GHL marker (`funding-applications/<docId>/ghl-failed.json`: document id, time and
+  step, nothing the applicant typed; swept after 45 days by the cleanup cron). Never log the body.
 - **Env:** `SIGNWELL_API_KEY` (added), plus the debt schedule's `TURNSTILE_SECRET_KEY`,
   `GHL_PRIVATE_TOKEN`, `DEBT_SCHEDULE_LINK_SECRET`.
 - The authorization paragraph (`authorization.ts`) is **verbatim from the PDF, typos included**.
@@ -676,7 +690,8 @@ storage.
   (`lib/admin/access.ts`) re-checks the allowlist on every request**, so deactivating someone or
   changing a role takes effect immediately. **Call it first in every admin page AND every server
   action** — an action is a public POST endpoint, and the layout's check doesn't cover it.
-- **Roles:** `admin` (everything) and `editor` (blog only). Editors get a 404 on admin-only pages.
+- **Roles:** `admin` (everything, incl. `/admin/failed-syncs`) and `editor` (blog only). Editors get
+  a 404 on admin-only pages.
   An admin can't change or deactivate themselves, so nobody can lock out the last admin. Seeded by
   `drizzle/0001_seed_initial_admins.sql` (jesus@ = admin, ariel@ = editor); after that, people are
   managed at `/admin/users`.
@@ -949,6 +964,11 @@ either, so renaming those paths would break the funnel silently.
 Embeds need `form_embed.js` — use `loadGhlEmbedScript()` from `lib/ghl.ts`. They do **not** render
 on `file://` or in sandboxes; verify on a deploy.
 
+**Where the in-page CTA anchor goes:** on the element that holds the embed. On `/book-rr`,
+`/partners/*`, `/business-acquisitions` and `/referral-partners` that's the hero's `.form-card`
+(with `scrollMarginTop: 96` to clear the sticky nav); the migration once put the id on a later
+section and every "Start the Conversation" scrolled *away* from the calendar.
+
 ---
 
 ## Shared elements — one copy each, finally
@@ -1069,6 +1089,13 @@ than snapping to its end state.
    `prefersReduced === false` on the first render, so the flag never flips). It does mean **the
    `?motion=1` recipe above can't verify this kind of animation** — check those on a browser with
    no reduce emulation instead.
+
+3. **Don't branch layout classes on `useReducedMotion()` during the first render.** The server
+   renders as if motion is on; the client's first render already knows it's off, and React keeps
+   the server's classes on a mismatch. `testimonial-v2.tsx` shipped that way: reduce-motion visitors
+   got a frozen column clipped at 680px. It now treats motion as on until `mounted` (from
+   `useMotionPreference`), then switches. When stopping a running framer loop, set an explicit
+   target (`{translateY:0}`), not `undefined` — `undefined` leaves the loop running.
 
 ---
 
