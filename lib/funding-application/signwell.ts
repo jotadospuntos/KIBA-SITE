@@ -83,6 +83,7 @@ export async function createApplicationDocument(
   const res = await fetch(`${BASE}/document_templates/documents`, {
     method: 'POST',
     headers: headers(),
+    signal: AbortSignal.timeout(12000),
     body: JSON.stringify({
       test_mode: SIGNWELL_TEST_MODE,
       template_id: SIGNWELL_TEMPLATE_ID,

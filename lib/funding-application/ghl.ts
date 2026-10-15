@@ -25,7 +25,9 @@ async function ghl(stage: GhlError['stage'], path: string, body: unknown) {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+    // Several of these run back to back inside a 30s function limit.
+    signal: AbortSignal.timeout(5000)
   });
   if (!res.ok) throw new GhlError(stage, res.status);
   return res.json() as Promise<Record<string, unknown>>;
