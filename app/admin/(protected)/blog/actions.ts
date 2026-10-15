@@ -154,26 +154,54 @@ export async function savePost(raw: EditorPost, intent: SaveIntent): Promise<Sav
     updatedBy: me.email,
     updatedAt: now
   };
-  const [row] = existing
-    ? await db().update(blogPosts).set(values).where(eq(blogPosts.id, existing.id)).returning()
-    : await db().insert(blogPosts).values({ ...values, createdBy: me.email, createdAt: now }).returning();
-
-  const { updatedBy, updatedAt, ...snapshot } = values;
-  await db().insert(blogPostRevisions).values({ postId: row.id, savedBy: me.email, snapshot });
-
   const scheduled = status === 'published' && publishAt !== null && publishAt > now;
   const action = !existing
     ? 'blog.create'
     : intent === 'publish'
       ? scheduled ? 'blog.schedule' : 'blog.publish'
       : intent === 'unpublish' ? 'blog.unpublish' : 'blog.update';
-  await audit({
-    actorEmail: me.email,
-    action,
-    targetType: 'blog_post',
-    targetId: row.slug,
-    detail: { title: row.title, ...(scheduled && publishAt ? { publishAt: publishAt.toISOString() } : {}) }
-  });
+  const { updatedBy, updatedAt, ...snapshot } = values;
+
+  /* Post, revision and audit entry land together or not at all. The update
+     re-checks the version in its WHERE, so a save that slipped in after the
+     check above still can't be overwritten. Postgres keeps microseconds and
+     JS Dates milliseconds, hence date_trunc. */
+  let row: BlogPost | undefined;
+  try {
+    row = await db().transaction(async (tx) => {
+      const [saved] = existing
+        ? await tx
+            .update(blogPosts)
+            .set(values)
+            .where(and(eq(blogPosts.id, existing.id), sql`date_trunc('milliseconds', ${blogPosts.updatedAt}) = ${existing.updatedAt}`))
+            .returning()
+        : await tx.insert(blogPosts).values({ ...values, createdBy: me.email, createdAt: now }).returning();
+      if (!saved) return undefined;
+      await tx.insert(blogPostRevisions).values({ postId: saved.id, savedBy: me.email, snapshot });
+      await audit(
+        {
+          actorEmail: me.email,
+          action,
+          targetType: 'blog_post',
+          targetId: saved.slug,
+          detail: { title: saved.title, ...(scheduled && publishAt ? { publishAt: publishAt.toISOString() } : {}) }
+        },
+        tx
+      );
+      return saved;
+    });
+  } catch (e) {
+    /* 23505 = unique violation: another save took this slug since the check
+       above. Drizzle wraps the driver's error, so the code is on `cause`. */
+    const err = e as { code?: string; cause?: { code?: string } };
+    if ((err.cause?.code ?? err.code) === '23505') {
+      return fail(`The web address "/blog/${slug}" was just taken by another post. Choose another.`);
+    }
+    throw e;
+  }
+  if (!row) {
+    return fail('Someone else saved this post a moment ago. Copy anything you need, then reload the page to see their version.');
+  }
 
   if (existing?.status === 'published' || status === 'published') {
     revalidateBlog([row.slug, ...(existing ? [existing.slug] : [])]);
