@@ -111,7 +111,7 @@ export default function BusinessAcquisitionsPage() {
             </Reveal>
           </div>
 
-          <Reveal className="form-card reveal" style={{ transitionDelay: '0.14s' }}>
+          <Reveal id="book" className="form-card reveal" style={{ transitionDelay: '0.14s', scrollMarginTop: 96 }}>
             <div className="eyebrow form-card-eyebrow">Strategic Assessment</div>
             <h3>Book time with Michael</h3>
             <p>Talk through the deal in front of you and what it would actually take to finance it.</p>
@@ -127,7 +127,7 @@ export default function BusinessAcquisitionsPage() {
         </div></div>
       </header>
 
-      <section id="book">
+      <section>
         <div className="wrap">
           <Reveal className="section-head reveal">
             <div className="eyebrow">Funding Solutions</div>

@@ -103,7 +103,7 @@ export default function PartnerPage({ slug }: { slug: string }) {
             </Reveal>
           </div>
 
-          <Reveal className="form-card reveal" style={{ transitionDelay: '0.14s' }}>
+          <Reveal id="start" className="form-card reveal" style={{ transitionDelay: '0.14s', scrollMarginTop: 96 }}>
             <div className="eyebrow form-card-eyebrow">Get Started</div>
             <h3>Tell us about your business</h3>
             <p>Share a few details and a member of our team will reach out within 24&ndash;72 hours to talk through your options.</p>
@@ -123,7 +123,7 @@ export default function PartnerPage({ slug }: { slug: string }) {
         </div></div>
       </header>
 
-      <section id="start">
+      <section>
         <div className="wrap">
           <Reveal className="section-head reveal">
             <div className="eyebrow">What To Expect</div>

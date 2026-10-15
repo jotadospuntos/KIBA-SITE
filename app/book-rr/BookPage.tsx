@@ -80,7 +80,8 @@ export default function BookPage() {
             </Reveal>
           </div>
 
-          <Reveal className="form-card reveal" style={{ transitionDelay: '0.14s' }}>
+          {/* #book target for both CTAs; the margin keeps the card clear of the sticky nav. */}
+          <Reveal id="book" className="form-card reveal" style={{ transitionDelay: '0.14s', scrollMarginTop: 96 }}>
             <div className="eyebrow form-card-eyebrow">Schedule A Call</div>
             <h3>Pick a time that works</h3>
             <p>Choose a slot below and you&rsquo;ll be matched with an available advisor &mdash; no pressure, no obligation.</p>
@@ -96,9 +97,7 @@ export default function BookPage() {
         </div></div>
       </header>
 
-      {/* Anchor target for the hero CTA on narrow screens, where the calendar
-          sits below the fold rather than beside the copy. */}
-      <section className="section-alt" id="book">
+      <section className="section-alt">
         <div className="wrap">
           <Reveal className="section-head reveal">
             <div className="eyebrow">What To Expect</div>

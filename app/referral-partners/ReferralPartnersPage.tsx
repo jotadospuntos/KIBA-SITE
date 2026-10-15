@@ -106,7 +106,7 @@ export default function ReferralPartnersPage() {
             </Reveal>
           </div>
 
-          <Reveal className="form-card reveal" style={{ transitionDelay: '0.14s' }}>
+          <Reveal id="talk-to-us" className="form-card reveal" style={{ transitionDelay: '0.14s', scrollMarginTop: 96 }}>
             <div className="eyebrow form-card-eyebrow">Start The Conversation</div>
             <h3>Let&rsquo;s find a time to talk</h3>
             <p>A short call about how we can support your clients &mdash; and how the relationship works.</p>
@@ -184,7 +184,7 @@ export default function ReferralPartnersPage() {
         intro="Business owners and referral partners on what it’s actually like to work with KIBA."
       />
 
-      <section className="cta-band" id="talk-to-us">
+      <section className="cta-band">
         <GradientBlob />
         <Reveal className="wrap cta-band-inner reveal" id="talk">
           <h2>Start the conversation</h2>
