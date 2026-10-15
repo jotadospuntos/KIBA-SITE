@@ -7,6 +7,24 @@ referral-partner and advisor booking pages on **go.kibadvisors.com**, which now 
 
 ---
 
+## Before auditing or "optimizing" (read first)
+
+Motion is a product requirement, not decoration. Never propose removing, simplifying or
+replacing: SplitText/GSAP, HeroReveal, HeroBlobs, GradientBlob (WebGL), Reveal, Counter,
+TrustMarquee, framer-motion entrances, or any `.reveal` / transition CSS. Performance fixes to
+them are welcome only if the visible animation stays identical, `prefers-reduced-motion` still
+works, and so does the `?motion=1` override.
+
+Looks dead, isn't — never flag for deletion:
+- `public/wp-content/uploads/` (email signatures + external links load from it)
+- `public/legacy/v2.html` and its rewrite (the human's call to retire)
+- `home.css`'s carousel rules (kept byte-stable against v2.html)
+- TrustMarquee's doubled item list (the seamless loop needs exactly two copies)
+- SigningView's `#SignWell-Modal-Embedded` z-index style
+- `deliverables/` (installed on other sites, not built here)
+
+---
+
 ## The migration is DONE — every page is a real route
 
 This repo was static HTML, then a Next.js app with a `rewrites()` bridge serving the unmigrated
