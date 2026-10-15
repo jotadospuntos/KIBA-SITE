@@ -33,6 +33,9 @@ export const NEXT_STEPS_PATH = '/funding-application/next-steps';
    stays in SignWell after that; this only bounds a URL that opens SSNs. */
 export const STAFF_LINK_DAYS = 45;
 
-/* Autosave key. SSNs and dates of birth are never written to it - see
-   SENSITIVE in fields.ts. */
+/* Autosave key. SSNs, dates of birth, the EIN and credit scores are never
+   written to it - see SENSITIVE in fields.ts. */
 export const STORAGE_KEY = 'kiba-funding-application';
+
+/* A draft untouched this long is discarded on load (shared computers). */
+export const DRAFT_TTL_MS = 7 * 24 * 60 * 60 * 1000;

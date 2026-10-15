@@ -6,7 +6,7 @@ import { Check, Clock, Lock } from 'lucide-react';
 import Reveal from '@/components/Reveal/Reveal';
 import { GroupLabel } from '@/components/debt-schedule/fields';
 import type { TurnstileHandle } from '@/components/debt-schedule/Turnstile';
-import { STORAGE_KEY } from '@/lib/funding-application/constants';
+import { DRAFT_TTL_MS, STORAGE_KEY } from '@/lib/funding-application/constants';
 import {
   BUSINESS_FIELDS,
   FIELD_BY_KEY,
@@ -27,11 +27,12 @@ import SigningView from './SigningView';
  * The orchestrator: four steps of fields, a review step, then signing.
  * Every field, label and rule comes from lib/funding-application/fields.ts.
  *
- * AUTOSAVE: everything except SSNs and dates of birth is written to
- * localStorage on every change and restored on load, so a reload or a trip to
- * find a number loses nothing. The sensitive fields are deliberately never
- * stored - on a shared computer they'd outlive the visit - so a restored
- * draft asks for them again. The key is cleared once the server accepts the
+ * AUTOSAVE: everything except SSNs, dates of birth, the EIN and credit scores
+ * is written to localStorage on every change and restored on load, so a
+ * reload or a trip to find a number loses nothing. The sensitive fields are
+ * deliberately never stored - on a shared computer they'd outlive the visit -
+ * so a restored draft asks for them again. A draft untouched for DRAFT_TTL_MS
+ * (7 days) is discarded. The key is cleared once the server accepts the
  * application.
  *
  * SUBMIT posts to /api/funding-application with a Turnstile token and gets
@@ -87,16 +88,18 @@ export default function FundingApplicationForm() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const saved = JSON.parse(raw) as { values?: unknown; step?: unknown };
+        const saved = JSON.parse(raw) as { values?: unknown; step?: unknown; savedAt?: unknown };
         const clean: Values = {};
-        if (saved.values && typeof saved.values === 'object') {
+        /* No savedAt = written before drafts expired; treat it as stale too. */
+        const fresh = typeof saved.savedAt === 'number' && Date.now() - saved.savedAt < DRAFT_TTL_MS;
+        if (fresh && saved.values && typeof saved.values === 'object') {
           for (const [k, v] of Object.entries(saved.values)) {
             const f = FIELD_BY_KEY.get(k);
             if (f && !SENSITIVE.has(f.kind) && typeof v === 'string') clean[k] = v;
           }
         }
         setValues(clean);
-        if (typeof saved.step === 'number' && saved.step >= 0 && saved.step <= REVIEW) {
+        if (fresh && typeof saved.step === 'number' && saved.step >= 0 && saved.step <= REVIEW) {
           /* Never land on review with the SSNs missing. */
           setStep(Math.min(saved.step, REVIEW - 1));
         }
@@ -117,7 +120,7 @@ export default function FundingApplicationForm() {
       if (f && !SENSITIVE.has(f.kind) && v) safe[k] = v;
     }
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ values: safe, step }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ values: safe, step, savedAt: Date.now() }));
     } catch {
       /* Private mode / quota: the form still works, it just won't persist. */
     }

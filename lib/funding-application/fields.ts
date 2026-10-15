@@ -146,8 +146,8 @@ export const SCORE_GROUP_START = new Set(['owner1_score_transunion']);
 export const ALL_FIELDS: FieldDef[] = [...BUSINESS_FIELDS, ...FINANCIAL_FIELDS, ...OWNER1_FIELDS];
 export const FIELD_BY_KEY = new Map(ALL_FIELDS.map((f) => [f.key, f]));
 
-/* Never autosaved to localStorage, and masked on the review screen. */
-export const SENSITIVE: ReadonlySet<Kind> = new Set<Kind>(['ssn', 'dob']);
+/* Never autosaved to localStorage: a restored draft asks for these again. */
+export const SENSITIVE: ReadonlySet<Kind> = new Set<Kind>(['ssn', 'dob', 'ein', 'score']);
 
 export type Values = Record<string, string>;
 export type Application = { values: Values };
