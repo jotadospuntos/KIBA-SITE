@@ -114,7 +114,9 @@ export const TestimonialsColumn = (props: {
   return (
     <div className={props.className}>
       <motion.ul
-        animate={animate ? { translateY: '-50%' } : undefined}
+        /* Explicit 0, not undefined: the loop starts on the first render
+           (animate is true until mounted), and undefined wouldn't stop it. */
+        animate={animate ? { translateY: '-50%' } : { translateY: 0 }}
         transition={
           animate
             ? {
@@ -123,15 +125,15 @@ export const TestimonialsColumn = (props: {
                 ease: 'linear',
                 repeatType: 'loop'
               }
-            : undefined
+            : { duration: 0 }
         }
         className="m-0! flex list-none flex-col gap-6 p-0! pb-6"
       >
         {/* Rendered twice: the loop translates the stack by -50%, so it is only
             seamless with exactly two copies. The second copy is aria-hidden and
             removed from the tab order, so each quote is announced and reachable
-            once. */}
-        {new Array(2).fill(0).map((_, copy) => (
+            once. Still (reduced motion) there is no loop, so one copy. */}
+        {new Array(animate ? 2 : 1).fill(0).map((_, copy) => (
           <React.Fragment key={copy}>
             {props.testimonials.map((testimonial) => (
               <motion.li
@@ -210,8 +212,11 @@ export function TestimonialsSection({
   const prefersReduced = useReducedMotion();
   /* framer-motion's hook only reads the media query; the repo's ?motion=1
      override has to be consulted separately. See CLAUDE.md "Motion". */
-  const { forceMotion } = useMotionPreference();
-  const animate = !prefersReduced || forceMotion;
+  const { forceMotion, mounted } = useMotionPreference();
+  /* Animated until mounted, matching the server render: React keeps the
+     server's classes on a mismatch, which left reduce-motion visitors with a
+     frozen, clipped column showing two or three of the seven quotes. */
+  const animate = !mounted || !prefersReduced || forceMotion;
 
   /* Two separate splits: two columns on tablets, three from lg. Hiding the
      third column below lg instead would hide a third of the quotes there. */
