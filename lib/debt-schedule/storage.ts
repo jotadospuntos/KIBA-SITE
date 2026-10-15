@@ -19,7 +19,7 @@ import type { DebtSchedule } from './schema';
  * stays there until someone removes it in GHL.
  */
 
-const PREFIX = 'debt-schedules/';
+export const PREFIX = 'debt-schedules/';
 const paths = (id: string) => ({
   pdf: `${PREFIX}${id}/schedule.pdf`,
   json: `${PREFIX}${id}/submission.json`,
@@ -47,6 +47,12 @@ export async function markGhlFailed(id: string, stage: string) {
   });
 }
 
+/* The saved payload, for the admin's failed-sync page and its retry. */
+export async function readSubmission(id: string): Promise<{ receivedAt: string; data: DebtSchedule } | null> {
+  const result = await get(paths(id).json, { access: 'private' });
+  return result && result.statusCode === 200 ? new Response(result.stream).json() : null;
+}
+
 export async function readPdf(id: string) {
   const result = await get(paths(id).pdf, { access: 'private' });
   return result && result.statusCode === 200 ? result.stream : null;
@@ -54,12 +60,12 @@ export async function readPdf(id: string) {
 
 /* Deletes every blob under the prefix older than the retention window.
    Returns how many were removed. */
-export async function deleteExpired(now = Date.now()): Promise<number> {
+export async function deleteExpired(prefix = PREFIX, now = Date.now()): Promise<number> {
   const cutoff = now - RETENTION_DAYS * 24 * 60 * 60 * 1000;
   let cursor: string | undefined;
   let removed = 0;
   do {
-    const page = await list({ prefix: PREFIX, cursor, limit: 1000 });
+    const page = await list({ prefix, cursor, limit: 1000 });
     const expired = page.blobs.filter((b) => b.uploadedAt.getTime() < cutoff).map((b) => b.url);
     if (expired.length) {
       await del(expired);

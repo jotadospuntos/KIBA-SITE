@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 import { CLIENT_LINK_TTL_MS, RETENTION_DAYS } from '@/lib/debt-schedule/constants';
 import { MissingSecretError, missingSubmitSecrets } from '@/lib/debt-schedule/env';
 import { fillDebtSchedule } from '@/lib/debt-schedule/fill-pdf';
-import { GhlError, addSummaryNote, tagContact, upsertContact } from '@/lib/debt-schedule/ghl';
-import { debtScheduleSchema } from '@/lib/debt-schedule/schema';
+import { syncToGhl } from '@/lib/debt-schedule/ghl';
+import { debtScheduleSchema, debtTotals } from '@/lib/debt-schedule/schema';
 import { signedPdfUrl } from '@/lib/debt-schedule/signed-link';
 import { markGhlFailed, saveSubmission } from '@/lib/debt-schedule/storage';
 import { verifyTurnstile } from '@/lib/debt-schedule/turnstile';
@@ -87,10 +87,7 @@ export async function POST(req: NextRequest) {
     return fail(400, 'invalid', 'Some of the information didn’t pass our checks. Please review and try again.');
   }
   const data = { ...parsed.data, debts: parsed.data.hasNoDebt ? [] : parsed.data.debts };
-  const totals = data.debts.reduce(
-    (t, d) => ({ balance: t.balance + d.currentBalance, payment: t.payment + d.monthlyPayment }),
-    { balance: 0, payment: 0 }
-  );
+  const totals = debtTotals(data.debts);
 
   const id = randomUUID();
   const origin = req.nextUrl.origin;
@@ -108,17 +105,11 @@ export async function POST(req: NextRequest) {
     return fail(500, 'server', 'Something went wrong on our end.');
   }
 
-  let stage: GhlError['stage'] = 'upsert';
-  try {
-    const contactId = await upsertContact(data, staffUrl, totals);
-    stage = 'tag';
-    await tagContact(contactId);
-    stage = 'note';
-    await addSummaryNote(contactId, data, staffUrl, totals);
-  } catch (e) {
-    logError(`ghl ${stage}`, e, id);
+  const failure = await syncToGhl(data, staffUrl, totals);
+  if (failure) {
+    logError(`ghl ${failure.stage}`, failure.error, id);
     try {
-      await markGhlFailed(id, stage);
+      await markGhlFailed(id, failure.stage);
     } catch (e2) {
       logError('ghl-failed marker', e2, id);
     }

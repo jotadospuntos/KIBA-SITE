@@ -21,7 +21,9 @@ export type AuditAction =
   | 'blog.image_upload'
   | 'blog.category_create'
   | 'blog.category_rename'
-  | 'blog.category_delete';
+  | 'blog.category_delete'
+  | 'sync.retry'
+  | 'sync.resolve';
 
 /* Awaited, and allowed to throw: an action we couldn't record is an action
    that shouldn't silently succeed. `detail` must never hold form contents or

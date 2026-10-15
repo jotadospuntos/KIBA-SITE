@@ -1,4 +1,5 @@
 import { requireAdminUser } from '@/lib/admin/access';
+import { countSyncFailures } from '@/lib/sync-failures';
 
 /* /admin — the landing page. One tile per section the signed-in person can use. */
 export default async function AdminHome() {
@@ -9,10 +10,14 @@ export default async function AdminHome() {
     ...(user.role === 'admin'
       ? [
           { title: 'Users', body: 'Who can sign in, and what they can do.', href: '/admin/users' },
-          { title: 'Audit log', body: 'Every sign-in and change, newest first.', href: '/admin/audit' }
+          { title: 'Audit log', body: 'Every sign-in and change, newest first.', href: '/admin/audit' },
+          { title: 'Failed syncs', body: 'Submissions that never reached GoHighLevel.', href: '/admin/failed-syncs' }
         ]
       : [])
   ];
+
+  /* A storage hiccup skips the banner, never the dashboard. */
+  const failed = user.role === 'admin' ? await countSyncFailures().catch(() => 0) : 0;
 
   return (
     <>
@@ -20,6 +25,16 @@ export default async function AdminHome() {
         Welcome{user.name ? `, ${user.name.split(' ')[0]}` : ''}
       </h1>
       <p className="mt-2 text-slate">KIBA&rsquo;s staff dashboard.</p>
+
+      {failed > 0 && (
+        <a
+          href="/admin/failed-syncs"
+          role="alert"
+          className="mt-6 block rounded-lg bg-red-50 p-4 font-medium text-red-800 ring-1 ring-red-200 hover:bg-red-100"
+        >
+          ⚠ {failed} submission{failed === 1 ? '' : 's'} didn&rsquo;t reach GoHighLevel → Review
+        </a>
+      )}
 
       <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {tiles.map((t) => {

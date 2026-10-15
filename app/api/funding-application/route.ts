@@ -8,6 +8,7 @@ import { parseApplication } from '@/lib/funding-application/fields';
 import { addApplicationNote, upsertApplicant } from '@/lib/funding-application/ghl';
 import { createApplicationDocument } from '@/lib/funding-application/signwell';
 import { staffDocumentUrl } from '@/lib/funding-application/staff-link';
+import { markFundingGhlFailed } from '@/lib/sync-failures';
 
 /*
  * POST /api/funding-application, in a deliberate order:
@@ -21,8 +22,9 @@ import { staffDocumentUrl } from '@/lib/funding-application/staff-link';
  * Nothing is stored on our side: SignWell holds the document, and GHL gets no
  * sensitive fields. If step 3 fails the applicant gets an error and their form
  * is still on screen. If step 4 fails they still get to sign - the document
- * exists, and SignWell CCs KIBA on completion - and the failure is logged by
- * SignWell document id so the contact can be added by hand.
+ * exists, and SignWell CCs KIBA on completion - and the failure is logged and
+ * marked (SignWell document id only) for /admin/failed-syncs, so the contact
+ * can be added by hand.
  *
  * NEVER LOG THE REQUEST BODY. This one carries SSNs.
  */
@@ -91,6 +93,12 @@ export async function POST(req: NextRequest) {
     await addApplicationNote(contactId, app, staffUrl);
   } catch (e) {
     logError(`ghl ${stage}`, e, documentId);
+    /* Shows up on /admin/failed-syncs. Never allowed to stop the signing. */
+    try {
+      await markFundingGhlFailed(documentId, stage);
+    } catch (e2) {
+      logError('ghl-failed marker', e2, documentId);
+    }
   }
 
   return NextResponse.json({ signingUrl });

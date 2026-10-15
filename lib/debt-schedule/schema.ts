@@ -183,3 +183,11 @@ export function sanitizeStoredDebts(value: unknown): DebtEntry[] {
     return r.success ? [r.data] : [];
   });
 }
+
+/* What the route sends to GHL and the admin retry re-sends. Callers pass [] for hasNoDebt. */
+export function debtTotals(debts: DebtEntry[]) {
+  return debts.reduce(
+    (t, d) => ({ balance: t.balance + d.currentBalance, payment: t.payment + d.monthlyPayment }),
+    { balance: 0, payment: 0 }
+  );
+}

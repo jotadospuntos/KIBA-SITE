@@ -19,7 +19,8 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
     ...(user.role === 'admin'
       ? [
           { href: '/admin/users', label: 'Users' },
-          { href: '/admin/audit', label: 'Audit log' }
+          { href: '/admin/audit', label: 'Audit log' },
+          { href: '/admin/failed-syncs', label: 'Failed syncs' }
         ]
       : [])
   ];

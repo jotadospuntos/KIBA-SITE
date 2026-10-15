@@ -108,3 +108,23 @@ export async function addSummaryNote(contactId: string, data: DebtSchedule, pdfU
   ];
   await ghl('note', `/contacts/${contactId}/notes`, { body: lines.join('\n') });
 }
+
+/* All three steps. Null on success, else which step broke - the route and the
+   admin "Retry sync" both use this, so they can't drift apart. */
+export async function syncToGhl(
+  data: DebtSchedule,
+  pdfUrl: string,
+  totals: Totals
+): Promise<{ stage: GhlError['stage']; error: unknown } | null> {
+  let stage: GhlError['stage'] = 'upsert';
+  try {
+    const contactId = await upsertContact(data, pdfUrl, totals);
+    stage = 'tag';
+    await tagContact(contactId);
+    stage = 'note';
+    await addSummaryNote(contactId, data, pdfUrl, totals);
+    return null;
+  } catch (error) {
+    return { stage, error };
+  }
+}
