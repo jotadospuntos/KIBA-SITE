@@ -137,9 +137,15 @@ type Props = {
 
 export default function DebtEntryDialog({ open, formKey, initial, returnFocus, onSave, onClose }: Props) {
   const lenderRef = useRef<HTMLInputElement | null>(null);
+  const dirtyRef = useRef(false);
+
+  /* Esc, the X and Cancel all land here; an outside click is switched off below. */
+  function requestClose() {
+    if (!dirtyRef.current || window.confirm('Close without saving? What you entered for this debt will be lost.')) onClose();
+  }
 
   return (
-    <Dialog.Root open={open} onOpenChange={(next) => !next && onClose()}>
+    <Dialog.Root open={open} onOpenChange={(next) => !next && requestClose()} disablePointerDismissal>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-[100] bg-navy-deep/55 backdrop-blur-[2px] transition-opacity duration-200 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
         <Dialog.Popup
@@ -165,8 +171,9 @@ export default function DebtEntryDialog({ open, formKey, initial, returnFocus, o
             key={formKey}
             initial={initial}
             lenderRef={lenderRef}
+            dirtyRef={dirtyRef}
             onSave={onSave}
-            onClose={onClose}
+            onClose={requestClose}
           />
         </Dialog.Popup>
       </Dialog.Portal>
@@ -177,16 +184,20 @@ export default function DebtEntryDialog({ open, formKey, initial, returnFocus, o
 function DebtEntryForm({
   initial,
   lenderRef,
+  dirtyRef,
   onSave,
   onClose
 }: {
   initial: DebtEntry | null;
   lenderRef: MutableRefObject<HTMLInputElement | null>;
+  dirtyRef: MutableRefObject<boolean>;
   onSave: (entry: DebtEntry, addAnother: boolean) => void;
   onClose: () => void;
 }) {
   const isEdit = initial !== null;
   const [draft, setDraft] = useState<Draft>(() => toDraft(initial));
+  const startDraft = useRef(draft);
+  dirtyRef.current = JSON.stringify(draft) !== JSON.stringify(startDraft.current);
   const [errors, setErrors] = useState<DebtErrors>({});
   const [warnings, setWarnings] = useState<DebtWarnings>(() =>
     initial ? debtWarnings(initial) : {}
