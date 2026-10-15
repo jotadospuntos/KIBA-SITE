@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
+import { SITE_URL } from '@/lib/site';
 import type { NextRequest } from 'next/server';
 import { CLIENT_LINK_TTL_MS, RETENTION_DAYS } from '@/lib/debt-schedule/constants';
 import { MissingSecretError, missingSubmitSecrets } from '@/lib/debt-schedule/env';
@@ -95,8 +96,9 @@ export async function POST(req: NextRequest) {
   let downloadUrl: string;
   try {
     /* Signed first: it can't fail after the files exist. The staff link lives
-       as long as the file does. */
-    staffUrl = signedPdfUrl(origin, id, Date.now() + RETENTION_DAYS * 24 * 60 * 60 * 1000);
+       as long as the file does, and always points at the live site - it's
+       stored in GHL, where a preview or localhost URL would be a dead link. */
+    staffUrl = signedPdfUrl(SITE_URL, id, Date.now() + RETENTION_DAYS * 24 * 60 * 60 * 1000);
     downloadUrl = signedPdfUrl(origin, id, Date.now() + CLIENT_LINK_TTL_MS);
     const pdf = await fillDebtSchedule(data);
     await saveSubmission(id, pdf, data);

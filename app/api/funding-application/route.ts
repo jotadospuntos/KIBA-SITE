@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { SITE_URL } from '@/lib/site';
 import type { NextRequest } from 'next/server';
 import { GhlError } from '@/lib/debt-schedule/ghl';
 import { verifyTurnstile } from '@/lib/debt-schedule/turnstile';
@@ -87,7 +88,8 @@ export async function POST(req: NextRequest) {
 
   let stage: GhlError['stage'] = 'upsert';
   try {
-    const staffUrl = staffDocumentUrl(req.nextUrl.origin, documentId, Date.now() + STAFF_LINK_DAYS * 864e5);
+    /* The live site, not the request's: this link is stored in GHL. */
+    const staffUrl = staffDocumentUrl(SITE_URL, documentId, Date.now() + STAFF_LINK_DAYS * 864e5);
     const contactId = await upsertApplicant(app);
     stage = 'note';
     await addApplicationNote(contactId, app, staffUrl);
