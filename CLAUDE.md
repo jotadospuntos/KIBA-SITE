@@ -348,7 +348,7 @@ people come to for compliance information. Legal pages keep the CTA band — and
 client praise in the middle of someone entering their debts reads wrong, for the same reason it
 does on a privacy policy. Same terms as legal pages — CTA band kept, with its `id="talk"`.
 **`/funding-application` is the third**, on the same terms and for the same reason (decided by
-the human).
+the human), and **`/tax-returns` the fourth** (same terms, decided by the human).
 
 The design is `components/ui/testimonial-v2.tsx` (v2: semantic list/blockquote/cite markup, cards
 that lift on hover *and* keyboard focus, a pill badge above the heading, a section entrance
@@ -359,7 +359,7 @@ Coverage, so a gap is obvious: `/`, `/about-us`, `/meet-our-team`, `/capital-sol
 `/capital-solutions/*`, `/blog`, all three `/blog/*`, `/contact-us`, `/book-rr`, `/dscr-calculator`, `/thank-you`,
 `/ty-cal`, `/funding-application/next-steps`, `/referral-partners`, `/business-acquisitions`, all three `/advisors/*` and both
 `/partners/*`. In other words every route except the two legal pages (`/privacy-policy`, `/terms-and-conditions`) and
-`/debt-schedule` and `/funding-application` (above).
+`/debt-schedule`, `/funding-application` and `/tax-returns` (above).
 `v2.html` is the only other page without one, deliberately.
 
 **One element selector will bite you here.** `home.css` styles the SITE footer with a bare element
@@ -632,6 +632,32 @@ test mode.
   parent too) and SigningView's `completed` handler. The path is `NEXT_STEPS_PATH` in `constants.ts`.
   Unlike the form, this page HAS the testimonial section — nobody is typing financial details there.
 
+## `/tax-returns` (built)
+
+Clients upload their **two most recent years of business and personal tax returns** so the advisor
+can review them before the call. Linked from `/funding-application/next-steps` (second card under
+"Come to your call prepared", new tab), noindex, not in the sitemap. Same departures as
+`/debt-schedule`: `hero-compact`, no testimonials (decided by the human).
+
+- **Files go browser → private Blob directly** (`@vercel/blob/client` `upload()`), because a
+  function's request body is capped at 4.5 MB. Three calls: `POST /api/tax-returns` (Turnstile +
+  contact → `submission.json` + an HMAC **upload ticket**, 2h) → `POST /api/tax-returns/upload`
+  (one client token per file, **only** with a valid ticket, only `tax-returns/<id>/files/*.pdf`,
+  `application/pdf`, ≤25 MB, ≤10 files) → `POST /api/tax-returns/finalize` (re-checks each file's
+  `%PDF-` bytes and deletes fakes, then GHL). The ticket exists because a Turnstile token is
+  single-use; without it the token route would let anyone write into the store.
+- **PDFs only, 25 MB / 10 files** (`lib/tax-returns/constants.ts`). Decided by the human.
+- **GHL, same three steps as the debt schedule, no custom fields** (decided): upsert by email,
+  tag `Tax Returns Submitted`, note with one signed staff link per file
+  (`/api/tax-returns/file?id&name&exp&sig`, valid for the 45-day retention). The files never go to
+  GHL or the database: **tax returns carry SSNs.** A GHL failure leaves `ghl-failed.json`, shown
+  on `/admin/failed-syncs` with Retry.
+- **45-day retention** via the existing cleanup cron (`tax-returns/` prefix added). Same env vars
+  as the debt schedule; no new ones.
+- `DEBT_SCHEDULE_LINK_SECRET=x npx tsx scripts/test-tax-returns.ts` checks the ticket, the link
+  signing and the path allowlist.
+- No autosave (files can't be kept), no virus scanning (known gap).
+
 ## `/dscr-calculator` (final; listed)
 
 A two-slide DSCR calculator, meant to drive traffic and opt-ins. Signed off as final. **Listed** (the
@@ -881,6 +907,7 @@ per document. Currently: `/privacy-policy` (`app/privacy-policy/privacy-content.
 │   ├── partners/                 ← "/partners/<slug>" (partners-data.ts, 2 pages)
 │   ├── privacy-policy/           ← "/privacy-policy" (verbatim legal text in privacy-content.ts)
 │   ├── debt-schedule/            ← "/debt-schedule" intake form (components/debt-schedule, lib/debt-schedule)
+│   ├── tax-returns/              ← "/tax-returns" PDF upload (components/tax-returns, lib/tax-returns)
 │   ├── funding-application/      ← "/funding-application" → SignWell (components/ + lib/funding-application)
 │   ├── book-rr/ · thank-you/ · ty-cal/          ← booking + the two GHL redirect targets
 │   ├── referral-partners/ · business-acquisitions/  ← recruitment + campaign landing
@@ -1150,10 +1177,10 @@ SITE"; the comment there carries the detail. In short:
   `/partners/*` carry a booking embed in the hero and run to ~1063px. They stay taller rather than
   squashing a live calendar — **these four are the only remaining exceptions**, and closing that
   gap means shrinking a GoHighLevel iframe on the conversion path, which is the human's call.
-- **Two exemptions: `/debt-schedule` and `/funding-application` use `hero-compact`** (both decided
-  by the human). The form is the page, and an 880px navy band would push it below the fold. `.hero.hero-compact{ min-height:0 }`
+- **Three exemptions: `/debt-schedule`, `/funding-application` and `/tax-returns` use `hero-compact`**
+  (all decided by the human). The form is the page, and an 880px navy band would push it below the fold. `.hero.hero-compact{ min-height:0 }`
   sits in `home.css` right after the rule; two classes, so it outranks `.hero` in both media
-  queries. Those two are the only users — don't add `hero-compact` to other pages without asking.
+  queries. Those three are the only users — don't add `hero-compact` to other pages without asking.
 - **Known cost, flagged not hidden:** on `/privacy-policy` and the three `/blog/*` posts the hero
   is now most of a laptop viewport, so the body text starts below the fold. That is the price of
   uniformity and it was the explicit request. To exempt them, give those two layouts a
@@ -1230,7 +1257,7 @@ Until the launch this repo served only `go.kibadvisors.com`, and the WordPress s
 - **Indexing is per page.** Indexed and listed in `app/sitemap.ts`: `/`, `/about-us`,
   `/meet-our-team`, `/capital-solutions` + the six programs, `/blog` + posts, `/contact-us`,
   `/referral-partners`, `/dscr-calculator`, both legal pages. **Still `noindex`**, and absent from the sitemap: `/thank-you`,
-  `/ty-cal`, `/book-rr`, `/business-acquisitions`, `/debt-schedule`, `/funding-application` (+ `/next-steps`), `/partners/*`, `/advisors/*`
+  `/ty-cal`, `/book-rr`, `/business-acquisitions`, `/debt-schedule`, `/tax-returns`, `/funding-application` (+ `/next-steps`), `/partners/*`, `/advisors/*`
   and `/v2`. Those are booking-flow, campaign or partner-specific pages. Add a new page to
   both places or neither.
 - **DNS is Cloudflare; email is Google Workspace MX on the same zone.** Only the apex and `www`

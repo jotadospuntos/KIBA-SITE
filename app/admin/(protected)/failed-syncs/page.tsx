@@ -11,6 +11,12 @@ import { resolveFailure, retrySync } from './actions';
 const smallButton =
   'rounded-md px-3 py-1.5 text-sm font-medium ring-1 ring-line hover:bg-ivory focus-visible:outline-2 focus-visible:outline-blue';
 
+const KIND_LABEL: Record<SyncFailure['kind'], string> = {
+  'debt-schedule': 'Debt schedule',
+  'funding-application': 'Funding application',
+  'tax-returns': 'Tax returns'
+};
+
 const STEP: Record<string, string> = { upsert: 'creating the contact', tag: 'adding the tag', note: 'adding the note' };
 
 export default async function FailedSyncsPage({
@@ -62,12 +68,12 @@ export default async function FailedSyncsPage({
             <li key={`${f.kind}/${f.id}`} className="rounded-xl bg-white p-5 ring-1 ring-line">
               <div className="text-sm text-slate">
                 {formatWhen(f.at)} · <span className="font-medium text-ink">
-                  {f.kind === 'debt-schedule' ? 'Debt schedule' : 'Funding application'}
+                  {KIND_LABEL[f.kind]}
                 </span>{' '}
                 · failed while {STEP[f.stage] ?? f.stage}
               </div>
 
-              {f.kind === 'debt-schedule' ? (
+              {f.kind !== 'funding-application' ? (
                 <p className="mt-2 text-ink">
                   {f.contact ? (
                     <>
@@ -88,6 +94,15 @@ export default async function FailedSyncsPage({
               )}
 
               <div className="mt-4 flex flex-wrap gap-2">
+                {f.kind === 'tax-returns' && f.contact && (
+                  <form action={retrySync}>
+                    <input type="hidden" name="id" value={f.id} />
+                    <input type="hidden" name="kind" value={f.kind} />
+                    <button type="submit" className={`${smallButton} bg-navy-deep text-white hover:bg-navy-soft`}>
+                      Retry sync
+                    </button>
+                  </form>
+                )}
                 {f.kind === 'debt-schedule' && f.contact && (
                   <>
                     <a

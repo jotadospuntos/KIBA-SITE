@@ -9,7 +9,9 @@ import { debtTotals } from '@/lib/debt-schedule/schema';
 import { signedPdfUrl } from '@/lib/debt-schedule/signed-link';
 import { readSubmission } from '@/lib/debt-schedule/storage';
 import { SITE_URL } from '@/lib/site';
-import { clearSyncFailure, isSubmissionId } from '@/lib/sync-failures';
+import { syncToGhl as syncTaxReturnsToGhl } from '@/lib/tax-returns/ghl';
+import { readSubmission as readTaxSubmission, staffLinks } from '@/lib/tax-returns/storage';
+import { FAILURE_KINDS, clearSyncFailure, isSubmissionId } from '@/lib/sync-failures';
 import type { FailureKind } from '@/lib/sync-failures';
 
 /*
@@ -27,6 +29,7 @@ export async function retrySync(formData: FormData) {
   const me = await requireAdminUser('admin');
   const id = String(formData.get('id') ?? '');
   if (!isSubmissionId(id)) done('error', 'That submission id isn’t valid.');
+  if (formData.get('kind') === 'tax-returns') return retryTaxReturns(me.email, id);
 
   const sub = await readSubmission(id);
   if (!sub) done('error', 'The saved submission is gone (deleted after 45 days?). Mark it resolved instead.');
@@ -45,12 +48,25 @@ export async function retrySync(formData: FormData) {
   done('ok', `${data.contactName} is in GoHighLevel now.`);
 }
 
+async function retryTaxReturns(actorEmail: string, id: string) {
+  const sub = await readTaxSubmission(id);
+  if (!sub) done('error', 'The saved submission is gone (deleted after 45 days?). Mark it resolved instead.');
+  const failure = await syncTaxReturnsToGhl(sub.contact, await staffLinks(id, sub.receivedAt));
+  if (failure) {
+    const why = failure.error instanceof Error ? failure.error.message : 'unknown error';
+    done('error', `GoHighLevel failed again at the ${failure.stage} step (${why}). Try later, or add the contact by hand.`);
+  }
+  await clearSyncFailure('tax-returns', id);
+  await audit({ actorEmail, action: 'sync.retry', targetType: 'tax-returns', targetId: id });
+  done('ok', `${sub.contact.contactName} is in GoHighLevel now.`);
+}
+
 /* For funding applications, or anything fixed by hand in GHL. */
 export async function resolveFailure(formData: FormData) {
   const me = await requireAdminUser('admin');
   const id = String(formData.get('id') ?? '');
   const kind = formData.get('kind');
-  if (!isSubmissionId(id) || (kind !== 'debt-schedule' && kind !== 'funding-application')) {
+  if (!isSubmissionId(id) || !FAILURE_KINDS.includes(kind as FailureKind)) {
     done('error', 'That submission isn’t valid.');
   }
   await clearSyncFailure(kind as FailureKind, id);

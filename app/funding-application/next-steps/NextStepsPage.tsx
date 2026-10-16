@@ -3,10 +3,11 @@
 /*
  * After the lending application is signed: (1) book a call on the shared
  * round-robin calendar - the same embed as /book-rr and /thank-you - and
- * (2) optionally complete the Business Debt Schedule first, so the advisor
- * has it before the call. Built on /thank-you's layout.
+ * (2) optionally complete the Business Debt Schedule and upload their tax
+ * returns, so the advisor has both before the call. Built on /thank-you's
+ * layout.
  *
- * The debt schedule opens in a NEW TAB: people who click it before booking
+ * Both open in a NEW TAB: people who click it before booking
  * would otherwise lose this page and the calendar with it.
  *
  * Unlike /funding-application itself this page keeps the testimonial section
@@ -16,7 +17,7 @@
 
 import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { ClipboardList, Clock, ExternalLink } from 'lucide-react';
+import { ClipboardList, Clock, ExternalLink, FileText } from 'lucide-react';
 import '../../home.css';
 import SiteNav from '@/components/SiteNav/SiteNav';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
@@ -58,11 +59,11 @@ export default function NextStepsPage() {
             </SplitText>
             <Reveal as="p" className="hero-sub reveal" style={{ margin: '20px auto 32px', transitionDelay: '0.10s' }}>
               Next, book a call with a KIBA advisor to walk through your options. To get even more out of
-              that call, complete your business debt schedule before it.
+              that call, complete your business debt schedule and share your tax returns before it.
             </Reveal>
             <Reveal className="cta-row reveal" style={{ marginBottom: 0, justifyContent: 'center', transitionDelay: '0.18s' }}>
               <a href="#book" className="btn btn-primary">Start the Conversation</a>
-              <a href="#debt-schedule" className="btn btn-ghost">Prepare Your Debt Schedule</a>
+              <a href="#debt-schedule" className="btn btn-ghost">Prepare for Your Call</a>
             </Reveal>
           </div>
         </div>
@@ -92,8 +93,8 @@ export default function NextStepsPage() {
             <div className="eyebrow">Step 2 &middot; Recommended</div>
             <h2>Come to your call prepared</h2>
             <p>
-              Your business debt schedule lists the loans, lines of credit and cards in your business&rsquo;s
-              name. With it in hand, your advisor can spend the call on your options instead of gathering numbers.
+              Your debt schedule and your recent tax returns give your advisor the full picture before you talk,
+              so the call can go to your options and the loan programs that fit, instead of gathering numbers.
             </p>
           </Reveal>
           <Reveal className="reveal mx-auto max-w-[760px] rounded-[16px] bg-white p-7 shadow-soft ring-1 ring-line sm:p-9">
@@ -118,6 +119,36 @@ export default function NextStepsPage() {
                 className="btn btn-primary shrink-0 justify-center"
               >
                 Complete Your Debt Schedule
+                <ExternalLink className="size-4" aria-hidden="true" />
+                <span className="sr-only">(opens in a new tab)</span>
+              </a>
+            </div>
+          </Reveal>
+          <Reveal
+            className="reveal mx-auto mt-5 max-w-[760px] rounded-[16px] bg-white p-7 shadow-soft ring-1 ring-line sm:p-9"
+            style={{ transitionDelay: '0.08s' }}
+          >
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+              <div className="grid size-14 shrink-0 place-items-center rounded-[14px] bg-blue text-white">
+                <FileText className="size-7" strokeWidth={1.8} />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-heading text-[21px] text-ink">Tax returns</h3>
+                <p className="mt-1.5 text-[15.5px] leading-relaxed text-slate">
+                  Your two most recent business and personal returns, as PDFs. Shared only with your advisor.
+                </p>
+                <p className="mt-2 flex items-center gap-1.5 text-[13.5px] text-slate">
+                  <Clock className="size-4" />
+                  About 2 minutes
+                </p>
+              </div>
+              <a
+                href="/tax-returns"
+                target="_blank"
+                rel="noopener"
+                className="btn btn-primary shrink-0 justify-center"
+              >
+                Upload Your Tax Returns
                 <ExternalLink className="size-4" aria-hidden="true" />
                 <span className="sr-only">(opens in a new tab)</span>
               </a>

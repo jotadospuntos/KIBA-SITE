@@ -47,7 +47,8 @@ export class GhlError extends Error {
   }
 }
 
-async function ghl(stage: GhlError['stage'], path: string, body: unknown) {
+/* Exported for lib/tax-returns/ghl.ts, which uses the same conventions. */
+export async function ghl(stage: GhlError['stage'], path: string, body: unknown) {
   const res = await fetch(`${BASE}${path}`, {
     method: 'POST',
     headers: {
@@ -64,7 +65,7 @@ async function ghl(stage: GhlError['stage'], path: string, body: unknown) {
   return res.json() as Promise<Record<string, unknown>>;
 }
 
-function splitName(full: string) {
+export function splitName(full: string) {
   const [first, ...rest] = full.trim().split(/\s+/);
   return { firstName: first ?? '', lastName: rest.join(' ') };
 }

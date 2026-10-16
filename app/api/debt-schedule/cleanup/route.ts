@@ -3,12 +3,14 @@ import { RETENTION_DAYS } from '@/lib/debt-schedule/constants';
 import { secret } from '@/lib/debt-schedule/env';
 import { deleteExpired } from '@/lib/debt-schedule/storage';
 import { FUNDING_PREFIX } from '@/lib/sync-failures';
+import { PREFIX as TAX_PREFIX } from '@/lib/tax-returns/constants';
 
 /*
  * GET /api/debt-schedule/cleanup — the retention job. Run daily by the Vercel
  * cron in vercel.json, which sends `Authorization: Bearer $CRON_SECRET`.
- * Deletes every debt-schedule blob, and every funding-application failed-sync
- * marker, older than RETENTION_DAYS (45).
+ * Deletes every debt-schedule blob, every uploaded tax return (and its
+ * folder), and every funding-application failed-sync marker, older than
+ * RETENTION_DAYS (45).
  *
  * Vercel only runs crons on PRODUCTION deployments, so on a preview this
  * never fires by itself.
@@ -29,7 +31,7 @@ export async function GET(req: NextRequest) {
   if (req.headers.get('authorization') !== expected) return new Response('Unauthorized', { status: 401 });
 
   try {
-    const removed = (await deleteExpired()) + (await deleteExpired(FUNDING_PREFIX));
+    const removed = (await deleteExpired()) + (await deleteExpired(FUNDING_PREFIX)) + (await deleteExpired(TAX_PREFIX));
     console.log(`[debt-schedule] cleanup removed ${removed} blob(s) older than ${RETENTION_DAYS} days`);
     return Response.json({ removed });
   } catch (e) {
