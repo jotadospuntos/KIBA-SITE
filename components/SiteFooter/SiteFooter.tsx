@@ -56,16 +56,13 @@ export default function SiteFooter() {
           </ul>
         </Reveal>
 
-        {/* The nav's "Tools & Solutions" list (lib/tools.ts) plus the two online
-            forms, which are noindex and so stay out of the nav dropdown. */}
+        {/* Driven off TOOLS, like the nav's "Tools & Solutions" dropdown. */}
         <Reveal className="footer-col reveal">
           <h3>Tools &amp; Solutions</h3>
           <ul>
             {TOOLS.map((tool) => (
               <li key={tool.href}><a href={tool.href}>{tool.title}</a></li>
             ))}
-            <li><a href="/debt-schedule">Business Debt Schedule</a></li>
-            <li><a href="/funding-application">Funding Application</a></li>
           </ul>
         </Reveal>
 

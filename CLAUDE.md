@@ -497,8 +497,8 @@ and booking are one page; that needs `form_embed.js`, which the page loads itsel
 
 **Nav and footer changed with them:** "Blog" is a new top-level nav item, "Contact" now points at
 `/contact-us` instead of `#talk` (the nav's primary CTA now goes to `/funding-application`; see "Nav right-hand cluster"), the
-footer gained a Blog link and a **"Tools & Solutions" column** (`lib/tools.ts` plus the debt
-schedule and funding application; five columns, where `/v2` has four), and **Instagram was added to the footer socials** — the live site lists
+footer gained a Blog link and a **"Tools & Solutions" column** (`lib/tools.ts`, the same
+list as the nav dropdown; five columns, where `/v2` has four), and **Instagram was added to the footer socials** — the live site lists
 Facebook, Instagram and LinkedIn, and this footer only had two.
 
 ### Gaps against the live site: closed
@@ -666,7 +666,8 @@ human's decision): indexed, in `app/sitemap.ts`, in the nav's **"Tools & Solutio
 promoted on the homepage by `components/DscrPromo`.
 
 - **"Tools & Solutions" is a nav dropdown fed by `lib/tools.ts`.** More tools are planned; adding
-  one is one entry there (desktop dropdown and mobile accordion both follow). A listed tool should
+  one is one entry there (desktop dropdown, mobile accordion and the footer column all follow).
+  It also lists `/debt-schedule` and `/funding-application` (by request); those two stay noindex. A listed tool should
   be indexable too — drop its `robots` noindex and add it to the sitemap in the same change. Both
   nav dropdowns are the same `NavDropdown` / `MobileAccordion` components inside `SiteNav`, so the
   keyboard behavior exists once.
