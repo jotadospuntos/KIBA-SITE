@@ -148,7 +148,11 @@
   @media (min-width:640px){ .nav-phone{ display:inline; } }
 
   /* Nav menu (Solutions dropdown + flat links) */
-  .nav-menu{ display:none; align-items:center; gap:2px; }
+  /* The logo sits the same distance from the first item's label as the
+     labels sit from each other: margin + link padding = 2px gap + 2x padding
+     (16+14 = 30px here, 11+9 = 20px in the tight band). The free space goes
+     to .nav-right's auto margin instead of being split around the menu. */
+  .nav-menu{ display:none; align-items:center; gap:2px; margin-left:16px; margin-right:auto; }
   @media (min-width:1000px){ .nav-menu{ display:flex; } }
   .nav-menu-item{ position:relative; }
   .nav-menu-link, .nav-menu-trigger{
@@ -178,6 +182,7 @@
      1000/1024/1060/1100/1180/1280. */
   @media (min-width:1000px) and (max-width:1099px){
     .nav-menu-link, .nav-menu-trigger{ padding-left:9px; padding-right:9px; }
+    .nav-menu{ margin-left:11px; }
     .nav-right{ gap:14px; }
   }
   .nav-menu-link:hover, .nav-menu-trigger:hover{ color:#fff; background:rgba(255,255,255,0.08); }
@@ -576,10 +581,12 @@
     grid-template-columns:1fr;
   }
   @media (min-width:640px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
-  @media (min-width:920px){ .footer-grid{ grid-template-columns:1.3fr 1fr 1fr 1fr; gap:32px; } }
+  /* Five columns since "Tools & Solutions" joined the footer (v2.html has four). */
+  @media (min-width:920px){ .footer-grid{ grid-template-columns:1.3fr 1fr 1fr 1fr 1fr; gap:32px; } }
   .footer-grid .reveal:nth-child(2){ transition-delay:0.08s; }
   .footer-grid .reveal:nth-child(3){ transition-delay:0.16s; }
   .footer-grid .reveal:nth-child(4){ transition-delay:0.24s; }
+  .footer-grid .reveal:nth-child(5){ transition-delay:0.32s; }
   .footer-brand{ display:flex; flex-direction:column; align-items:flex-start; gap:18px; }
   .footer-col h3{
     font-family:'IBM Plex Mono', monospace;

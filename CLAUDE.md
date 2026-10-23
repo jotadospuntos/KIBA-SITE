@@ -497,7 +497,8 @@ and booking are one page; that needs `form_embed.js`, which the page loads itsel
 
 **Nav and footer changed with them:** "Blog" is a new top-level nav item, "Contact" now points at
 `/contact-us` instead of `#talk` (the nav's primary CTA now goes to `/funding-application`; see "Nav right-hand cluster"), the
-footer gained a Blog link, and **Instagram was added to the footer socials** — the live site lists
+footer gained a Blog link and a **"Tools & Solutions" column** (`lib/tools.ts` plus the debt
+schedule and funding application; five columns, where `/v2` has four), and **Instagram was added to the footer socials** — the live site lists
 Facebook, Instagram and LinkedIn, and this footer only had two.
 
 ### Gaps against the live site: closed
@@ -1013,8 +1014,11 @@ These used to be duplicated across eleven HTML files and drifted. They are now s
 
 **Nav right-hand cluster:** phone (below 1000px only) → **Client Portal** (ghost button,
 `https://portal.kibadvisors.com/client`, new tab — a separate app for existing clients) → **Start
-the Conversation** (primary CTA, links to `/funding-application`). Fitting all of this on one row took three concessions, all
-driven by that CTA being 208px wide:
+Here** (primary CTA, links to `/funding-application`; by request it does NOT use the site-wide
+"Start the Conversation" wording). The logo sits as far from the first menu label as the labels
+sit from each other (30px, 20px in the tight band): `.nav-menu`'s margin-left, with the spare
+room going to `margin-right:auto`. Fitting all of this on one row took three concessions, all
+driven by the CTA once being 208px wide ("Start the Conversation"; "Start Here" is 115px):
 
 - **The desktop bar starts at 1000px, not 960.** Below it the hamburger and mobile sheet take
   over. At 960–999 there was no combination of paddings that fitted the full menu, the portal
@@ -1128,8 +1132,9 @@ than snapping to its end state.
 
 ## Button labels: one CTA wording, site-wide
 
-**Every button whose job is to start a conversation reads "Start the Conversation"** — 31 of them,
-including the nav's primary CTA. This replaced a spread of per-page wordings ("Book a
+**Every button whose job is to start a conversation reads "Start the Conversation"** — 31 of them
+(the nav's primary CTA was one, and now reads "Start Here" by request — two copies, desktop bar
+and mobile sheet). This replaced a spread of per-page wordings ("Book a
 Consultation" ×15, "Get Funded", "Let's Talk", "Schedule Strategic Assessment", "Get Started
 Today", "Book a Partner Call", …).
 
