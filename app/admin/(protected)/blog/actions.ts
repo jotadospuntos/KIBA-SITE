@@ -165,7 +165,8 @@ export async function savePost(raw: EditorPost, intent: SaveIntent): Promise<Sav
   /* Post, revision and audit entry land together or not at all. The update
      re-checks the version in its WHERE, so a save that slipped in after the
      check above still can't be overwritten. Postgres keeps microseconds and
-     JS Dates milliseconds, hence date_trunc. */
+     JS Dates milliseconds, hence date_trunc. The Date goes in as an ISO string:
+     postgres-js can't serialize a raw Date inside sql`` (every save threw). */
   let row: BlogPost | undefined;
   try {
     row = await db().transaction(async (tx) => {
@@ -173,7 +174,7 @@ export async function savePost(raw: EditorPost, intent: SaveIntent): Promise<Sav
         ? await tx
             .update(blogPosts)
             .set(values)
-            .where(and(eq(blogPosts.id, existing.id), sql`date_trunc('milliseconds', ${blogPosts.updatedAt}) = ${existing.updatedAt}`))
+            .where(and(eq(blogPosts.id, existing.id), sql`date_trunc('milliseconds', ${blogPosts.updatedAt}) = ${existing.updatedAt.toISOString()}::timestamptz`))
             .returning()
         : await tx.insert(blogPosts).values({ ...values, createdBy: me.email, createdAt: now }).returning();
       if (!saved) return undefined;
